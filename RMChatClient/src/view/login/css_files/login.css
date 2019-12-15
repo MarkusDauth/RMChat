@@ -1,0 +1,39 @@
+.root{
+    -fx-background-color: white;
+}
+.top{
+    -fx-background-color: lightgrey;
+}
+
+.minimize_button {
+    -fx-background-color: lightgrey;
+}
+
+.minimize_button:pressed:hover {
+    -fx-background-color: grey;
+
+}
+
+.minimize_button:hover {
+    -fx-background-color: grey;
+}
+
+.exit_button {
+    -fx-background-color: lightgrey;
+}
+
+.exit_button:pressed:hover {
+    -fx-background-color: red;
+
+}
+
+.exit_button:hover {
+    -fx-background-color: red;
+}
+
+.register_label:hover{
+    -fx-underline: true;
+}
+.register_label:pressed:hover{
+    -fx-underline: true;
+}
