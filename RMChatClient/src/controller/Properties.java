@@ -11,7 +11,6 @@ import java.io.IOException;
 public class Properties {
     java.util.Properties properties;
 
-
     public Properties(){
         properties = new java.util.Properties();
         try {

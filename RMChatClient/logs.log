@@ -1,14 +1,18 @@
-Dez 15, 2019 3:02:20 AM controller.Controller sendMessage
+Dez 15, 2019 3:02:20 AM controller.NetworkController sendMessage
 INFORMATION: TEST123
-Dez 15, 2019 4:06:43 AM controller.Controller sendMessage
+Dez 15, 2019 4:06:43 AM controller.NetworkController sendMessage
 INFORMATION: TEST123
-Dez 15, 2019 4:34:38 AM controller.Controller sendMessage
+Dez 15, 2019 4:34:38 AM controller.NetworkController sendMessage
 INFORMATION: TEST123
-Dez 15, 2019 5:20:03 AM controller.Controller createNewUser
+Dez 15, 2019 5:20:03 AM controller.NetworkController createNewUser
 WARNUNG: 15
-Dez 15, 2019 5:20:03 AM controller.Controller createNewUser
+Dez 15, 2019 5:20:03 AM controller.NetworkController createNewUser
 INFORMATION: MarkusTest123
-Dez 15, 2019 5:24:56 AM controller.Controller createNewUser
+Dez 15, 2019 5:24:56 AM controller.NetworkController createNewUser
 INFORMATION: MarkusTest123
-Dez 15, 2019 5:36:17 AM controller.Controller createNewUser
+Dez 15, 2019 5:36:17 AM controller.NetworkController createNewUser
+INFORMATION: Creating new user: Markus
+Dez 15, 2019 9:44:58 PM controller.NetworkController registerNewUser
+INFORMATION: Creating new user: Markus
+Dez 15, 2019 10:59:34 PM controller.NetworkController registerNewUser
 INFORMATION: Creating new user: Markus
