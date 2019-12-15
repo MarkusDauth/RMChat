@@ -6,9 +6,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.NewUser;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -18,12 +15,14 @@ public class Main extends Application {
 
     static Logger logger;
     static FileHandler logFileHandler;
+    public static Main instance;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("view/login.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        Parent root = FXMLLoader.load(getClass().getResource("view/login/login.fxml"));
+        primaryStage.setTitle("RM-CHAT");
+        primaryStage.setScene(new Scene(root, 350, 350));
+        primaryStage.setOnCloseRequest( event -> {System.exit(0);} );
         primaryStage.show();
     }
 
