@@ -13,11 +13,10 @@ public class NetworkController {
     private final Logger logger;
     private final Properties properties;
 
-
     //TODO wird gebraucht für View??? Eventuell Properties Konstruktor in main stecken
-    public NetworkController() {
-        this.logger = Logger.getLogger("logger");
-        this.properties = new Properties();
+    public NetworkController(Logger logger, Properties properties) {
+        this.logger = logger;
+        this.properties = properties;
     }
 
     public void registerNewUser(NewUser newUser) {

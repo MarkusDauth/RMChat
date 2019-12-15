@@ -1,4 +1,5 @@
 import controller.NetworkController;
+import controller.Properties;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,11 +13,12 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class Main extends Application {
-    static NetworkController networkController;
+    private static NetworkController networkController;
 
-    static Logger logger;
-    static FileHandler logFileHandler;
-    public static Main instance;
+    private static Logger logger;
+    private static FileHandler logFileHandler;
+
+    private static Properties properties;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -29,12 +31,11 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        //TODO: Ein Properties Objekt hier erstellen, aber NetworkController muss ein Konstruktor ohne Parameter für die View haben
-
         configureLogger();
+        properties = new Properties();
 
         //MVC Setup
-        networkController = new NetworkController();
+        networkController = new NetworkController(logger, properties);
 
         //TODO: Remove Tests
         testNetwork();

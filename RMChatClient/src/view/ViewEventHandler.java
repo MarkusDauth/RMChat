@@ -15,20 +15,19 @@ public class ViewEventHandler {
 
     @FXML
     private void handleRegisterAction() throws Exception {
-        if(!isLoginStageShowing) {
+        if (!isLoginStageShowing) {
             Parent root = FXMLLoader.load(getClass().getResource("gui/register.fxml"));
             loginStage.setTitle("Create Account");
             loginStage.setScene(new Scene(root, 350, 333));
             loginStage.show();
             loginStage.setOnCloseRequest(event -> {
-                isLoginStageShowing = false;} );
+                isLoginStageShowing = false;
+            });
             isLoginStageShowing = true;
-        }
-        else{
+        } else {
             loginStage.setAlwaysOnTop(true);
             loginStage.setAlwaysOnTop(false);
         }
-
     }
 
     @FXML
@@ -38,6 +37,5 @@ public class ViewEventHandler {
         indexStage.setTitle("Index");
         indexStage.setScene(new Scene(root, 650, 400));
         indexStage.show();
-
     }
 }
