@@ -6,27 +6,38 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import javafx.event.ActionEvent;
-
 public class ViewEventHandler {
 
-    private boolean isShowing = false;
-    private Stage stage = new Stage();
+    private boolean isLoginStageShowing = false;
+    private Stage loginStage = new Stage();
+    private Stage indexStage = new Stage();
+    public static Stage primarystage;
 
     @FXML
     private void handleRegisterAction() throws Exception {
-        if(!isShowing) {
-            Parent root = FXMLLoader.load(getClass().getResource("login/register.fxml"));
-            stage.setTitle("Create Account");
-            stage.setScene(new Scene(root, 350, 333));
-            stage.show();
-            stage.setOnCloseRequest( event -> {isShowing = false;} );
-            isShowing = true;
+        if(!isLoginStageShowing) {
+            Parent root = FXMLLoader.load(getClass().getResource("gui/register.fxml"));
+            loginStage.setTitle("Create Account");
+            loginStage.setScene(new Scene(root, 350, 333));
+            loginStage.show();
+            loginStage.setOnCloseRequest(event -> {
+                isLoginStageShowing = false;} );
+            isLoginStageShowing = true;
         }
         else{
-            stage.setAlwaysOnTop(true);
-            stage.setAlwaysOnTop(false);
+            loginStage.setAlwaysOnTop(true);
+            loginStage.setAlwaysOnTop(false);
         }
+
+    }
+
+    @FXML
+    private void handleIndexAction() throws Exception {
+        primarystage.close();
+        Parent root = FXMLLoader.load(getClass().getResource("gui/index.fxml"));
+        indexStage.setTitle("Index");
+        indexStage.setScene(new Scene(root, 650, 400));
+        indexStage.show();
 
     }
 }
