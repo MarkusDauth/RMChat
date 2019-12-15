@@ -1,20 +1,23 @@
 package controller;
 
-import java.io.IOException;
-import java.util.logging.FileHandler;
+import model.NewUser;
+
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public class Controller {
-    Logger logger;
+    private final Logger logger;
+    private final Properties properties;
 
-    public Controller(Logger logger) {
+
+    //TODO wird gebraucht für View??? Eventuell Properties Konstruktor in main stecken
+    public Controller() {
         this.logger = Logger.getLogger("logger");
+        this.properties = new Properties();
     }
 
-    public Controller(){};
+    public void createNewUser(NewUser newUser){
+        logger.info("Creating new user: "+newUser.getUserName());
 
-    public void sendMessage(String sourceUser, String targetUser, String message) {
-        logger.info(message);
     }
+
 }
