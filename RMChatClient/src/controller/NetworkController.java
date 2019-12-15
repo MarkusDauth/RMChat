@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.application.Platform;
 import model.NewUser;
 
 import java.io.DataInputStream;
@@ -13,7 +14,6 @@ public class NetworkController {
     private final Logger logger;
     private final Properties properties;
 
-    //TODO wird gebraucht für View??? Eventuell Properties Konstruktor in main stecken
     public NetworkController(Logger logger, Properties properties) {
         this.logger = logger;
         this.properties = properties;
@@ -23,6 +23,7 @@ public class NetworkController {
         logger.info("Creating new user: " + newUser.getUserName());
 
         try {
+            //TODO Change to server
             InetAddress ip = InetAddress.getByName("localhost");
             int port = properties.getInt("server.port");
 
@@ -57,6 +58,8 @@ public class NetworkController {
             // closing resources
             dis.close();
             dos.close();
+
+            Platform.runLater();
         } catch (Exception e) {
             e.printStackTrace();
         }
