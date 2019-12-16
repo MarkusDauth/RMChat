@@ -1,9 +1,12 @@
 package view;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 public class ViewEventHandler {
@@ -37,5 +40,18 @@ public class ViewEventHandler {
         indexStage.setTitle("Index");
         indexStage.setScene(new Scene(root, 650, 400));
         indexStage.show();
+
+    }
+
+    public static void showError(String message){
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR,message, ButtonType.OK);
+            alert.show();});
+    }
+
+    public static void showInfo(String message){
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION,message, ButtonType.OK);
+            alert.show();});
     }
 }
