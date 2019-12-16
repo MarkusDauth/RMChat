@@ -1,6 +1,5 @@
 package controller;
 
-import javafx.application.Platform;
 import model.NewUser;
 
 import java.io.DataInputStream;
