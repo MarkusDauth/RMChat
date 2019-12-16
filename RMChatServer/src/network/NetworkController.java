@@ -1,5 +1,7 @@
 package network;
 
+import network.tcp.TcpReceive;
+import network.tcp.TcpSend;
 import properties.Properties;
 
 import java.io.DataInputStream;
@@ -31,18 +33,25 @@ public class NetworkController {
                 socket = serverSocket.accept();
                 logger.info("A new client is connected : " + socket);
 
-                DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-                DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+                TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
+                TcpSend tcpSend = new TcpSend(socket.getOutputStream());
+
+                //TODO TESTING
+                {
+                    System.out.println(tcpReceive.receiveString());
+                    tcpSend.sendString("OK");
+                }
 
                 //New Thread
-                Runnable runnable  = new ClientHandler(socket, inputStream, outputStream, logger);
-                Thread thread = new Thread(runnable);
-                thread.start();
+                //Runnable runnable  = new ClientHandler(socket, inputStream, outputStream, logger);
+                //Thread thread = new Thread(runnable);
+                //thread.start();
 
             } catch (SocketException e) {
                 e.printStackTrace();
-            }
-            finally {
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
                 socket.close();
             }
         }
