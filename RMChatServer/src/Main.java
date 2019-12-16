@@ -1,5 +1,5 @@
-import Network.NetworkController;
-import Network.Properties;
+import network.NetworkController;
+import properties.Properties;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;

@@ -1,4 +1,6 @@
-package Network;
+package network;
+
+import properties.Properties;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

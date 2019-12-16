@@ -1,4 +1,4 @@
-package Network;
+package network;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -24,6 +24,15 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
+        tcpTest();
+    }
+
+    //TODO remove, its just for testing
+    private void tcpTest(){
+        tcpTestWithStream();
+    }
+
+    private void tcpTestWithStream(){
         String received;
         String response;
 
@@ -36,15 +45,15 @@ public class ClientHandler implements Runnable {
             }
 
             /**
-             *
-            //Done
-            logger.info("Client " + this.socket + " sends exit...");
-            this.socket.close();
-            logger.info("Connection closed");
 
-            // closing resources
-            this.inputStream.close();
-            this.outputStream.close();
+             //Done
+             logger.info("Client " + this.socket + " sends exit...");
+             this.socket.close();
+             logger.info("Connection closed");
+
+             // closing resources
+             this.inputStream.close();
+             this.outputStream.close();
 
              **/
         } catch (IOException e) {

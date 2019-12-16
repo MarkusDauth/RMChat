@@ -1,4 +1,4 @@
-package Network;
+package properties;
 
 import java.io.FileInputStream;
 import java.io.IOException;
