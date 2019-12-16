@@ -31,20 +31,21 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        configureLogger();
-        properties = new Properties();
+        //TODO siehe Networkcontroller
+        //configureLogger();
+        //properties = new Properties();
 
         //MVC Setup
-        networkController = new NetworkController(logger, properties);
+        //networkController = new NetworkController(logger, properties);
 
-        //TODO: Remove Tests
-        testNetwork();
+        //TODO: Remove Tests, derzeit nicht noetig, wird ueber gui getestet
+        //testNetwork();
 
         //Launch GUI
         launch(args);
 
         //Close Logger file
-        logFileHandler.close();
+        //logFileHandler.close();
     }
 
     private static void configureLogger() {
@@ -66,6 +67,6 @@ public class Main extends Application {
         newUser.setUserName("Markus");
         newUser.setPassword("Test123");
 
-        networkController.registerNewUser(newUser);
+        NetworkController.getInstance().registerNewUser(newUser);
     }
 }
