@@ -25,41 +25,38 @@ public class NetworkController {
         try {
             //TODO Change to server
             InetAddress ip = InetAddress.getByName("localhost");
-            int port = properties.getInt("server.port");
+            int serverPort = properties.getInt("server.port");
+            Socket socket = new Socket(ip, serverPort);
 
-            // establish the connection with server port 5056
-            Socket socket = new Socket(ip, port);
+            //TODO Change to ByteBuffer
+            DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+            DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
 
-            // obtaining input and out streams
-            DataInputStream dis = new DataInputStream(socket.getInputStream());
-            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-
-            // the following loop performs the exchange of
-            // information between client and client handler
             while (true) {
-                System.out.println(dis.readUTF());
-                String tosend = newUser.getUserName();
-                dos.writeUTF(tosend);
+                //Send message
+                String message = newUser.getUserName();
+                outputStream.writeUTF(message);
 
-                // If client sends exit,close this connection
-                // and then break from the while loop
-                if (tosend.equals("EXIT")) {
-                    System.out.println("Closing this connection : " + socket);
-                    socket.close();
-                    System.out.println("Connection closed");
-                    break;
-                }
+                //Read answer
+                String received = inputStream.readUTF();
+                logger.info("Recieved: "+received);
 
-                // printing date or time as requested by client
-                String received = dis.readUTF();
-                System.out.println(received);
+                Thread.sleep(1000);
             }
 
-            // closing resources
-            dis.close();
-            dos.close();
+            /**
 
-            Platform.runLater();
+            //Done
+            logger.info("Closing this connection : " + socket);
+            socket.close();
+            logger.info("Connection closed");
+
+            // closing resources
+            inputStream.close();
+            outputStream.close();
+
+             **/
+
         } catch (Exception e) {
             e.printStackTrace();
         }

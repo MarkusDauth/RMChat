@@ -1,0 +1,48 @@
+package Network;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.logging.Logger;
+
+public class NetworkController {
+    private Properties properties;
+    private Logger logger;
+
+    public NetworkController(Logger logger, Properties properties) {
+        this.properties = properties;
+        this.logger = logger;
+    }
+
+    //TODO Rename test method
+    public void tcpTest() throws IOException {
+        int serverPort = properties.getInt("server.port");
+        ServerSocket serverSocket = new ServerSocket(serverPort);
+
+        while (true) {
+            Socket socket = null;
+
+            try {
+                socket = serverSocket.accept();
+                logger.info("A new client is connected : " + socket);
+
+                DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+                DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+
+                //New Thread
+                Runnable runnable  = new ClientHandler(socket, inputStream, outputStream, logger);
+                Thread thread = new Thread(runnable);
+                thread.start();
+
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+            finally {
+                socket.close();
+            }
+        }
+    }
+}
