@@ -1,14 +1,13 @@
 package model;
 
-
-public class NewUser {
+public class LoginData {
     private String username;
     private String password;
 
-    public NewUser() {
+    public LoginData() {
     }
 
-    public NewUser(String username, String password) {
+    public LoginData(String username, String password) {
         this.username = username;
         this.password = password;
     }

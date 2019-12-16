@@ -1,63 +1,54 @@
 package network;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import network.tcp.TcpReceive;
+import network.tcp.TcpSend;
+
+import java.io.*;
 import java.net.Socket;
 import java.util.logging.Logger;
 
 public class ClientHandler implements Runnable {
-    final DataInputStream inputStream;
-    final DataOutputStream outputStream;
+
     final Socket socket;
     final Logger logger;
+    final OutputStream outputStream;
+    final InputStream inputStream;
+    TcpSend tcpSend;
+    TcpReceive tcpReceive;
 
-    public ClientHandler(Socket socket,
-                         DataInputStream inputStream,
-                         DataOutputStream outputStream,
-                         Logger logger) {
+    public ClientHandler(Socket socket, OutputStream outputStream,  InputStream inputStream, Logger logger) {
         this.socket = socket;
-        this.inputStream = inputStream;
-        this.outputStream = outputStream;
         this.logger = logger;
+        this.outputStream = outputStream;
+        this.inputStream = inputStream;
     }
 
     @Override
     public void run() {
-        tcpTest();
-    }
+        {
+            try {
+                tcpSend = new TcpSend(outputStream);
+                tcpReceive = new TcpReceive( inputStream);
 
-    //TODO remove, its just for testing
-    private void tcpTest(){
-        tcpTestWithStream();
-    }
-
-    private void tcpTestWithStream(){
-        String received;
-        String response;
-
-        try {
-            while (true) {
-                outputStream.writeUTF("Hello, this is Server");
-
-                received = inputStream.readUTF();
-                logger.info("Received: " + received);
+                tcpReceive.receive();
+                logger.info("Message recieved");
+                String code = tcpReceive.readString();
+                logger.info("Client sent code: " + code);
+                switch (code) {
+                    case "LOGIN":
+                        handleLogin();
+                        break;
+                }
+                socket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            /**
-
-             //Done
-             logger.info("Client " + this.socket + " sends exit...");
-             this.socket.close();
-             logger.info("Connection closed");
-
-             // closing resources
-             this.inputStream.close();
-             this.outputStream.close();
-
-             **/
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+    }
+
+    private void handleLogin() throws IOException {
+        //TODO login logic here
+        tcpSend.add("OK");
+        tcpSend.send();
     }
 }

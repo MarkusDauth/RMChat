@@ -64,7 +64,7 @@ public class Main extends Application {
 
     private static void testNetwork() {
         NewUser newUser = new NewUser();
-        newUser.setUserName("Markus");
+        newUser.setUsername("Markus");
         newUser.setPassword("Test123");
 
         NetworkController.getInstance().registerNewUser(newUser);

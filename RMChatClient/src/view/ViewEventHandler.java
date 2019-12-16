@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.LoginData;
 import model.NewUser;
 
 
@@ -19,10 +20,19 @@ public class ViewEventHandler {
     public static Stage primarystage;
 
     @FXML
-    private Button signUpButton;
+    private Button registerButton;
+
+    @FXML
+    private Button loginButton;
 
     @FXML
     private TextField usernameField;
+
+    @FXML
+    private TextField username;
+
+    @FXML
+    private TextField password;
 
     @FXML
     private PasswordField passwordField;
@@ -51,16 +61,25 @@ public class ViewEventHandler {
         indexStage.setTitle("Index");
         indexStage.setScene(new Scene(root, 650, 400));
         indexStage.show();
-
     }
 
     @FXML
     private void handleRegisterButton() throws Exception{
         System.out.println("handleRegisterButton");
         NewUser newUser = new NewUser();
-        newUser.setUserName(usernameField.getText());
+        newUser.setUsername(usernameField.getText());
         newUser.setPassword(passwordField.getText());
         NetworkController.getInstance().registerNewUser(newUser);
+    }
+
+    @FXML
+    private void handleLoginButton() throws Exception{
+        System.out.println("handleLoginButton");
+        LoginData loginData = new LoginData();
+        loginData.setUsername(username.getText());
+        loginData.setPassword(password.getText());
+
+        NetworkController.getInstance().loginUser(loginData);
     }
 
     public static void showError(String message){

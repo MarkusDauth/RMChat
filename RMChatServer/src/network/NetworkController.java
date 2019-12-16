@@ -4,9 +4,7 @@ import network.tcp.TcpReceive;
 import network.tcp.TcpSend;
 import properties.Properties;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -33,19 +31,13 @@ public class NetworkController {
                 socket = serverSocket.accept();
                 logger.info("A new client is connected : " + socket);
 
-                TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
-                TcpSend tcpSend = new TcpSend(socket.getOutputStream());
-
-                //TODO TESTING
-                {
-                    System.out.println(tcpReceive.receiveString());
-                    tcpSend.sendString("OK");
-                }
+                OutputStream outputStream = socket.getOutputStream();
+                InputStream inputStream = socket.getInputStream();
 
                 //New Thread
-                //Runnable runnable  = new ClientHandler(socket, inputStream, outputStream, logger);
-                //Thread thread = new Thread(runnable);
-                //thread.start();
+                Runnable runnable  = new ClientHandler(socket, outputStream, inputStream, logger);
+                Thread thread = new Thread(runnable);
+                thread.run();
 
             } catch (SocketException e) {
                 e.printStackTrace();

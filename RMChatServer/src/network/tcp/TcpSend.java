@@ -17,8 +17,19 @@ public class TcpSend {
         bbuf = ByteBuffer.wrap(buffer);
     }
 
-    //TODO sendInt()
+    public void add(String string){
+        for(int i = 0; i < string.length();i++){
+            bbuf.put((byte) string.charAt(i));
+        }
+        bbuf.put((byte)'\0');
+    }
 
+    public void send() throws IOException {
+        out.write(bbuf.array());
+    }
+
+
+    //TODO remove old
     public void sendString(String s) throws Exception {
         if(s.length() >= bufferLength){
             throw new Exception("String too long");
@@ -30,3 +41,4 @@ public class TcpSend {
         out.write(bbuf.array());
     }
 }
+

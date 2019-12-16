@@ -5,8 +5,10 @@ import java.nio.ByteBuffer;
 
 public class TcpReceive {
     InputStream in;
+
     //TODO not sure if needed
-    int offset, readBytes, currentLength, length;
+    //int offset, readBytes, currentLength, length;
+
     byte [] buffer;
     ByteBuffer bbuf;
     int bufferLength = 256;
@@ -17,10 +19,35 @@ public class TcpReceive {
         bbuf = ByteBuffer.wrap(buffer);
     }
 
-    //TODO receiveInt()
+    /**
+     * Loads entire TCP message into bbuf.
+     * Read the content with the read methods
+     * @throws Exception
+     */
+    public void receive() throws Exception {
+        int readbytes = in.read(buffer);
+        for(int i = 0; i < readbytes;i++){
+            bbuf.put(buffer[i]);
+        }
+    }
+
+    /**
+     * Read next String from bbuf
+     * @return
+     */
+    public String readString(){
+        StringBuilder stringBuilder = new StringBuilder();
+
+        int i=0;
+        while( (char)buffer[i] != '\0' ){
+            stringBuilder.append((char)buffer[i]);
+            i++;
+        }
+
+        return stringBuilder.toString();
+    }
 
     public String receiveString() throws Exception {
-
         int readbytes = in.read(buffer);
         StringBuilder stringBuilder = new StringBuilder();
 
