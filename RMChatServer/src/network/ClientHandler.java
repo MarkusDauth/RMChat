@@ -38,6 +38,8 @@ public class ClientHandler implements Runnable {
                     case "LOGIN":
                         handleLogin();
                         break;
+                    case "REGISTER":
+                        handleRegister();
                 }
                 socket.close();
             } catch (Exception e) {
@@ -48,6 +50,12 @@ public class ClientHandler implements Runnable {
 
     private void handleLogin() throws IOException {
         //TODO login logic here
+        tcpSend.add("OK");
+        tcpSend.send();
+    }
+
+    private void handleRegister() throws IOException {
+        //TODO Register logic here
         tcpSend.add("OK");
         tcpSend.send();
     }
