@@ -11,13 +11,30 @@ import javafx.stage.Stage;
 import model.LoginData;
 import model.NewUser;
 
+import java.util.logging.Logger;
+
 
 public class ViewEventHandler {
+
+    private static NetworkController networkController;
+    private static Logger logger;
 
     private boolean isLoginStageShowing = false;
     private Stage registerStage = new Stage();
     private Stage indexStage = new Stage();
-    public static Stage primarystage;
+    private Stage primarystage;
+
+    public static void setNetworkController(NetworkController networkController) {
+        ViewEventHandler.networkController = networkController;
+    }
+
+    public static void setLogger(Logger logger) {
+        ViewEventHandler.logger = logger;
+    }
+
+    public void setPrimarystage(Stage primarystage) {
+        this.primarystage = primarystage;
+    }
 
     @FXML
     private Button registerButton;
@@ -65,30 +82,29 @@ public class ViewEventHandler {
 
     @FXML
     private void handleRegisterButton() throws Exception{
-        System.out.println("handleRegisterButton");
+        logger.info("handleRegisterButton");
         NewUser newUser = new NewUser();
         newUser.setUsername(usernameField.getText());
         newUser.setPassword(passwordField.getText());
-        NetworkController.getInstance().registerNewUser(newUser);
+        networkController.registerNewUser(newUser);
     }
 
     @FXML
     private void handleLoginButton() throws Exception{
-        System.out.println("handleLoginButton");
+        logger.info("handleLoginButton");
         LoginData loginData = new LoginData();
         loginData.setUsername(username.getText());
         loginData.setPassword(password.getText());
-
-        NetworkController.getInstance().loginUser(loginData);
+        networkController.loginUser(loginData);
     }
 
-    public static void showError(String message){
+    public void showError(String message){
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR,message, ButtonType.OK);
             alert.show();});
     }
 
-    public static void showInfo(String message){
+    public void showInfo(String message){
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION,message, ButtonType.OK);
             alert.show();});
