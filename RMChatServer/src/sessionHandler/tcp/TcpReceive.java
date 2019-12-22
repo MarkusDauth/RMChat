@@ -1,15 +1,14 @@
-package network.tcp;
+package sessionHandler.tcp;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 public class TcpReceive {
     InputStream in;
-    //TODO not sure if needed
-    int offset, readBytes, currentLength, length;
     byte[] buffer;
     ByteBuffer bbuf;
     int bufferLength = 256;
+    int readPosition = 0;
 
     public TcpReceive(InputStream in) {
         this.in = in;
@@ -38,10 +37,9 @@ public class TcpReceive {
     public String readString() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        int i = 0;
-        while ((char) buffer[i] != '\0') {
-            stringBuilder.append((char) buffer[i]);
-            i++;
+        while ((char) buffer[readPosition] != '\0') {
+            stringBuilder.append((char) buffer[readPosition]);
+            readPosition++;
         }
 
         return stringBuilder.toString();

@@ -1,13 +1,14 @@
-import network.NetworkController;
+import database.DatabaseInterface;
+import database.TextfileDatabase;
+import sessionHandler.NetworkController;
 import properties.Properties;
 
-import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class Main {
-    private static Logger logger;
+    private static Logger logger = Logger.getLogger("logger");
     private static FileHandler logFileHandler;
 
     private static Properties properties;
@@ -15,16 +16,17 @@ public class Main {
     private static NetworkController networkController;
 
     //TODO: better exception
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         configureLogger();
         properties = new Properties();
+        DatabaseInterface databaseInterface = new TextfileDatabase();
 
-        networkController = new NetworkController(logger, properties);
-        networkController.tcpTest();
+        networkController = new NetworkController(logger, properties, databaseInterface);
+        networkController.start();
     }
 
     private static void configureLogger() {
-        logger = Logger.getLogger("logger");
+
 
         try {
             logFileHandler = new FileHandler("logs.log",true);

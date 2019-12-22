@@ -1,28 +1,30 @@
-package network;
+package sessionHandler;
 
-import network.tcp.TcpReceive;
-import network.tcp.TcpSend;
+import database.DatabaseInterface;
 import properties.Properties;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.logging.Logger;
 
 public class NetworkController {
     private Properties properties;
-    private Logger logger;
+    private static Logger logger = Logger.getLogger("logger");
 
-    public NetworkController(Logger logger, Properties properties) {
+    public NetworkController(Properties properties) {
         this.properties = properties;
-        this.logger = logger;
     }
 
-    //TODO Rename test method
-    public void tcpTest() throws IOException {
+    public void start() {
         int serverPort = properties.getInt("server.port");
-        ServerSocket serverSocket = new ServerSocket(serverPort);
+
+        ServerSocket serverSocket = null;
+        try {
+            serverSocket = new ServerSocket(serverPort);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         while (true) {
             Socket socket = null;
@@ -35,16 +37,11 @@ public class NetworkController {
                 InputStream inputStream = socket.getInputStream();
 
                 //New Thread
-                Runnable runnable  = new ClientHandler(socket, outputStream, inputStream, logger);
+                Runnable runnable  = new ClientHandler(socket, outputStream, inputStream);
                 Thread thread = new Thread(runnable);
                 thread.run();
-
-            } catch (SocketException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                socket.close();
             }
         }
     }

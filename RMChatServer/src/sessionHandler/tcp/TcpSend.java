@@ -1,4 +1,4 @@
-package network.tcp;
+package sessionHandler.tcp;
 
 import java.io.IOException;
 import java.io.OutputStream;

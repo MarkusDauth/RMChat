@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
+/**
+ * Same Code for server
+ */
 public class TcpSend {
     OutputStream out = null;
     int bufferLength = 256;

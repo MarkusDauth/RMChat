@@ -3,6 +3,9 @@ package controller.tcp;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+/**
+ * Same Code for server
+ */
 public class TcpReceive {
     InputStream in;
 
