@@ -1,9 +1,8 @@
-package sessionHandler.tcp;
+package controller.tcp;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-
 
 /**
  * Same Code for server and client
@@ -46,7 +45,6 @@ public class TcpReceive {
         while ((char) buffer[readPosition] != '\0') {
             stringBuilder.append((char) buffer[readPosition]);
             readPosition++;
-            System.out.println(readPosition + " "+ (char) buffer[readPosition]);
         }
         readPosition++;
         return stringBuilder.toString();

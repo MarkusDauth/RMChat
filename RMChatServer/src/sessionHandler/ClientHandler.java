@@ -36,7 +36,7 @@ public class ClientHandler implements Runnable {
                 }
                 socket.close(); //Can't be in finally block, because of exception
                 logger.info("Socket closed. Port: "+socket);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 logger.severe(e.getMessage());
             }
         }

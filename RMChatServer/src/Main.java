@@ -1,6 +1,14 @@
+import database.DatabaseInterface;
+import database.TextfileDatabase;
+import database.User;
 import sessionHandler.NetworkController;
 import properties.Properties;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -15,6 +23,7 @@ public class Main {
 
     //TODO: better exception
     public static void main(String[] args) {
+        test();
         configureLogger();
         properties = new Properties();
 
@@ -32,5 +41,11 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    //TODO Remove
+    private static void test(){
+
+
     }
 }

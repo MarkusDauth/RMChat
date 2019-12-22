@@ -16,22 +16,46 @@ public class Registration {
     public static void registerUser(TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
         String username = tcpReceive.readNextString();
         String password = tcpReceive.readNextString();
-        logger.info("Registration: " + username + password);
-        //database.registerUser();
+        logger.info("Registration: " + username);
 
-        tcpSend.add("OK");
-        tcpSend.send();
+        if(! validUsername(username)){
+            tcpSend.sendError("InvalidUsername");
+            logger.info("InvalidUsername");
+        }
+        else if(! validPassword(password)) {
+            tcpSend.sendError("InvalidPassword");
+            logger.info("InvalidPassword");
+        }
+        else if( database.usernameIsPresent(username)) {
+            tcpSend.sendError("UsernameTaken");
+            logger.info("UsernameTaken");
+        }
+
+        else if (database.registerUser(username, password)) {
+            tcpSend.add("OKREG");
+            tcpSend.send();
+            logger.info("OKREG");
+
+        } else {
+            tcpSend.sendError("Unexpected");
+            logger.info("Unexpected");
+        }
     }
 
-    private static boolean validatePassword(String password){
-        if(password.length() < Properties.getInt("password.minLength"))
+    private static boolean validPassword(String password) {
+        if (password.length() < Properties.getInt("password.minLength"))
             return false;
-        if(password.length() > Properties.getInt("password.maxLength"))
+        else if (password.length() > Properties.getInt("password.maxLength"))
             return false;
         return true;
     }
 
-    private boolean validateUsername(String username){
-        return false;
+    private static boolean validUsername(String username) {
+        if (username.length() < Properties.getInt("username.minLength"))
+            return false;
+        else if (username.length() > Properties.getInt("username.maxLength"))
+            return false;
+
+        return true;
     }
 }
