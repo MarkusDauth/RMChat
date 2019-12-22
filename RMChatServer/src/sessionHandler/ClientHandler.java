@@ -47,7 +47,6 @@ public class ClientHandler implements Runnable {
 
     //TODO implement
     private void handleLogin() throws IOException {
-
         tcpSend.add("OK");
         tcpSend.send();
     }

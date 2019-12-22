@@ -2,6 +2,7 @@ package sessionHandler;
 
 import database.DatabaseInterface;
 import database.TextfileDatabase;
+import properties.Properties;
 import sessionHandler.tcp.TcpReceive;
 import sessionHandler.tcp.TcpSend;
 
@@ -20,5 +21,13 @@ public class Registration {
 
         tcpSend.add("OK");
         tcpSend.send();
+    }
+
+    private boolean checkPassword(String password){
+        if(password.length() < Properties.getInt("username.maxLength"))
+    }
+
+    private boolean checkUsername(String username){
+
     }
 }
