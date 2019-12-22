@@ -1,5 +1,7 @@
 package sessionHandler.tcp;
 
+import properties.Properties;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -8,14 +10,14 @@ import java.nio.ByteBuffer;
  * Same Code for server and client
  */
 public class TcpReceive {
-    private InputStream in;
-    private byte[] buffer;
-    private ByteBuffer bbuf;
-    private int bufferLength = 256;
+    private final InputStream in;
+    private final byte[] buffer;
+    private final ByteBuffer bbuf;
     private int readPosition = 0;
 
     public TcpReceive(InputStream in) {
         this.in = in;
+        int bufferLength = Properties.getInt("tcp.byteBufferLength");
         buffer = new byte[bufferLength];
         bbuf = ByteBuffer.wrap(buffer);
     }
@@ -23,8 +25,6 @@ public class TcpReceive {
     /**
      * Loads entire TCP message into ByteBuffer.
      * Read the content with the read methods
-     *
-     * @throws Exception
      */
     public void receive() throws IOException {
         int readbytes = in.read(buffer);
@@ -35,9 +35,7 @@ public class TcpReceive {
     }
 
     /**
-     * Read next String from bbuf
-     *
-     * @return
+     * Read next String from ByteBuffer
      */
     public String readNextString() {
         StringBuilder stringBuilder = new StringBuilder();

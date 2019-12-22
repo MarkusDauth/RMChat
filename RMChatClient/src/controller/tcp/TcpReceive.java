@@ -35,7 +35,7 @@ public class TcpReceive {
     }
 
     /**
-     * Read next String from bbuf
+     * Read next String from ByteBuffer
      *
      * @return
      */

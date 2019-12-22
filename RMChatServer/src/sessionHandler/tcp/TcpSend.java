@@ -1,5 +1,7 @@
 package sessionHandler.tcp;
 
+import properties.Properties;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
@@ -8,15 +10,14 @@ import java.nio.ByteBuffer;
  * Same code for client and server
  */
 public class TcpSend {
-    private OutputStream out;
-    private final int bufferLength = 256;
-    private byte[] buffer;
-    private ByteBuffer bbuf;
+    private final OutputStream out;
+    private final ByteBuffer bbuf;
 
 
     public TcpSend(OutputStream out) {
         this.out = out;
-        buffer = new byte[bufferLength];
+        int bufferLength = Properties.getInt("tcp.byteBufferLength");
+        byte[] buffer = new byte[bufferLength];
         bbuf = ByteBuffer.wrap(buffer);
     }
 

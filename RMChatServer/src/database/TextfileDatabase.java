@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class TextfileDatabase implements DatabaseInterface {
-    private static TextfileDatabase instance = new TextfileDatabase();
-    private static Logger logger = Logger.getLogger("logger");
+    private static final TextfileDatabase instance = new TextfileDatabase();
+    private static final Logger logger = Logger.getLogger("logger");
 
     private List<User> users = new LinkedList<>();
 
@@ -17,7 +17,7 @@ public class TextfileDatabase implements DatabaseInterface {
 
     private TextfileDatabase(){
         load();
-    };
+    }
 
     @Override
     public synchronized boolean registerUser(String username, String password) {
@@ -28,7 +28,7 @@ public class TextfileDatabase implements DatabaseInterface {
 
     @Override
     public boolean usernameIsPresent(String username) {
-        return users.stream().filter(u -> u.getUsername().equals(username)).findFirst().isPresent();
+        return users.stream().anyMatch(u -> u.getUsername().equals(username));
     }
 
     private synchronized boolean save(){
@@ -46,17 +46,16 @@ public class TextfileDatabase implements DatabaseInterface {
         }
     }
 
-    private synchronized boolean load(){
+    @SuppressWarnings("unchecked")
+    private synchronized void load(){
         try (ObjectInputStream in = new ObjectInputStream(
                 new BufferedInputStream(new FileInputStream("users.ser"))) )
         {
             users = (List<User>) in.readObject();
-            return true;
         }
         catch (IOException | ClassNotFoundException e)
         {
             logger.severe(e.getMessage());
-            return false;
         }
     }
 }

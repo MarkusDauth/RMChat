@@ -1,34 +1,22 @@
-import database.DatabaseInterface;
-import database.TextfileDatabase;
-import database.User;
+
 import sessionHandler.NetworkController;
 import properties.Properties;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-public class Main {
-    private static Logger logger = Logger.getLogger("logger");
+class Main {
+    private static final Logger logger = Logger.getLogger("logger");
     private static FileHandler logFileHandler;
-
-    private static Properties properties;
-
-    private static NetworkController networkController;
 
     //TODO: better exception
     public static void main(String[] args) {
-        test();
         configureLogger();
-        properties = new Properties();
 
-        networkController = new NetworkController();
+        NetworkController networkController = new NetworkController();
         networkController.start();
+        logFileHandler.close();
     }
 
     private static void configureLogger() {
@@ -43,9 +31,4 @@ public class Main {
         }
     }
 
-    //TODO Remove
-    private static void test(){
-
-
-    }
 }

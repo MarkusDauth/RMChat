@@ -2,7 +2,7 @@ package database;
 
 import java.io.Serializable;
 
-public class User implements Serializable {
+class User implements Serializable {
     private static final long serialVersionUID = 3366046728803888722L;
     private String username;
     private String password;

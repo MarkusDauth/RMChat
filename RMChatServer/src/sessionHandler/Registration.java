@@ -9,9 +9,9 @@ import sessionHandler.tcp.TcpSend;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public class Registration {
-    private static Logger logger = Logger.getLogger("logger");
-    private static DatabaseInterface database = TextfileDatabase.getInstance();
+class Registration {
+    private static final Logger logger = Logger.getLogger("logger");
+    private static final DatabaseInterface database = TextfileDatabase.getInstance();
 
     public static void registerUser(TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
         String username = tcpReceive.readNextString();
@@ -45,17 +45,13 @@ public class Registration {
     private static boolean validPassword(String password) {
         if (password.length() < Properties.getInt("password.minLength"))
             return false;
-        else if (password.length() > Properties.getInt("password.maxLength"))
-            return false;
-        return true;
+        else return password.length() <= Properties.getInt("password.maxLength");
     }
 
     private static boolean validUsername(String username) {
         if (username.length() < Properties.getInt("username.minLength"))
             return false;
-        else if (username.length() > Properties.getInt("username.maxLength"))
-            return false;
+        else return username.length() <= Properties.getInt("username.maxLength");
 
-        return true;
     }
 }

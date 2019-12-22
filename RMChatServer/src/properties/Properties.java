@@ -4,12 +4,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
- * Klasse für Zugriff auf config.properties
- * Beispiel aufruf:
+ * Class for config.properties
+ * Example usage:
  * int length = Properties.getInt("username.maxLength");
  */
 public class Properties {
-    private static java.util.Properties properties = new java.util.Properties();
+    private static final java.util.Properties properties = new java.util.Properties();
 
     static {
         try {

@@ -8,8 +8,9 @@ import java.net.Socket;
 import java.util.logging.Logger;
 
 public class NetworkController {
-    private static Logger logger = Logger.getLogger("logger");
+    private static final Logger logger = Logger.getLogger("logger");
 
+    @SuppressWarnings("InfiniteLoopStatement")
     public void start() {
         int serverPort = Properties.getInt("server.port");
 
@@ -21,8 +22,7 @@ public class NetworkController {
         }
 
         while (true) {
-            Socket socket = null;
-
+            Socket socket;
             try {
                 socket = serverSocket.accept();
                 logger.info("A new client is connected: " + socket);
