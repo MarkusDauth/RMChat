@@ -1,5 +1,3 @@
-import database.DatabaseInterface;
-import database.TextfileDatabase;
 import sessionHandler.NetworkController;
 import properties.Properties;
 
@@ -19,15 +17,12 @@ public class Main {
     public static void main(String[] args) {
         configureLogger();
         properties = new Properties();
-        DatabaseInterface databaseInterface = new TextfileDatabase();
 
-        networkController = new NetworkController(logger, properties, databaseInterface);
+        networkController = new NetworkController();
         networkController.start();
     }
 
     private static void configureLogger() {
-
-
         try {
             logFileHandler = new FileHandler("logs.log",true);
             logger.addHandler(logFileHandler);

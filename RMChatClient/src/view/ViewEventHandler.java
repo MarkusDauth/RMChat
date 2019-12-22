@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class ViewEventHandler {
 
     private static NetworkController networkController;
-    private static Logger logger;
+    private static Logger logger = Logger.getLogger("logger");
 
     private boolean isLoginStageShowing = false;
     private Stage registerStage = new Stage();
@@ -28,9 +28,6 @@ public class ViewEventHandler {
         ViewEventHandler.networkController = networkController;
     }
 
-    public static void setLogger(Logger logger) {
-        ViewEventHandler.logger = logger;
-    }
 
     public void setPrimarystage(Stage primarystage) {
         this.primarystage = primarystage;

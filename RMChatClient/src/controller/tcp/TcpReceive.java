@@ -1,67 +1,54 @@
-package controller.tcp;
+package sessionHandler.tcp;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+
 /**
- * Same Code for server
+ * Same Code for server and client
  */
 public class TcpReceive {
-    InputStream in;
+    private InputStream in;
+    private byte[] buffer;
+    private ByteBuffer bbuf;
+    private int bufferLength = 256;
+    private int readPosition = 0;
 
-    //TODO not sure if needed
-    //int offset, readBytes, currentLength, length;
-
-    byte [] buffer;
-    ByteBuffer bbuf;
-    int bufferLength = 256;
-
-    public TcpReceive (InputStream in) {
+    public TcpReceive(InputStream in) {
         this.in = in;
-        buffer = new byte [bufferLength];
+        buffer = new byte[bufferLength];
         bbuf = ByteBuffer.wrap(buffer);
     }
 
     /**
-     * Loads entire TCP message into bbuf.
+     * Loads entire TCP message into ByteBuffer.
      * Read the content with the read methods
+     *
      * @throws Exception
      */
-    public void receive() throws Exception {
+    public void receive() throws IOException {
         int readbytes = in.read(buffer);
-        for(int i = 0; i < readbytes;i++){
+        for (int i = 0; i < readbytes; i++) {
             bbuf.put(buffer[i]);
         }
+        readPosition = 0;
     }
 
     /**
      * Read next String from bbuf
+     *
      * @return
      */
-    public String readString(){
+    public String readNextString() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        int i=0;
-        while( (char)buffer[i] != '\0' ){
-            stringBuilder.append((char)buffer[i]);
-            i++;
+        while ((char) buffer[readPosition] != '\0') {
+            stringBuilder.append((char) buffer[readPosition]);
+            readPosition++;
+            System.out.println(readPosition + " "+ (char) buffer[readPosition]);
         }
-
-        return stringBuilder.toString();
-    }
-
-    public String receiveString() throws Exception {
-        int readbytes = in.read(buffer);
-        StringBuilder stringBuilder = new StringBuilder();
-
-        //TODO instead of checking if byte equals \0 use readbytes
-        for(int i = 0; i < bufferLength;i++){
-            if((char) buffer[i]!='\0')
-                stringBuilder.append((char)buffer[i]);
-            else{
-                break;
-            }
-        }
+        readPosition++;
         return stringBuilder.toString();
     }
 }

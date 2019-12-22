@@ -6,7 +6,7 @@ import java.io.IOException;
 /**
  * Klasse für Zugriff auf config.properties
  * Beispiel aufruf:
- * int length = properties.getInt("username.maxLength");
+ * int length = Properties.getInt("username.maxLength");
  */
 public class Properties {
     private static java.util.Properties properties = new java.util.Properties();

@@ -14,13 +14,13 @@ import java.util.logging.SimpleFormatter;
 
 public class Main extends Application {
     private static NetworkController networkController;
-    private static Logger logger;
+    private static Logger logger = Logger.getLogger("logger");
     private static FileHandler logFileHandler;
-    private static Properties properties;
     private FXMLLoader fxmlLoader;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        configureLogger();
 
         fxmlLoader = new FXMLLoader(getClass().getResource("view/gui/login.fxml"));
         Parent root = fxmlLoader.load();
@@ -31,13 +31,10 @@ public class Main extends Application {
         primaryStage.show();
 
         //MVC Setup
-        configureLogger();
         ViewEventHandler viewEventHandler =fxmlLoader.getController();
         viewEventHandler.setPrimarystage(primaryStage);
-        ViewEventHandler.setLogger(logger);
 
-        properties = new Properties();
-        networkController = new NetworkController(logger, properties);
+        networkController = new NetworkController();
 
         networkController.setViewEventHandler(viewEventHandler);
         ViewEventHandler.setNetworkController(networkController);
@@ -54,8 +51,6 @@ public class Main extends Application {
     }
 
     private static void configureLogger() {
-        logger = Logger.getLogger("logger");
-
         try {
             logFileHandler = new FileHandler("logs.log",true);
             logger.addHandler(logFileHandler);

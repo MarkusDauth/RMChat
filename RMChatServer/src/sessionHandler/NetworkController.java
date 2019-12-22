@@ -1,6 +1,5 @@
 package sessionHandler;
 
-import database.DatabaseInterface;
 import properties.Properties;
 
 import java.io.*;
@@ -9,15 +8,10 @@ import java.net.Socket;
 import java.util.logging.Logger;
 
 public class NetworkController {
-    private Properties properties;
     private static Logger logger = Logger.getLogger("logger");
 
-    public NetworkController(Properties properties) {
-        this.properties = properties;
-    }
-
     public void start() {
-        int serverPort = properties.getInt("server.port");
+        int serverPort = Properties.getInt("server.port");
 
         ServerSocket serverSocket = null;
         try {

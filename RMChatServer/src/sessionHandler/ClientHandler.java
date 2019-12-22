@@ -1,6 +1,5 @@
 package sessionHandler;
 
-import database.DatabaseInterface;
 import sessionHandler.tcp.TcpReceive;
 import sessionHandler.tcp.TcpSend;
 
@@ -14,13 +13,10 @@ public class ClientHandler implements Runnable {
     private TcpSend tcpSend;
     private TcpReceive tcpReceive;
 
-    public ClientHandler(Socket socket,
-                         OutputStream outputStream,
-                         InputStream inputStream
-    ) {
+    public ClientHandler(Socket socket, OutputStream outputStream,InputStream inputStream) {
         this.socket = socket;
         tcpSend = new TcpSend(outputStream);
-        tcpReceive = new TcpReceive( inputStream);
+        tcpReceive = new TcpReceive(inputStream);
     }
 
     @Override
@@ -28,7 +24,7 @@ public class ClientHandler implements Runnable {
         {
             try {
                 tcpReceive.receive();
-                String code = tcpReceive.readString();
+                String code = tcpReceive.readNextString();
                 logger.info("New Client message. Code: " + code);
                 switch (code) {
                     case "LOGIN":
@@ -39,6 +35,7 @@ public class ClientHandler implements Runnable {
                         break;
                 }
                 socket.close(); //Can't be in finally block, because of exception
+                logger.info("Socket closed. Port: "+socket);
             } catch (Exception e) {
                 logger.severe(e.getMessage());
             }

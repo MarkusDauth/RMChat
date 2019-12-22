@@ -11,23 +11,27 @@ import java.util.logging.Logger;
 
 public class Registration {
     private static Logger logger = Logger.getLogger("logger");
-    private static DatabaseInterface database = new TextfileDatabase();
+    private static DatabaseInterface database = TextfileDatabase.getInstance();
 
     public static void registerUser(TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
-        String username = tcpReceive.readString();
-        String password = tcpReceive.readString();
-        logger.info("Registration: " + username);
-        database.registerUser(username, password);
+        String username = tcpReceive.readNextString();
+        String password = tcpReceive.readNextString();
+        logger.info("Registration: " + username + password);
+        //database.registerUser();
 
         tcpSend.add("OK");
         tcpSend.send();
     }
 
-    private boolean checkPassword(String password){
-        if(password.length() < Properties.getInt("username.maxLength"))
+    private static boolean validatePassword(String password){
+        if(password.length() < Properties.getInt("password.minLength"))
+            return false;
+        if(password.length() > Properties.getInt("password.maxLength"))
+            return false;
+        return true;
     }
 
-    private boolean checkUsername(String username){
-
+    private boolean validateUsername(String username){
+        return false;
     }
 }
