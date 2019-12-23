@@ -28,7 +28,7 @@ class ClientHandler implements Runnable {
                 logger.info("New Client message. Code: " + code);
                 switch (code) {
                     case "LOGIN":
-                        SessionHandler.login(tcpSend, tcpReceive);
+                        SessionHandler.login(socket, tcpSend, tcpReceive);
                         break;
                     case "REGISTER":
                         Registration.registerUser(tcpSend, tcpReceive);

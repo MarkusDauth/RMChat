@@ -6,6 +6,7 @@ import sessionHandler.tcp.TcpReceive;
 import sessionHandler.tcp.TcpSend;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.security.SecureRandom;
 import java.util.logging.Logger;
 
@@ -13,19 +14,21 @@ public class UserSession {
     private static final DatabaseInterface database = TextfileDatabase.getInstance();
     private static final Logger logger = Logger.getLogger("logger");
 
+    private Socket socket;
     private TcpSend tcpSend;
     private TcpReceive tcpReceive;
 
     private String username;
     private String password;
 
-    private long sessionId;
+    private String sessionId;
 
-    public long getSessionId() {
-        return sessionId;
+    public String getUsername() {
+        return username;
     }
 
-    public UserSession(TcpSend tcpSend, TcpReceive tcpReceive, String username, String password) {
+    public UserSession(Socket socket, TcpSend tcpSend, TcpReceive tcpReceive) {
+        this.socket = socket;
         this.tcpSend = tcpSend;
         this.tcpReceive = tcpReceive;
         this.username = username;
@@ -47,16 +50,28 @@ public class UserSession {
 
 
     public boolean setupSession() throws IOException {
+        username = tcpReceive.readNextString();
+        password = tcpReceive.readNextString();
+        logger.info("Trying to login: " + username);
+
         if (!validateCredentials()) {
             return false;
         }
         createSessionId();
         return true;
-
     }
 
     private void createSessionId(){
         SecureRandom rand = new SecureRandom();
-        sessionId = rand.nextInt(1000);
+        StringBuilder sb = new StringBuilder(username);
+        sb.append(rand.nextInt(1000));
+        sessionId = sb.toString();
+    }
+
+    public void finishLogin() throws IOException {
+        tcpSend.add("OKLOG");
+        tcpSend.add(sessionId);
+        tcpSend.send();
+        logger.info("Successfull Login: " + username);
     }
 }

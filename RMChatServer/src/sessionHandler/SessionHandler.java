@@ -6,6 +6,7 @@ import sessionHandler.tcp.TcpReceive;
 import sessionHandler.tcp.TcpSend;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -20,26 +21,25 @@ class SessionHandler {
 
     private static final List<UserSession> sessions = new LinkedList<>();
 
-
-
     /**
      * Checks if login credentials are correct and creates new session
+     *
+     * @param socket
      * @param tcpSend
      * @param tcpReceive
      * @throws IOException
      */
-    public static void login(TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
-        String username = tcpReceive.readNextString();
-        String password = tcpReceive.readNextString();
-        logger.info("Trying to login: " + username);
+    public static void login(Socket socket, TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
+        UserSession session = new UserSession(socket, tcpSend, tcpReceive);
 
-        UserSession session = new UserSession(tcpSend, tcpReceive, username, password);
-        if(session.setupSession()){
+        if(!loggedIn(session) && session.setupSession()){
             sessions.add(session);
-            tcpSend.add("OKLOG");
-            tcpSend.add(Long.toString(session.getSessionId()));
-            tcpSend.send();
-            logger.info("Successfull Login: " + username +". Current Logged in Users: "+sessions.size());
+            session.finishLogin();
+            logger.info("Current Logged in Users: "+ sessions.size());
         }
+    }
+
+    private static boolean loggedIn(UserSession session) {
+        return sessions.stream().filter(s -> s.getUsername().equals(session.getUsername())).findFirst().isPresent();
     }
 }
