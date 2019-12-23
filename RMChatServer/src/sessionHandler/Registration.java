@@ -52,6 +52,5 @@ class Registration {
         if (username.length() < Properties.getInt("username.minLength"))
             return false;
         else return username.length() <= Properties.getInt("username.maxLength");
-
     }
 }

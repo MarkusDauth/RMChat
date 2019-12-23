@@ -12,14 +12,7 @@ public class NetworkController {
 
     @SuppressWarnings("InfiniteLoopStatement")
     public void start() {
-        int serverPort = Properties.getInt("server.port");
-
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(serverPort);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ServerSocket serverSocket = createServerSocket();
 
         while (true) {
             Socket socket;
@@ -38,5 +31,17 @@ public class NetworkController {
                 e.printStackTrace();
             }
         }
+    }
+
+    private ServerSocket createServerSocket() {
+        int serverPort = Properties.getInt("server.port");
+
+        ServerSocket serverSocket = null;
+        try {
+            serverSocket = new ServerSocket(serverPort);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return serverSocket;
     }
 }
