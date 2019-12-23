@@ -42,7 +42,6 @@ public class LoginEventHandler {
 
     @FXML
     private void handleLoginButton() {
-        logger.info("handleLoginButton");
         LoginData loginData = new LoginData();
         loginData.setUsername(usernameField.getText());
         loginData.setPassword(passwordField.getText());

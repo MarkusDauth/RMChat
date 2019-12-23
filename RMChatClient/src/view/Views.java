@@ -1,6 +1,7 @@
 package view;
 
 import controller.NetworkController;
+import controller.Properties;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +18,7 @@ import java.util.logging.SimpleFormatter;
 
 public class Views extends Application {
 
+    public static final String LANGUAGE = "EN.";
     private static Logger logger = Logger.getLogger("logger");
     private static FileHandler logFileHandler;
 
@@ -97,15 +99,24 @@ public class Views extends Application {
         }
     }
 
-    public static void showError(String message){
+    public void showError(String message){
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR,message, ButtonType.OK);
             alert.show();});
     }
 
-    public static void showInfo(String message){
+    public void showInfo(String message){
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION,message, ButtonType.OK);
             alert.show();});
+    }
+
+    public void showMessage(String msg) {
+        String message = Properties.getString(LANGUAGE +msg);
+        if(msg.startsWith("OK")) {
+            showInfo(message);
+        }
+        else
+            showError(message);
     }
 }

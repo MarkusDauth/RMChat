@@ -4,7 +4,6 @@ import controller.tcp.TcpReceive;
 import controller.tcp.TcpSend;
 import model.LoginData;
 import model.NewUser;
-import view.LoginEventHandler;
 import view.Views;
 
 import java.io.IOException;
@@ -41,15 +40,11 @@ public class NetworkController {
 
             logger.info("Recieved message: "+result);
 
-            //TODO add logic here
-            if(result.equals("OK")){
-                Views.showInfo("Account successfully created");
-            }
-            else{
-                Views.showError("Account not created");
-            }
+            views.showMessage(tcpReceive.readNextString());
+
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.severe(e.getMessage());
+            views.showMessage("Unexpected");
         }
     }
 
@@ -73,25 +68,19 @@ public class NetworkController {
             String result = tcpReceive.readNextString();
 
             logger.info("Recieved message: "+result);
-
-            //TODO add logic here
-            if(result.equals("OK")){
-                Views.showInfo("Account successfully created");
-            }
-            else{
-                Views.showError("Account not created");
-            }
+            //views.showMessage(tcpReceive.readNextString());
         } catch (Exception e) {
-            e.printStackTrace();
+            views.showMessage("Unexpected");
         }
     }
 
     private Socket createSocket() throws IOException {
-        //TODO Change to server
-        InetAddress ip = InetAddress.getByName("localhost");
+
+        String serverIP = Properties.getString("server.ip");
+        InetAddress ip = InetAddress.getByName(serverIP);
         int serverPort = Properties.getInt("server.port");
         Socket socket = new Socket(ip, serverPort);
-        logger.info("A new client is connected : " + socket);
+        logger.info("Connected to Server: " + socket);
         return socket;
     }
 }
