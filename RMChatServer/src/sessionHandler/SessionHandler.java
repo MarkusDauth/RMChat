@@ -19,6 +19,9 @@ class SessionHandler {
     private static final DatabaseInterface database = TextfileDatabase.getInstance();
     private static final Logger logger = Logger.getLogger("logger");
 
+    /**
+     * Has all UserSession objects, that are logged in
+     */
     private static final List<UserSession> sessions = new LinkedList<>();
 
     /**
@@ -32,14 +35,24 @@ class SessionHandler {
     public static void login(Socket socket, TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
         UserSession session = new UserSession(socket, tcpSend, tcpReceive);
 
-        if(!loggedIn(session) && session.setupSession()){
+        if(!isLoggedIn(session, tcpSend) && session.setupSession()){
             sessions.add(session);
             session.finishLogin();
             logger.info("Current Logged in Users: "+ sessions.size());
         }
     }
 
-    private static boolean loggedIn(UserSession session) {
-        return sessions.stream().filter(s -> s.getUsername().equals(session.getUsername())).findFirst().isPresent();
+    private static boolean isLoggedIn(UserSession session, TcpSend tcpSend) throws IOException {
+        boolean loggedIn = sessions.stream().filter(s -> s.getUsername().equals(session.getUsername())).findFirst().isPresent();
+        if(loggedIn) {
+            tcpSend.sendError("AlreadyLoggedIn");
+            logger.info("User " + session.getUsername() + " already logged in ");
+            return true;
+        }
+        return false;
+    }
+
+    public static void checkAlives(){
+
     }
 }

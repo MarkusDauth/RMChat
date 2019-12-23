@@ -12,6 +12,8 @@ public class NetworkController {
 
     @SuppressWarnings("InfiniteLoopStatement")
     public void start() {
+        runKeepAliveCycle();
+
         ServerSocket serverSocket = createServerSocket();
 
         while (true) {
@@ -26,11 +28,17 @@ public class NetworkController {
                 //New Thread
                 Runnable runnable  = new ClientHandler(socket, outputStream, inputStream);
                 Thread thread = new Thread(runnable);
-                thread.run();
+                thread.start();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void runKeepAliveCycle() {
+        KeepAliveCycle cycle = new KeepAliveCycle();
+        Thread thread = new Thread(cycle);
+        thread.start();
     }
 
     private ServerSocket createServerSocket() {
