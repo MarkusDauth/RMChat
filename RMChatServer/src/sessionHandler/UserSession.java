@@ -6,6 +6,7 @@ import sessionHandler.tcp.TcpReceive;
 import sessionHandler.tcp.TcpSend;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.logging.Logger;
 
 public class UserSession {
@@ -18,35 +19,16 @@ public class UserSession {
     private String username;
     private String password;
 
-    public TcpSend getTcpSend() {
-        return tcpSend;
+    private long sessionId;
+
+    public long getSessionId() {
+        return sessionId;
     }
 
-    public void setTcpSend(TcpSend tcpSend) {
+    public UserSession(TcpSend tcpSend, TcpReceive tcpReceive, String username, String password) {
         this.tcpSend = tcpSend;
-    }
-
-    public TcpReceive getTcpReceive() {
-        return tcpReceive;
-    }
-
-    public void setTcpReceive(TcpReceive tcpReceive) {
         this.tcpReceive = tcpReceive;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
         this.password = password;
     }
 
@@ -61,5 +43,20 @@ public class UserSession {
             return false;
         }
         return true;
+    }
+
+
+    public boolean setupSession() throws IOException {
+        if (!validateCredentials()) {
+            return false;
+        }
+        createSessionId();
+        return true;
+
+    }
+
+    private void createSessionId(){
+        SecureRandom rand = new SecureRandom();
+        sessionId = rand.nextInt(1000);
     }
 }
