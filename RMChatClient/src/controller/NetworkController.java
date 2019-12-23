@@ -4,7 +4,8 @@ import controller.tcp.TcpReceive;
 import controller.tcp.TcpSend;
 import model.LoginData;
 import model.NewUser;
-import view.ViewEventHandler;
+import view.LoginEventHandler;
+import view.Views;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -13,13 +14,12 @@ import java.util.logging.Logger;
 
 public class NetworkController {
     private static Logger logger = Logger.getLogger("logger");
-    private ViewEventHandler viewEventHandler;
+    private Views views;
 
-
-    //TODO implement
-    public void setViewEventHandler(ViewEventHandler viewEventHandler) {
-        this.viewEventHandler = viewEventHandler;
+    public void setViews(Views views) {
+        this.views = views;
     }
+
     public void registerNewUser(NewUser newUser) {
         logger.info("Creating new user: " + newUser.getUsername());
 
@@ -43,10 +43,10 @@ public class NetworkController {
 
             //TODO add logic here
             if(result.equals("OK")){
-                viewEventHandler.showInfo("Account successfully created");
+                Views.showInfo("Account successfully created");
             }
             else{
-                viewEventHandler.showError("Account not created");
+                Views.showError("Account not created");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,10 +76,10 @@ public class NetworkController {
 
             //TODO add logic here
             if(result.equals("OK")){
-                viewEventHandler.showInfo("Account successfully created");
+                Views.showInfo("Account successfully created");
             }
             else{
-                viewEventHandler.showError("Account not created");
+                Views.showError("Account not created");
             }
         } catch (Exception e) {
             e.printStackTrace();
