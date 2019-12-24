@@ -18,7 +18,7 @@ import java.util.logging.SimpleFormatter;
 
 public class Views extends Application {
 
-    public static final String LANGUAGE = "EN.";
+    public static final String LANGUAGE = Properties.getString("LANGUAGE");
     private static Logger logger = Logger.getLogger("logger");
     private static FileHandler logFileHandler;
 
