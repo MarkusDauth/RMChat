@@ -7,6 +7,7 @@ import sessionHandler.tcp.TcpReceive;
 import sessionHandler.tcp.TcpSend;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.security.SecureRandom;
 import java.time.LocalTime;
@@ -19,15 +20,18 @@ public class UserSession {
     private static final DatabaseInterface database = TextfileDatabase.getInstance();
     private static final Logger logger = Logger.getLogger("logger");
 
-    private TcpSend tcpSend;
-    private TcpReceive tcpReceive;
-
     private String username;
     private String password;
 
     private String sessionId;
+    private InetAddress inetAddress;
 
     private LocalTime lastAliveDate;
+
+    public UserSession(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     public String getUsername() {
         return username;
@@ -37,13 +41,8 @@ public class UserSession {
         return sessionId;
     }
 
-
-
-    public UserSession(TcpSend tcpSend, TcpReceive tcpReceive) {
-        this.tcpSend = tcpSend;
-        this.tcpReceive = tcpReceive;
-        this.username = username;
-        this.password = password;
+    public UserSession(Socket socket) {
+        socket.getInetAddress();
     }
 
     public boolean validateCredentials() throws IOException {
@@ -61,10 +60,6 @@ public class UserSession {
 
 
     public boolean setupSession() throws IOException {
-        username = tcpReceive.readNextString();
-        password = tcpReceive.readNextString();
-        logger.info("Trying to login: " + username);
-
         if (!validateCredentials()) {
             return false;
         }
@@ -84,7 +79,7 @@ public class UserSession {
         sessionId = sb.toString();
     }
 
-    public void finishLogin() throws IOException {
+    public void finishLogin(TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
         tcpSend.add("OKLOG");
         tcpSend.add(sessionId);
         tcpSend.send();
