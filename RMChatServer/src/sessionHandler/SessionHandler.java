@@ -6,9 +6,9 @@ import sessionHandler.tcp.TcpReceive;
 import sessionHandler.tcp.TcpSend;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 
@@ -27,24 +27,23 @@ class SessionHandler {
     /**
      * Checks if login credentials are correct and creates new session
      *
-     * @param socket
      * @param tcpSend
      * @param tcpReceive
      * @throws IOException
      */
-    public static void login(Socket socket, TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
-        UserSession session = new UserSession(socket, tcpSend, tcpReceive);
+    public static void login(TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
+        UserSession session = new UserSession(tcpSend, tcpReceive);
 
-        if(!isLoggedIn(session, tcpSend) && session.setupSession()){
+        if (!isLoggedIn(session, tcpSend) && session.setupSession()) {
             sessions.add(session);
             session.finishLogin();
-            logger.info("Current Logged in Users: "+ sessions.size());
+            logger.info("Current Logged in Users: " + sessions.size());
         }
     }
 
     private static boolean isLoggedIn(UserSession session, TcpSend tcpSend) throws IOException {
         boolean loggedIn = sessions.stream().filter(s -> s.getUsername().equals(session.getUsername())).findFirst().isPresent();
-        if(loggedIn) {
+        if (loggedIn) {
             tcpSend.sendError("AlreadyLoggedIn");
             logger.info("User " + session.getUsername() + " already logged in ");
             return true;
@@ -52,7 +51,36 @@ class SessionHandler {
         return false;
     }
 
-    public static void checkAlives(){
+    public static void checkAlives() {
+        logger.info("Checking " + sessions.size() + " alive sessions");
+        for (int i = 0; i < sessions.size(); i++) {
+            UserSession session = sessions.get(i);
+            if (!session.isAlive()) {
+                sessions.remove(i);
+            }
+        }
+    }
 
+    /**
+     * Updates the session which sent an alive Message
+     *
+     * @param tcpSend
+     * @param tcpReceive
+     */
+    public static void updateSessionAlive(TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
+        String sessionId = tcpReceive.readNextString();
+
+        Optional<UserSession> session = sessions.stream().
+                filter(s -> s.getSessionId().equals(sessionId)).
+                findFirst();
+
+        if (session.isPresent()) {
+            logger.info("User "+ session.get().getUsername()+" is alive!");
+            tcpSend.add("OKALV");
+            tcpSend.send();
+        } else {
+            logger.info("User "+ session.get().getUsername()+" wants to be alive, but is not online");
+            tcpSend.sendError("UserNotLoggedIn");
+        }
     }
 }

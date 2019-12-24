@@ -2,19 +2,21 @@ package sessionHandler;
 
 import database.DatabaseInterface;
 import database.TextfileDatabase;
+import properties.Properties;
 import sessionHandler.tcp.TcpReceive;
 import sessionHandler.tcp.TcpSend;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.security.SecureRandom;
+import java.time.LocalTime;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import java.util.logging.Logger;
 
 public class UserSession {
     private static final DatabaseInterface database = TextfileDatabase.getInstance();
     private static final Logger logger = Logger.getLogger("logger");
 
-    private Socket socket;
     private TcpSend tcpSend;
     private TcpReceive tcpReceive;
 
@@ -23,12 +25,17 @@ public class UserSession {
 
     private String sessionId;
 
+    private LocalTime lastAliveDate;
+
     public String getUsername() {
         return username;
     }
 
-    public UserSession(Socket socket, TcpSend tcpSend, TcpReceive tcpReceive) {
-        this.socket = socket;
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public UserSession(TcpSend tcpSend, TcpReceive tcpReceive) {
         this.tcpSend = tcpSend;
         this.tcpReceive = tcpReceive;
         this.username = username;
@@ -58,7 +65,12 @@ public class UserSession {
             return false;
         }
         createSessionId();
+        updateLastAliveDate();
         return true;
+    }
+
+    private void updateLastAliveDate() {
+        lastAliveDate = LocalTime.now();
     }
 
     private void createSessionId(){
@@ -73,5 +85,16 @@ public class UserSession {
         tcpSend.add(sessionId);
         tcpSend.send();
         logger.info("Successfull Login: " + username);
+    }
+
+    /**
+     * Checks if last KeepAlive message is older than timeout timeframe
+     * @return
+     */
+    public boolean isAlive(){
+        int timeoutSeconds = Properties.getInt("tcp.clientSessionTimeout");
+        long timePassed = SECONDS.between(lastAliveDate,LocalTime.now());
+        logger.info(username + " last sign of life was "+timePassed+" seconds ago.");
+        return (timePassed < timeoutSeconds);
     }
 }
