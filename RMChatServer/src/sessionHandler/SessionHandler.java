@@ -76,6 +76,7 @@ class SessionHandler {
 
         if (session.isPresent()) {
             logger.info("User "+ session.get().getUsername()+" is alive!");
+            session.get().updateLastAliveDate();
             tcpSend.add("OKALV");
             tcpSend.send();
         } else {

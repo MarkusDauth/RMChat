@@ -69,7 +69,7 @@ public class UserSession {
         return true;
     }
 
-    private void updateLastAliveDate() {
+    public void updateLastAliveDate() {
         lastAliveDate = LocalTime.now();
     }
 
