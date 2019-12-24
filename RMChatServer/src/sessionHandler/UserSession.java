@@ -11,6 +11,8 @@ import java.net.Socket;
 import java.security.SecureRandom;
 import java.time.LocalTime;
 import static java.time.temporal.ChronoUnit.SECONDS;
+
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class UserSession {
@@ -34,6 +36,8 @@ public class UserSession {
     public String getSessionId() {
         return sessionId;
     }
+
+
 
     public UserSession(TcpSend tcpSend, TcpReceive tcpReceive) {
         this.tcpSend = tcpSend;
@@ -96,5 +100,34 @@ public class UserSession {
         long timePassed = SECONDS.between(lastAliveDate,LocalTime.now());
         logger.info(username + " last sign of life was "+timePassed+" seconds ago.");
         return (timePassed < timeoutSeconds);
+    }
+
+    /**
+     * This method is called in the object of the Chat Message Sender
+     * @param chatMessageRecipientSession
+     * @param message
+     * @throws IOException
+     */
+    public void forwardMessage(Optional<UserSession> chatMessageRecipientSession, String message) throws IOException {
+        if(chatMessageRecipientSession.isPresent()){
+            logger.info("Sending message from "+username+" to "+ chatMessageRecipientSession.get().getUsername());
+            TcpSend chatMessageRecipientSender = chatMessageRecipientSession.get().tcpSend;
+
+            //Send SENDMSG to Recipient
+            chatMessageRecipientSender.add("RECMSG");
+            //Send THIS sessions username, which is the SENDER of the chat message
+            chatMessageRecipientSender.add(this.username);
+            chatMessageRecipientSender.add(message);
+            chatMessageRecipientSender.send();
+        }
+        else{
+            logger.info("Recipient is offline");
+            tcpSend.sendError("RecipientNotLoggedIn");
+        }
+    }
+
+    public void sendOKSEN() throws IOException {
+        tcpSend.add("OKSEN");
+        tcpSend.send();
     }
 }

@@ -30,6 +30,12 @@ class ClientHandler implements Runnable {
                     case "ALIVE":
                         SessionHandler.updateSessionAlive(tcpSend, tcpReceive);
                         break;
+                    case "OKREC":
+                        SessionHandler.messageSuccessfullyReceived(tcpSend, tcpReceive);
+                        break;
+                    case "SENDMSG":
+                        SessionHandler.sendMessage(tcpSend, tcpReceive);
+                        break;
                     case "LOGIN":
                         SessionHandler.login(tcpSend, tcpReceive);
                         break;
