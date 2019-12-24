@@ -42,6 +42,9 @@ public class LoginTask implements Runnable {
             logger.info("Recieved message: "+result);
             if(result.equals("OKLOG")){
                 views.showIndexUI();
+                String sessionID = tcpReceive.readNextString();
+                logger.info("SessionID: "+sessionID);
+                new Thread(new KeepAliveTask(views,logger,sessionID)).start();
             }
             else{
                 views.showMessage(tcpReceive.readNextString());
