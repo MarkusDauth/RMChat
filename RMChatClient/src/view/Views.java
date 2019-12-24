@@ -129,21 +129,21 @@ public class Views extends Application {
         }
     }
 
-    public void showError(String message){
+    private void showError(String message){
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR,message, ButtonType.OK);
             alert.show();});
     }
 
-    public void showInfo(String message){
+    private void showInfo(String message){
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION,message, ButtonType.OK);
             alert.show();});
     }
 
-    public void showMessage(String msg) {
-        String message = Properties.getString(LANGUAGE +msg);
-        if(msg.startsWith("OK")) {
+    public void showMessage(String msgKey) {
+        String message = Properties.getString(LANGUAGE +msgKey);
+        if(msgKey.startsWith("OK")) {
             showInfo(message);
         }
         else
@@ -159,6 +159,12 @@ public class Views extends Application {
             } catch (IOException e) {
                 logger.info(e.getMessage());
             }
+        });
+    }
+    public void setIndexStatus(String statusKey){
+        Platform.runLater(() ->{
+            String status = Properties.getString(LANGUAGE+statusKey);
+            indexEventHandler.setStatusLabelText(status);
         });
     }
 }

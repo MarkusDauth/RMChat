@@ -18,6 +18,9 @@ public class IndexEventHandler {
     @FXML
     Label userNameLabel;
 
+    @FXML
+    Label statusLabel;
+
 
     public void setNetworkController(NetworkController networkController) {
         this.networkController = networkController;
@@ -36,5 +39,8 @@ public class IndexEventHandler {
         indexStage.setTitle("Index");
         indexStage.setScene(new Scene(root, 650, 400));
         indexStage.show();
+    }
+    void setStatusLabelText(String text){
+        statusLabel.setText(text);
     }
 }
