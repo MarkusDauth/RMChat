@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 public class IndexEventHandler {
@@ -13,6 +14,10 @@ public class IndexEventHandler {
     private Stage loginStage;
     private FXMLLoader indexFXMLLoader;
     private Stage indexStage = null;
+
+    @FXML
+    Label userNameLabel;
+
 
     public void setNetworkController(NetworkController networkController) {
         this.networkController = networkController;

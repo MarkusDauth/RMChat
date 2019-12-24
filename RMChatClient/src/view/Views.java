@@ -29,6 +29,10 @@ public class Views extends Application {
     private boolean registerStageIsInitialized = false;
     private boolean indexStageIsInitialized = false;
 
+    private LoginEventHandler loginEventHandler;
+    private RegisterEventHandler registerEventHandler;
+    private IndexEventHandler indexEventHandler;
+
     public static void launchApplication(String[] args) {
         launch(args);
     }
@@ -90,7 +94,7 @@ public class Views extends Application {
         loginStage.setTitle("RM-CHAT");
         loginStage.setScene(new Scene(loginRoot, 350, 350));
         loginStage.setOnCloseRequest( event -> System.exit(0));
-        LoginEventHandler loginEventHandler =loginFxmlLoader.getController();
+        loginEventHandler =loginFxmlLoader.getController();
         loginEventHandler.setNetworkController(networkController);
         loginEventHandler.setViews(this);
     }
@@ -100,7 +104,7 @@ public class Views extends Application {
         Parent loginRoot = registerFxmlLoader.load();
         registerStage.setTitle("RM-CHAT");
         registerStage.setScene(new Scene(loginRoot, 350, 333));
-        RegisterEventHandler registerEventHandler = registerFxmlLoader.getController();
+        registerEventHandler = registerFxmlLoader.getController();
         registerEventHandler.setNetworkController(networkController);
     }
 
@@ -109,7 +113,7 @@ public class Views extends Application {
         Parent indexRoot = indexFxmlLoader.load();
         indexStage.setTitle("RM-CHAT");
         indexStage.setScene(new Scene(indexRoot, 350, 200));
-        IndexEventHandler indexEventHandler = indexFxmlLoader.getController();
+        indexEventHandler = indexFxmlLoader.getController();
         indexEventHandler.setNetworkController(networkController);
     }
 
@@ -149,7 +153,9 @@ public class Views extends Application {
     public void showIndexUI(){
         Platform.runLater(()->{
             try {
+                String text = loginEventHandler.usernameField.getText();
                 showIndexUIifNotShowing();
+                indexEventHandler.userNameLabel.setText(text);
             } catch (IOException e) {
                 logger.info(e.getMessage());
             }

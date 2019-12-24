@@ -26,7 +26,7 @@ public class LoginEventHandler {
     }
 
     @FXML
-    private TextField usernameField;
+    TextField usernameField;
 
     @FXML
     private TextField passwordField;
