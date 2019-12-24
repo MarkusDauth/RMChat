@@ -102,7 +102,6 @@ class SessionHandler {
         return session;
     }
 
-
     /**
      * A client wants to send a message from another client
      * @param tcpSend

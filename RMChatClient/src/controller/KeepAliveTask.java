@@ -43,6 +43,7 @@ public class KeepAliveTask implements Runnable{
 
             //Data to send here
             tcpSend.add("ALIVE");
+            tcpSend.add(sessionID);
             tcpSend.send();
 
             //Server response here
