@@ -25,7 +25,9 @@ public class Views extends Application {
     private NetworkController networkController;
     private Stage loginStage;
     private Stage registerStage = new Stage();
+    private Stage indexStage = new Stage();
     private boolean registerStageIsInitialized = false;
+    private boolean indexStageIsInitialized = false;
 
     public static void launchApplication(String[] args) {
         launch(args);
@@ -67,6 +69,21 @@ public class Views extends Application {
         }
     }
 
+    void showIndexUIifNotShowing() throws IOException {
+        if(!indexStageIsInitialized) {
+            loginStage.close();
+            initIndexUI();
+            indexStageIsInitialized = true;
+        }
+        if(indexStage.isShowing()) {
+            indexStage.setAlwaysOnTop(true);
+            indexStage.setAlwaysOnTop(false);
+        }
+        else {
+            indexStage.show();
+        }
+    }
+
     private void initLoginUI() throws IOException {
         FXMLLoader loginFxmlLoader = new FXMLLoader(getClass().getResource("gui/login.fxml"));
         Parent loginRoot = loginFxmlLoader.load();
@@ -85,6 +102,15 @@ public class Views extends Application {
         registerStage.setScene(new Scene(loginRoot, 350, 333));
         RegisterEventHandler registerEventHandler = registerFxmlLoader.getController();
         registerEventHandler.setNetworkController(networkController);
+    }
+
+    private void initIndexUI() throws IOException {
+        FXMLLoader indexFxmlLoader = new FXMLLoader(getClass().getResource("gui/index.fxml"));
+        Parent indexRoot = indexFxmlLoader.load();
+        indexStage.setTitle("RM-CHAT");
+        indexStage.setScene(new Scene(indexRoot, 350, 200));
+        IndexEventHandler indexEventHandler = indexFxmlLoader.getController();
+        indexEventHandler.setNetworkController(networkController);
     }
 
     private static void configureLogger() {
@@ -118,5 +144,15 @@ public class Views extends Application {
         }
         else
             showError(message);
+    }
+
+    public void showIndexUI(){
+        Platform.runLater(()->{
+            try {
+                showIndexUIifNotShowing();
+            } catch (IOException e) {
+                logger.info(e.getMessage());
+            }
+        });
     }
 }
