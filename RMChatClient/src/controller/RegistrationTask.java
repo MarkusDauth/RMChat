@@ -10,14 +10,13 @@ import java.util.logging.Logger;
 
 public class RegistrationTask implements Runnable {
 
-    private NewUser newUser;
+    private Logger logger = Logger.getLogger("logger");
     private Views views;
-    private Logger logger;
+    private NewUser newUser;
 
-    RegistrationTask(NewUser newUser, Views views, Logger logger) {
+    RegistrationTask(NewUser newUser, Views views) {
         this.newUser = newUser;
         this.views = views;
-        this.logger = logger;
     }
 
     @Override
@@ -39,9 +38,7 @@ public class RegistrationTask implements Runnable {
             //Server response here
             tcpReceive.receive();
             String result = tcpReceive.readNextString();
-
             logger.info("Received message: "+result);
-
             views.showMessage(tcpReceive.readNextString());
 
         } catch (Exception e) {

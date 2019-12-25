@@ -12,9 +12,10 @@ public class FileChatDatabase implements ChatDatabase {
     private static FileChatDatabase instance = null;
 
     private Logger logger = Logger.getLogger("logger");
-    List<Message> messageList = new ArrayList<>();
+    private List<Message> messageList = new ArrayList<>();
 
     public FileChatDatabase() {
+        load();
     }
 
     public static ChatDatabase getInstance() {

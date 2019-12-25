@@ -6,19 +6,18 @@ import model.LoginData;
 import view.Views;
 
 import java.net.Socket;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 public class LoginTask implements Runnable {
 
+    private static Logger logger = Logger.getLogger("logger");
+
     private LoginData loginData;
     private Views views;
-    private Logger logger;
 
-    LoginTask(LoginData loginData, Views views, Logger logger) {
+    LoginTask(LoginData loginData, Views views) {
         this.loginData = loginData;
         this.views = views;
-        this.logger = logger;
     }
 
     @Override
@@ -38,22 +37,29 @@ public class LoginTask implements Runnable {
 
             //Server response here
             tcpReceive.receive();
-            String result = tcpReceive.readNextString();
+            String code = tcpReceive.readNextString();
 
-            logger.info("Recieved message: "+result);
-            if(result.equals("OKLOG")){
-                views.showIndexUI();
-                String sessionID = tcpReceive.readNextString();
-                NetworkController.sessionID = Optional.of(sessionID);
-                logger.info("SessionID: "+sessionID);
-                new Thread(new KeepAliveTask(views,logger,sessionID)).start();
-                new Thread(new IncomingMessagesTask(views.getIndexEventHandler())).start();
-            }
-            else{
-                views.showMessage(tcpReceive.readNextString());
-            }
+            logger.info("Recieved message: "+code);
+            processCode(code,tcpReceive);
+
         } catch (Exception e) {
             views.showMessage("Unexpected");
+        }
+    }
+
+    private void processCode(String code, TcpReceive tcpReceive) {
+        if(code.equals("OKLOG")){
+            views.showIndexUI();
+            String sessionID = tcpReceive.readNextString();
+
+            NetworkController.setUsername(loginData.getUsername());
+            NetworkController.setSessionID(sessionID);
+            logger.info("SessionID: "+sessionID);
+            new Thread(new KeepAliveTask(views,sessionID)).start();
+            new Thread(new IncomingMessagesTask(views)).start();
+        }
+        else{
+            views.showMessage(tcpReceive.readNextString());
         }
     }
 }

@@ -3,9 +3,8 @@ package controller;
 import controller.chatDatabase.FileChatDatabase;
 import controller.tcp.TcpReceive;
 import controller.tcp.TcpSend;
-import javafx.application.Platform;
 import model.Message;
-import view.IndexEventHandler;
+import view.Views;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -14,11 +13,11 @@ import java.util.logging.Logger;
 
 public class IncomingMessagesTask implements Runnable{
 
-    Logger logger = Logger.getLogger("logger");
-    IndexEventHandler indexEventHandler;
+    private Logger logger = Logger.getLogger("logger");
+    private Views views;
 
-    public IncomingMessagesTask(IndexEventHandler indexEventHandler) {
-        this.indexEventHandler = indexEventHandler;
+    public IncomingMessagesTask(Views views) {
+        this.views = views;
     }
 
     @Override
@@ -35,33 +34,39 @@ public class IncomingMessagesTask implements Runnable{
                 TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
                 TcpSend tcpSend = new TcpSend(socket.getOutputStream());
 
+
                 tcpReceive.receive();
                 String code = tcpReceive.readNextString();
                 logger.info("Received Code: "+code);
-                switch(code){
-                    case "RECMSG":
-                        String sender = tcpReceive.readNextString();
-                        String text = tcpReceive.readNextString();
-                        //indexEventHandler.saveMessage(sender,text);
+                processCode(code,tcpReceive);
 
-                        Message message = new Message(NetworkController.getUsername(),sender,text);
-
-                        FileChatDatabase.getInstance().addMessage(message);
-                        break;
-                    default:
-                        logger.info("didnt catch that error");
-                        continue;
-                }
                 tcpSend.add("OKREC");
-                tcpSend.add(NetworkController.sessionID.get());
+                tcpSend.add(NetworkController.getSessionID());
                 tcpSend.send();
                 socket.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.severe(e.getMessage());
             }
         }
 
     }
+
+    private void processCode(String code, TcpReceive tcpReceive) {
+
+        switch(code){
+        case "RECMSG":
+            String sender = tcpReceive.readNextString();
+            String text = tcpReceive.readNextString();
+            Message message = new Message(sender,NetworkController.getUsername(),text);
+            FileChatDatabase.getInstance().addMessage(message);
+            views.addMessageToHistory(message);
+
+            break;
+        default:
+            logger.severe("didnt catch that error");
+        }
+    }
+
     private ServerSocket createServerSocket() {
         int serverPort = Properties.getInt("client.port");
 

@@ -11,11 +11,14 @@ import java.util.logging.Logger;
 
 public class LoginEventHandler {
 
-    private static Logger logger = Logger.getLogger("logger");
-
-
     private NetworkController networkController;
     private Views views;
+
+    @FXML
+    private TextField usernameField;
+
+    @FXML
+    private PasswordField passwordField;
 
     void setNetworkController(NetworkController networkController) {
         this.networkController = networkController;
@@ -24,12 +27,6 @@ public class LoginEventHandler {
     void setViews(Views views) {
         this.views = views;
     }
-
-    @FXML
-    TextField usernameField;
-
-    @FXML
-    private TextField passwordField;
 
     @FXML
     private void handleRegisterAction() throws IOException {

@@ -1,5 +1,6 @@
 package controller;
 
+import controller.chatDatabase.FileChatDatabase;
 import controller.tcp.TcpReceive;
 import controller.tcp.TcpSend;
 import model.Message;
@@ -10,14 +11,13 @@ import java.util.logging.Logger;
 
 public class SendMessageTask implements Runnable{
 
+    private Logger logger = Logger.getLogger("logger");
     private Message message;
     private Views views;
-    private Logger logger;
 
-    public SendMessageTask(Message message, Views views, Logger logger) {
+    public SendMessageTask(Message message, Views views) {
         this.message = message;
         this.views = views;
-        this.logger = logger;
     }
 
     @Override
@@ -30,11 +30,11 @@ public class SendMessageTask implements Runnable{
             TcpSend tcpSend = new TcpSend(socket.getOutputStream());
             TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
 
-            if(!NetworkController.sessionID.isPresent()) {
+            if(!NetworkController.isSessionIDSet()) {
                 logger.info("Trying to send Message without logging in.");
                 return;
             }
-            String sessionID = NetworkController.sessionID.get();
+            String sessionID = NetworkController.getSessionID();
 
             //Data to send here
             tcpSend.add("SENDMSG");
@@ -45,18 +45,9 @@ public class SendMessageTask implements Runnable{
 
             //Server response here
             tcpReceive.receive();
-            String result = tcpReceive.readNextString();
-            switch(result){
-                case "OKSEN":
-                    views.showMessage("OKSEN");
-                case "UserNotLoggedIn":
-                    views.showMessage("UserNotLoggedIn");
-                    break;
-                case "RecipientNotLoggedIn":
-                    views.showMessage("RecipientNotLoggedIn");
-                    break;
-            }
-            logger.info("Received message: "+result);
+            String code = tcpReceive.readNextString();
+            logger.info("Received message: "+code);
+            processCode(code,message);
 
             views.showMessage(tcpReceive.readNextString());
 
@@ -65,5 +56,25 @@ public class SendMessageTask implements Runnable{
             views.showMessage("Unexpected");
         }
 
+    }
+
+    private void processCode(String code, Message message) {
+        switch(code){
+            case "OKSEN":
+                FileChatDatabase.getInstance().addMessage(message);
+                views.addMessageToHistory(message);
+                views.finishSend();
+                break;
+            case "UserNotLoggedIn":
+                views.showMessage("UserNotLoggedIn");
+                logger.severe("Received Code UserNotLoggedIn");
+                break;
+            case "RecipientNotLoggedIn":
+                views.showMessage("RecipientNotLoggedIn");
+                logger.severe("Received Code RecipientNotLoggedIn");
+                break;
+            default:
+                logger.severe("ERROR TEST");
+        }
     }
 }

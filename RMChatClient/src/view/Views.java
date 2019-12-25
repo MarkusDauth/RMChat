@@ -2,6 +2,7 @@ package view;
 
 import controller.NetworkController;
 import controller.Properties;
+import controller.chatDatabase.FileChatDatabase;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
+import model.Message;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;
@@ -18,11 +20,10 @@ import java.util.logging.SimpleFormatter;
 
 public class Views extends Application {
 
-    public static final String LANGUAGE = Properties.getString("LANGUAGE");
     private static Logger logger = Logger.getLogger("logger");
     private static FileHandler logFileHandler;
+    private static NetworkController networkController;
 
-    private NetworkController networkController;
     private Stage loginStage;
     private Stage registerStage = new Stage();
     private Stage indexStage = new Stage();
@@ -31,14 +32,11 @@ public class Views extends Application {
 
     private LoginEventHandler loginEventHandler;
     private RegisterEventHandler registerEventHandler;
-    private IndexEventHandler indexEventHandler;
+    private ChatEventHandler chatEventHandler;
 
-    public static void launchApplication(String[] args) {
-        launch(args);
-    }
-
-    public IndexEventHandler getIndexEventHandler() {
-        return indexEventHandler;
+    public static void launchApplication(NetworkController networkController) {
+        Views.networkController = networkController;
+        launch();
     }
 
     @Override
@@ -46,7 +44,6 @@ public class Views extends Application {
         loginStage = primaryStage;
 
         //MVC Setup
-        networkController = new NetworkController();
         networkController.setViews(this);
 
         initLoginUI();
@@ -81,7 +78,7 @@ public class Views extends Application {
         if(!indexStageIsInitialized) {
             loginStage.close();
             initIndexUI();
-            indexEventHandler.initializeFriendList();
+            chatEventHandler.initializeFriendList();
             indexStageIsInitialized = true;
         }
         if(indexStage.isShowing()) {
@@ -114,13 +111,17 @@ public class Views extends Application {
     }
 
     private void initIndexUI() throws IOException {
-        FXMLLoader indexFxmlLoader = new FXMLLoader(getClass().getResource("gui/index.fxml"));
+        FXMLLoader indexFxmlLoader = new FXMLLoader(getClass().getResource("gui/chat.fxml"));
         Parent indexRoot = indexFxmlLoader.load();
         indexStage.setTitle("RM-CHAT");
-        indexStage.setScene(new Scene(indexRoot, 350, 200));
-        indexStage.setOnCloseRequest( event -> System.exit(0));
-        indexEventHandler = indexFxmlLoader.getController();
-        indexEventHandler.setNetworkController(networkController);
+        indexStage.setScene(new Scene(indexRoot, 660, 500));
+        indexStage.setOnCloseRequest( event -> {
+            FileChatDatabase.getInstance().save();
+            System.exit(0);
+        });
+        chatEventHandler = indexFxmlLoader.getController();
+        chatEventHandler.setNetworkController(networkController);
+        chatEventHandler.setViews(this);
     }
 
     private static void configureLogger() {
@@ -148,7 +149,8 @@ public class Views extends Application {
     }
 
     public void showMessage(String msgKey) {
-        String message = Properties.getString(LANGUAGE +msgKey);
+        String LANGUAGE = Properties.getString("LANGUAGE");
+        String message = UINotifications.getString(LANGUAGE +msgKey);
         if(msgKey.startsWith("OK")) {
             showInfo(message);
         }
@@ -159,9 +161,9 @@ public class Views extends Application {
     public void showIndexUI(){
         Platform.runLater(()->{
             try {
-                String text = loginEventHandler.usernameField.getText();
+                String text = NetworkController.getUsername();
                 showIndexUIifNotShowing();
-                indexEventHandler.userNameLabel.setText(text);
+                chatEventHandler.userNameLabel.setText(text);
             } catch (IOException e) {
                 logger.info(e.getMessage());
             }
@@ -169,8 +171,18 @@ public class Views extends Application {
     }
     public void setIndexStatus(String statusKey){
         Platform.runLater(() ->{
-            String status = Properties.getString(LANGUAGE+statusKey);
-            indexEventHandler.setStatusLabelText(status);
+            String LANGUAGE = Properties.getString("LANGUAGE");
+            String status = UINotifications.getString(LANGUAGE+statusKey);
+            chatEventHandler.setStatusLabelText(status);
         });
+    }
+
+    public void addMessageToHistory(Message message) {
+        Platform.runLater(() ->
+                chatEventHandler.addMessageToHistory(message));
+    }
+
+    public void finishSend() {
+        chatEventHandler.getMessageTextArea().clear();
     }
 }

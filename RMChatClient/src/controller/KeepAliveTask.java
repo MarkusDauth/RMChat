@@ -11,14 +11,13 @@ import java.util.logging.Logger;
 
 public class KeepAliveTask implements Runnable{
 
-    private Views views;
-    private Logger logger;
-    private String sessionID;
-    private int keepAliveTimeout = Properties.getInt("client.keepAliveTimeout.SECONDS");
+    private static Logger logger = Logger.getLogger("logger");
 
-    public KeepAliveTask(Views views, Logger logger, String sessionID) {
-        logger.info("Initializing Keep-Alive-Routine");
-        this.logger = logger;
+    private Views views;
+    private String sessionID;
+    private int keepAliveTimeout = Properties.getInt("client.keepAliveTimeout.seconds");
+
+    public KeepAliveTask(Views views, String sessionID) {
         this.views = views;
         this.sessionID = sessionID;
     }
@@ -50,22 +49,26 @@ public class KeepAliveTask implements Runnable{
 
             //Server response here
             tcpReceive.receive();
-            String result = tcpReceive.readNextString();
-            logger.fine("Recieved message: "+result);
+            String code = tcpReceive.readNextString();
+            logger.fine("Recieved message: "+code);
+            processCode(code,tcpReceive);
 
-            if(result.equals("OKALV")){
-                views.setIndexStatus("OnlineStatus");
-                return;
-            }
-            if(tcpReceive.readNextString().equals("UserNotLoggedIn")){
-                views.setIndexStatus("OfflineStatus");
-                views.showMessage("UserNotLoggedIn");
-            }
 
         } catch(IOException e) {
             views.showMessage("Unexpected");
             views.setIndexStatus("OfflineStatus");
             logger.severe(e.getMessage());
+        }
+    }
+
+    private void processCode(String code, TcpReceive tcpReceive) {
+        if(code.equals("OKALV")){
+            views.setIndexStatus("OnlineStatus");
+            return;
+        }
+        if(tcpReceive.readNextString().equals("UserNotLoggedIn")){
+            views.setIndexStatus("OfflineStatus");
+            views.showMessage("UserNotLoggedIn");
         }
     }
 }
