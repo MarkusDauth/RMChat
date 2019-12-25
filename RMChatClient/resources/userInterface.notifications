@@ -1,0 +1,15 @@
+EN.OnlineStatus = Online
+EN.OfflineStatus = Offline
+
+EN.OKREG = Account successfully created.
+EN.Unexpected = Server is unreachable.
+EN.InvalidUsername = Please check your Username. It is invalid.
+EN.InvalidPassword = Please check your Password. It is invalid.
+EN.UsernameTaken = The specified Username is already in use.
+
+EN.WrongUsername = The specified Username does not exist.
+EN.WrongPassword = The specified Password is wrong.
+EN.AlreadyLoggedIn = The specified Username is already logged in.
+
+EN.UserNotLoggedIn = Fatal Error. User not logged in.
+EN.RecipientNotLoggedIn = Friend is offline.
