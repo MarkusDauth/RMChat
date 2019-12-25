@@ -1,10 +1,9 @@
-package sessionHandler;
+package session;
 
 import database.DatabaseInterface;
 import database.TextfileDatabase;
 import properties.Properties;
-import sessionHandler.tcp.TcpReceive;
-import sessionHandler.tcp.TcpSend;
+import session.tcp.TcpSend;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -13,7 +12,6 @@ import java.security.SecureRandom;
 import java.time.LocalTime;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
-import java.util.Optional;
 import java.util.logging.Logger;
 
 public class UserSession {
@@ -45,7 +43,11 @@ public class UserSession {
         socket.getInetAddress();
     }
 
-    public boolean validateCredentials() throws IOException {
+    public InetAddress getInetAddress() {
+        return inetAddress;
+    }
+
+    public boolean validateCredentials(TcpSend tcpSend) throws IOException {
         if (!database.usernameIsPresent(username)) {
             tcpSend.sendError("WrongUsername");
             logger.info("WrongUsername");
@@ -58,9 +60,8 @@ public class UserSession {
         return true;
     }
 
-
-    public boolean setupSession() throws IOException {
-        if (!validateCredentials()) {
+    public boolean setupSession(TcpSend tcpSend) throws IOException {
+        if (!validateCredentials(tcpSend)) {
             return false;
         }
         createSessionId();
@@ -79,7 +80,7 @@ public class UserSession {
         sessionId = sb.toString();
     }
 
-    public void finishLogin(TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
+    public void finishLogin(TcpSend tcpSend) throws IOException {
         tcpSend.add("OKLOG");
         tcpSend.add(sessionId);
         tcpSend.send();
@@ -95,34 +96,5 @@ public class UserSession {
         long timePassed = SECONDS.between(lastAliveDate,LocalTime.now());
         logger.info(username + " last sign of life was "+timePassed+" seconds ago.");
         return (timePassed < timeoutSeconds);
-    }
-
-    /**
-     * This method is called in the object of the Chat Message Sender
-     * @param chatMessageRecipientSession
-     * @param message
-     * @throws IOException
-     */
-    public void forwardMessage(Optional<UserSession> chatMessageRecipientSession, String message) throws IOException {
-        if(chatMessageRecipientSession.isPresent()){
-            logger.info("Sending message from "+username+" to "+ chatMessageRecipientSession.get().getUsername());
-            TcpSend chatMessageRecipientSender = chatMessageRecipientSession.get().tcpSend;
-
-            //Send SENDMSG to Recipient
-            chatMessageRecipientSender.add("RECMSG");
-            //Send THIS sessions username, which is the SENDER of the chat message
-            chatMessageRecipientSender.add(this.username);
-            chatMessageRecipientSender.add(message);
-            chatMessageRecipientSender.send();
-        }
-        else{
-            logger.info("Recipient is offline");
-            tcpSend.sendError("RecipientNotLoggedIn");
-        }
-    }
-
-    public void sendOKSEN() throws IOException {
-        tcpSend.add("OKSEN");
-        tcpSend.send();
     }
 }

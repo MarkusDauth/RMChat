@@ -1,10 +1,10 @@
-package sessionHandler;
+package session;
 
 import database.DatabaseInterface;
 import database.TextfileDatabase;
 import properties.Properties;
-import sessionHandler.tcp.TcpReceive;
-import sessionHandler.tcp.TcpSend;
+import session.tcp.TcpReceive;
+import session.tcp.TcpSend;
 
 import java.io.IOException;
 import java.util.logging.Logger;

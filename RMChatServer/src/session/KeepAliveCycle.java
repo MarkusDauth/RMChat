@@ -1,4 +1,4 @@
-package sessionHandler;
+package session;
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;

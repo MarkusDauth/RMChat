@@ -1,4 +1,4 @@
-package sessionHandler.tcp;
+package session.tcp;
 
 import properties.Properties;
 

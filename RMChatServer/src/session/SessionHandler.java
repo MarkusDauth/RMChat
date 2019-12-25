@@ -1,11 +1,14 @@
-package sessionHandler;
+package session;
 
 import database.DatabaseInterface;
 import database.TextfileDatabase;
-import sessionHandler.tcp.TcpReceive;
-import sessionHandler.tcp.TcpSend;
+import properties.Properties;
+import session.tcp.TcpReceive;
+import session.tcp.TcpSend;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -42,9 +45,9 @@ class SessionHandler {
             logger.info("User " + username + " already logged in ");
         } else {
             UserSession newSession = new UserSession(username, password);
-            if(newSession.setupSession()){
+            if (newSession.setupSession(tcpSend)) {
                 sessions.add(newSession);
-                newSession.finishLogin(tcpSend, tcpReceive);
+                newSession.finishLogin(tcpSend);
                 logger.info("Current Logged in Users: " + sessions.size());
             }
         }
@@ -105,64 +108,89 @@ class SessionHandler {
     /**
      * A client wants to send a message from another client
      *
-     * @param tcpSend
-     * @param tcpReceive
+     * @param senderTcpSend
+     * @param senderTcpReceive
      * @throws IOException
      */
-    public static void sendMessage(TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
+    public static void sendMessage(TcpSend senderTcpSend, TcpReceive senderTcpReceive) throws IOException {
         //1. Parameter
-        String chatMessageSenderSessionId = tcpReceive.readNextString();
+        String chatMessageSenderSessionId = senderTcpReceive.readNextString();
 
         Optional<UserSession> chatMessageSenderSession = findSession(chatMessageSenderSessionId);
         if (chatMessageSenderSession.isPresent()) {
             chatMessageSenderSession.get().updateLastAliveDate();
 
             //2. Parameter
-            String chatMessageRecipient = tcpReceive.readNextString();
-            Optional<UserSession> chatMessageRecipientSession = getSession(chatMessageRecipient);
+            String chatMessageRecipient = senderTcpReceive.readNextString();
 
             //3. Parameter
-            String message = tcpReceive.readNextString();
+            String message = senderTcpReceive.readNextString();
 
-            chatMessageSenderSession.get().forwardMessage(chatMessageRecipientSession, message);
+            //Check if recipient is logged in
+            Optional<UserSession> chatMessageRecipientSession = getSession(chatMessageRecipient);
+            if (chatMessageRecipientSession.isPresent()) {
+                forwardMessage(
+                        senderTcpSend,
+                        chatMessageSenderSession.get(),
+                        chatMessageRecipientSession.get(),
+                        message);
+            } else {
+                logger.info("Recipient is offline");
+                senderTcpSend.sendError("RecipientNotLoggedIn");
+            }
         } else {
             logger.info("Someone wants to send a message, but is not logged in");
-            tcpSend.sendError("UserNotLoggedIn");
+            senderTcpSend.sendError("UserNotLoggedIn");
         }
     }
 
     /**
-     * Handles the answer from the "chat message recipient" when he successfully received a chat message.
-     * Sends OKSEN to the "chat message sender"
-     *
-     * @param tcpSend
-     * @param tcpReceive
+     * Sends RCMSG to the receiving client of the chat message
      */
-    public static void messageSuccessfullyReceived(TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
-        /**
-         * TCP Package has the following Parameters:
-         * OKREC
-         * sessionId from Recipient
-         * username of sender
-         */
+    private static void forwardMessage(TcpSend senderTcpSend, UserSession senderSession,
+                                       UserSession recipientSession,
+                                       String message) throws IOException {
 
-        //1. Parameter after Code
-        String chatMessageRecipientSessionId = tcpReceive.readNextString();
+        logger.info("Sending message from " + senderSession.getUsername() + " to " + recipientSession.getUsername());
+        //Stops possible problems with delayed messages
+        recipientSession.updateLastAliveDate();
 
-        Optional<UserSession> chatMessageRecipientSession = findSession(chatMessageRecipientSessionId);
-        if (chatMessageRecipientSession.isPresent()) {
-            //Recipient of chat message is logged in
-            chatMessageRecipientSession.get().updateLastAliveDate();
+        //Net socket with recieving client
+        Socket socket = createSocket(recipientSession.getInetAddress());
+        TcpSend recipeintTcpSend = new TcpSend(socket.getOutputStream());
+        TcpReceive recipientTcpReceive = new TcpReceive(socket.getInputStream());
 
-            //Send OKSEN to chatMessageRSender
-            //2. Parameter
-            String chatMessageSender = tcpReceive.readNextString();
-            Optional<UserSession> chatMessageSenderSession = getSession(chatMessageSender);
+        //Send SENDMSG to Recipient
+        recipeintTcpSend.add("RECMSG");
+        //Send THIS sessions username, which is the SENDER of the chat message
+        recipeintTcpSend.add(senderSession.getUsername());
+        recipeintTcpSend.add(message);
+        recipeintTcpSend.send();
 
-            chatMessageSenderSession.get().sendOKSEN();
-        } else {
-            logger.info("Someone wants to send OKREC, but is not logged in");
-            tcpSend.sendError("UserNotLoggedIn");
+        receiveOKREC(senderTcpSend, recipientTcpReceive, recipientSession);
+    }
+
+    private static void receiveOKREC(TcpSend senderTcpSend, TcpReceive recipientTcpReceive, UserSession recipientSession) throws IOException {
+        recipientTcpReceive.receive();
+        String code = recipientTcpReceive.readNextString();
+        String sessionId = recipientTcpReceive.readNextString();
+        //Check if the receiver is correct. Let timeout happen, if not.
+        if(code.equals("OKREC") && sessionId == recipientSession.getSessionId()){
+            sendOKSEN(senderTcpSend);
         }
+    }
+
+    private static void sendOKSEN(TcpSend senderTcpSend) throws IOException {
+        senderTcpSend.add("sendOKSEN");
+        senderTcpSend.send();
+    }
+
+    static Socket createSocket(InetAddress inetAddress) throws IOException {
+        int clientPort = Properties.getInt("client.port");
+        Socket socket = new Socket(inetAddress, clientPort);
+        int timeout = Properties.getInt("client.timeout");
+        socket.setSoTimeout(timeout);
+        logger.info("Connected to Client: " + socket);
+        return socket;
     }
 }

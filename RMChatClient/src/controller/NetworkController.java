@@ -27,7 +27,6 @@ public class NetworkController {
     }
 
     static Socket createSocket() throws IOException {
-
         String serverIP = Properties.getString("server.ip");
         InetAddress ip = InetAddress.getByName(serverIP);
         int serverPort = Properties.getInt("server.port");

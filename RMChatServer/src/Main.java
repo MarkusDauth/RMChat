@@ -1,6 +1,5 @@
 
-import sessionHandler.NetworkController;
-import properties.Properties;
+import session.NetworkController;
 
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;

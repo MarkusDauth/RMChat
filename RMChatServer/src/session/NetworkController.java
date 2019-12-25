@@ -1,4 +1,4 @@
-package sessionHandler;
+package session;
 
 import properties.Properties;
 

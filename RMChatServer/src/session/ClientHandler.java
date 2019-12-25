@@ -1,7 +1,7 @@
-package sessionHandler;
+package session;
 
-import sessionHandler.tcp.TcpReceive;
-import sessionHandler.tcp.TcpSend;
+import session.tcp.TcpReceive;
+import session.tcp.TcpSend;
 
 import java.io.*;
 import java.net.Socket;
@@ -29,9 +29,6 @@ class ClientHandler implements Runnable {
                 switch (code) {
                     case "ALIVE":
                         SessionHandler.updateSessionAlive(tcpSend, tcpReceive);
-                        break;
-                    case "OKREC":
-                        SessionHandler.messageSuccessfullyReceived(tcpSend, tcpReceive);
                         break;
                     case "SENDMSG":
                         SessionHandler.sendMessage(tcpSend, tcpReceive);
