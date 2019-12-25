@@ -1,15 +1,19 @@
 package controller;
 
 import model.LoginData;
+import model.Message;
 import model.NewUser;
 import view.Views;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class NetworkController {
+    public static Optional<String> sessionID = Optional.empty();
+
     private static Logger logger = Logger.getLogger("logger");
     private Views views;
 
@@ -21,9 +25,12 @@ public class NetworkController {
         new Thread(new RegistrationTask(newUser,views,logger)).start();
     }
 
-    //TODO implement
     public void loginUser(LoginData loginData) {
         new Thread(new LoginTask(loginData,views,logger)).start();
+    }
+
+    public void sendMessage(Message message) {
+        new Thread(new SendMessageTask(message,views,logger)).start();
     }
 
     static Socket createSocket() throws IOException {
