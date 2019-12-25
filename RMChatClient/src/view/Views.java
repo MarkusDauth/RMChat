@@ -37,10 +37,6 @@ public class Views extends Application {
         launch(args);
     }
 
-    public IndexEventHandler getIndexEventHandler() {
-        return indexEventHandler;
-    }
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         loginStage = primaryStage;
@@ -81,7 +77,6 @@ public class Views extends Application {
         if(!indexStageIsInitialized) {
             loginStage.close();
             initIndexUI();
-            indexEventHandler.initializeFriendList();
             indexStageIsInitialized = true;
         }
         if(indexStage.isShowing()) {
@@ -118,7 +113,6 @@ public class Views extends Application {
         Parent indexRoot = indexFxmlLoader.load();
         indexStage.setTitle("RM-CHAT");
         indexStage.setScene(new Scene(indexRoot, 350, 200));
-        indexStage.setOnCloseRequest( event -> System.exit(0));
         indexEventHandler = indexFxmlLoader.getController();
         indexEventHandler.setNetworkController(networkController);
     }
@@ -135,21 +129,21 @@ public class Views extends Application {
         }
     }
 
-    private void showError(String message){
+    public void showError(String message){
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR,message, ButtonType.OK);
             alert.show();});
     }
 
-    private void showInfo(String message){
+    public void showInfo(String message){
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION,message, ButtonType.OK);
             alert.show();});
     }
 
-    public void showMessage(String msgKey) {
-        String message = Properties.getString(LANGUAGE +msgKey);
-        if(msgKey.startsWith("OK")) {
+    public void showMessage(String msg) {
+        String message = Properties.getString(LANGUAGE +msg);
+        if(msg.startsWith("OK")) {
             showInfo(message);
         }
         else
@@ -165,12 +159,6 @@ public class Views extends Application {
             } catch (IOException e) {
                 logger.info(e.getMessage());
             }
-        });
-    }
-    public void setIndexStatus(String statusKey){
-        Platform.runLater(() ->{
-            String status = Properties.getString(LANGUAGE+statusKey);
-            indexEventHandler.setStatusLabelText(status);
         });
     }
 }

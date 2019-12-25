@@ -4,7 +4,6 @@ import controller.tcp.TcpReceive;
 import controller.tcp.TcpSend;
 import view.Views;
 
-import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -25,7 +24,6 @@ public class KeepAliveTask implements Runnable{
 
     @Override
     public void run() {
-
         while(true){
             keepAliveRoutine();
             try {
@@ -51,20 +49,11 @@ public class KeepAliveTask implements Runnable{
             //Server response here
             tcpReceive.receive();
             String result = tcpReceive.readNextString();
+
             logger.info("Recieved message: "+result);
 
-            if(result.equals("OKALV")){
-                views.setIndexStatus("OnlineStatus");
-                return;
-            }
-            if(tcpReceive.readNextString().equals("UserNotLoggedIn")){
-                views.setIndexStatus("OfflineStatus");
-                views.showMessage("UserNotLoggedIn");
-            }
-
-        } catch(IOException e) {
+        } catch (Exception e) {
             views.showMessage("Unexpected");
-            views.setIndexStatus("OfflineStatus");
             logger.severe(e.getMessage());
         }
     }
