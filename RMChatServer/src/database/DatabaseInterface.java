@@ -5,4 +5,6 @@ public interface DatabaseInterface {
     boolean usernameIsPresent(String username);
 
     boolean checkPassword(String username, String password);
+
+    boolean addFriend(String username, String newFriend);
 }

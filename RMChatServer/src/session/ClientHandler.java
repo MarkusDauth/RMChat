@@ -36,6 +36,8 @@ class ClientHandler implements Runnable {
                     case "LOGIN":
                         SessionHandler.login(socket, tcpSend, tcpReceive);
                         break;
+                    case "ADDFRD":
+                        SessionHandler.addFriend(tcpSend, tcpReceive);
                     case "REGISTER":
                         Registration.registerUser(tcpSend, tcpReceive);
                         break;
