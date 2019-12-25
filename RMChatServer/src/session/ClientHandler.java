@@ -25,7 +25,7 @@ class ClientHandler implements Runnable {
             try {
                 tcpReceive.receive();
                 String code = tcpReceive.readNextString();
-                logger.info("New Client message. Code: " + code);
+                logger.fine("New Client message. Code: " + code);
                 switch (code) {
                     case "ALIVE":
                         SessionHandler.updateSessionAlive(tcpSend, tcpReceive);
@@ -34,14 +34,14 @@ class ClientHandler implements Runnable {
                         SessionHandler.sendMessage(tcpSend, tcpReceive);
                         break;
                     case "LOGIN":
-                        SessionHandler.login(tcpSend, tcpReceive);
+                        SessionHandler.login(socket, tcpSend, tcpReceive);
                         break;
                     case "REGISTER":
                         Registration.registerUser(tcpSend, tcpReceive);
                         break;
                 }
                 socket.close(); //Can't be in finally block, because of exception
-                logger.info("Socket closed. Port: " + socket);
+                logger.fine("Socket closed. Port: " + socket);
             } catch (IOException e) {
                 logger.severe(e.getMessage());
             }

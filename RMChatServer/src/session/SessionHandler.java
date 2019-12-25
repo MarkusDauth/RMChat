@@ -9,6 +9,7 @@ import session.tcp.TcpSend;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +35,7 @@ class SessionHandler {
      * @param tcpReceive
      * @throws IOException
      */
-    public static void login(TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
+    public static void login(Socket socket, TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
         String username = tcpReceive.readNextString();
         String password = tcpReceive.readNextString();
         logger.info("Trying to login: " + username);
@@ -44,7 +45,7 @@ class SessionHandler {
             tcpSend.sendError("AlreadyLoggedIn");
             logger.info("User " + username + " already logged in ");
         } else {
-            UserSession newSession = new UserSession(username, password);
+            UserSession newSession = new UserSession(username, password, socket.getInetAddress());
             if (newSession.setupSession(tcpSend)) {
                 sessions.add(newSession);
                 newSession.finishLogin(tcpSend);
@@ -64,7 +65,7 @@ class SessionHandler {
     }
 
     public static void checkAlives() {
-        logger.info("Checking " + sessions.size() + " alive sessions");
+        logger.fine("Checking " + sessions.size() + " alive sessions");
         for (int i = 0; i < sessions.size(); i++) {
             UserSession session = sessions.get(i);
             if (!session.isAlive()) {
@@ -87,7 +88,7 @@ class SessionHandler {
                 findFirst();
 
         if (session.isPresent()) {
-            logger.info("User " + session.get().getUsername() + " is alive!");
+            logger.fine("User " + session.get().getUsername() + " is alive!");
             session.get().updateLastAliveDate();
 
             tcpSend.add("OKALV");
@@ -125,6 +126,8 @@ class SessionHandler {
 
             //3. Parameter
             String message = senderTcpReceive.readNextString();
+
+            logger.info(chatMessageSenderSession.get().getUsername()+" wants to send a message to "+chatMessageRecipient);
 
             //Check if recipient is logged in
             Optional<UserSession> chatMessageRecipientSession = getSession(chatMessageRecipient);
@@ -185,12 +188,20 @@ class SessionHandler {
         senderTcpSend.send();
     }
 
-    static Socket createSocket(InetAddress inetAddress) throws IOException {
-        int clientPort = Properties.getInt("client.port");
-        Socket socket = new Socket(inetAddress, clientPort);
-        int timeout = Properties.getInt("client.timeout");
-        socket.setSoTimeout(timeout);
-        logger.info("Connected to Client: " + socket);
+    static Socket createSocket(InetAddress inetAddress) {
+        Socket socket=null;
+        try {
+            int clientPort = Properties.getInt("client.port");
+            socket = new Socket(inetAddress, clientPort);
+            int timeout = Properties.getInt("client.timeout");
+            socket.setSoTimeout(timeout*1000);
+            logger.info("Connected to Client: " + socket);
+        } catch (SocketException e) {
+            logger.info("Error: " + e.getMessage());
+        } catch (IOException e) {
+            logger.info("Error: " + e.getMessage());
+        }
+
         return socket;
     }
 }

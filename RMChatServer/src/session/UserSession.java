@@ -26,9 +26,10 @@ public class UserSession {
 
     private LocalTime lastAliveDate;
 
-    public UserSession(String username, String password) {
+    public UserSession(String username, String password, InetAddress inetAddress) {
         this.username = username;
         this.password = password;
+        this.inetAddress = inetAddress;
     }
 
     public String getUsername() {
@@ -94,7 +95,7 @@ public class UserSession {
     public boolean isAlive(){
         int timeoutSeconds = Properties.getInt("tcp.clientSessionTimeout");
         long timePassed = SECONDS.between(lastAliveDate,LocalTime.now());
-        logger.info(username + " last sign of life was "+timePassed+" seconds ago.");
+        logger.fine(username + " last sign of life was "+timePassed+" seconds ago.");
         return (timePassed < timeoutSeconds);
     }
 }

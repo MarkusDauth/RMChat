@@ -43,6 +43,4 @@ public class LoginEventHandler {
         loginData.setPassword(passwordField.getText());
         networkController.loginUser(loginData);
     }
-
-
 }

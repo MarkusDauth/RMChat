@@ -36,7 +36,7 @@ public class KeepAliveTask implements Runnable{
         }
     }
     private void keepAliveRoutine() {
-        logger.info("Sending Keep-Alive-Message");
+        logger.fine("Sending Keep-Alive-Message");
 
         try{
             Socket socket = NetworkController.createSocket();
@@ -51,7 +51,7 @@ public class KeepAliveTask implements Runnable{
             //Server response here
             tcpReceive.receive();
             String result = tcpReceive.readNextString();
-            logger.info("Recieved message: "+result);
+            logger.fine("Recieved message: "+result);
 
             if(result.equals("OKALV")){
                 views.setIndexStatus("OnlineStatus");

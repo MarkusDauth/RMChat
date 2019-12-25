@@ -20,7 +20,7 @@ public class NetworkController {
             Socket socket;
             try {
                 socket = serverSocket.accept();
-                logger.info("A new client is connected: " + socket);
+                logger.fine("A new client is connected: " + socket);
 
                 OutputStream outputStream = socket.getOutputStream();
                 InputStream inputStream = socket.getInputStream();
