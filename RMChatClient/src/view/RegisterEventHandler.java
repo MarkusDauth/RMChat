@@ -1,6 +1,7 @@
 package view;
 
 import controller.NetworkController;
+import controller.Properties;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -10,9 +11,13 @@ public class RegisterEventHandler {
 
 
     private NetworkController networkController;
+    private Views views;
 
-    void setNetworkController(NetworkController networkController) {
+    public void setNetworkController(NetworkController networkController) {
         this.networkController = networkController;
+    }
+    public void setViews(Views views) {
+        this.views = views;
     }
 
     @FXML
@@ -22,9 +27,19 @@ public class RegisterEventHandler {
 
     @FXML
     private void handleRegisterButton(){
-        NewUser newUser = new NewUser();
-        newUser.setUsername(usernameField.getText());
-        newUser.setPassword(passwordField.getText());
-        networkController.registerNewUser(newUser);
+        if(usernameField.getText().length() >= Properties.getInt("username.minLength") &&
+                usernameField.getText().length() < Properties.getInt("username.maxLength")&&
+                passwordField.getText().length() >= Properties.getInt("password.minLength") &&
+                passwordField.getText().length() < Properties.getInt("password.maxLength")
+        ) {
+            NewUser newUser = new NewUser();
+            newUser.setUsername(usernameField.getText());
+            newUser.setPassword(passwordField.getText());
+            networkController.registerNewUser(newUser);
+        }
+        else {
+            views.showMessage("InvalidUsernameOrPassword");
+        }
+
     }
 }

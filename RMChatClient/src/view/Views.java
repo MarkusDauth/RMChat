@@ -108,6 +108,7 @@ public class Views extends Application {
         registerStage.setScene(new Scene(loginRoot, 350, 333));
         registerEventHandler = registerFxmlLoader.getController();
         registerEventHandler.setNetworkController(networkController);
+        registerEventHandler.setViews(this);
     }
 
     private void initIndexUI() throws IOException {

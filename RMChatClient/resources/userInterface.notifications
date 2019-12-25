@@ -1,6 +1,9 @@
 EN.OnlineStatus = Online
 EN.OfflineStatus = Offline
 
+
+EN.InvalidUsernameOrPassword = Please check your Username and Password.
+
 EN.OKREG = Account successfully created.
 EN.Unexpected = Server is unreachable.
 EN.InvalidUsername = Please check your Username. It is invalid.
