@@ -6,6 +6,7 @@ import model.LoginData;
 import view.Views;
 
 import java.net.Socket;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class LoginTask implements Runnable {
@@ -43,8 +44,10 @@ public class LoginTask implements Runnable {
             if(result.equals("OKLOG")){
                 views.showIndexUI();
                 String sessionID = tcpReceive.readNextString();
+                NetworkController.sessionID = Optional.of(sessionID);
                 logger.info("SessionID: "+sessionID);
                 new Thread(new KeepAliveTask(views,logger,sessionID)).start();
+                new Thread(new IncomingMessagesTask(views.getIndexEventHandler())).start();
             }
             else{
                 views.showMessage(tcpReceive.readNextString());
