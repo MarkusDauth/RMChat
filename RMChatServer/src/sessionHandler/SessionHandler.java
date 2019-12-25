@@ -32,32 +32,32 @@ class SessionHandler {
      * @throws IOException
      */
     public static void login(TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
-        UserSession session = new UserSession(tcpSend, tcpReceive);
+        String username = tcpReceive.readNextString();
+        String password = tcpReceive.readNextString();
+        logger.info("Trying to login: " + username);
 
-        if (!isLoggedIn(session, tcpSend) && session.setupSession()) {
-            sessions.add(session);
-            session.finishLogin();
-            logger.info("Current Logged in Users: " + sessions.size());
+        Optional<UserSession> session = getSession(username);
+        if (session.isPresent()) {
+            tcpSend.sendError("AlreadyLoggedIn");
+            logger.info("User " + username + " already logged in ");
+        } else {
+            UserSession newSession = new UserSession(username, password);
+            if(newSession.setupSession()){
+                sessions.add(newSession);
+                newSession.finishLogin(tcpSend, tcpReceive);
+                logger.info("Current Logged in Users: " + sessions.size());
+            }
         }
     }
 
     /**
      * get Session with corresponding username
+     *
      * @param username
      * @return is null if no session is found, which means the user is offline
      */
     private static Optional<UserSession> getSession(String username) {
         return sessions.stream().filter(s -> s.getUsername().equals(username)).findFirst();
-    }
-
-    private static boolean isLoggedIn(UserSession session, TcpSend tcpSend) throws IOException {
-        boolean loggedIn = sessions.stream().filter(s -> s.getUsername().equals(session.getUsername())).findFirst().isPresent();
-        if (loggedIn) {
-            tcpSend.sendError("AlreadyLoggedIn");
-            logger.info("User " + session.getUsername() + " already logged in ");
-            return true;
-        }
-        return false;
     }
 
     public static void checkAlives() {
@@ -104,6 +104,7 @@ class SessionHandler {
 
     /**
      * A client wants to send a message from another client
+     *
      * @param tcpSend
      * @param tcpReceive
      * @throws IOException
@@ -133,6 +134,7 @@ class SessionHandler {
     /**
      * Handles the answer from the "chat message recipient" when he successfully received a chat message.
      * Sends OKSEN to the "chat message sender"
+     *
      * @param tcpSend
      * @param tcpReceive
      */
