@@ -15,7 +15,6 @@ public class TextfileDatabase implements DatabaseInterface {
         if(instance == null){
             instance = new TextfileDatabase();
         }
-
         return instance;
     }
 

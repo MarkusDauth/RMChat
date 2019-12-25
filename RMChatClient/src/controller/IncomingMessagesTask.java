@@ -1,7 +1,10 @@
 package controller;
 
+import controller.chatDatabase.FileChatDatabase;
 import controller.tcp.TcpReceive;
 import controller.tcp.TcpSend;
+import javafx.application.Platform;
+import model.Message;
 import view.IndexEventHandler;
 
 import java.io.IOException;
@@ -39,7 +42,11 @@ public class IncomingMessagesTask implements Runnable{
                     case "RECMSG":
                         String sender = tcpReceive.readNextString();
                         String text = tcpReceive.readNextString();
-                        indexEventHandler.saveMessage(sender,text);
+                        //indexEventHandler.saveMessage(sender,text);
+
+                        Message message = new Message(NetworkController.getUsername(),sender,text);
+
+                        FileChatDatabase.getInstance().addMessage(message);
                         break;
                     default:
                         logger.info("didnt catch that error");

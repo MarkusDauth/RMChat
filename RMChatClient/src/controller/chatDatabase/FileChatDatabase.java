@@ -9,17 +9,25 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class FileChatDatabase implements ChatDatabase {
+    private static FileChatDatabase instance = null;
 
     private Logger logger = Logger.getLogger("logger");
     List<Message> messageList = new ArrayList<>();
 
-    public FileChatDatabase(){}
+    public FileChatDatabase() {
+    }
+
+    public static ChatDatabase getInstance() {
+        if (instance == null)
+            instance = new FileChatDatabase();
+        return instance;
+    }
 
 
     @Override
     public synchronized List<Message> getMessages(String sender) {
         List<Message> senderMessageList = messageList.stream().filter(message -> message.getSender().equals(sender)).collect(Collectors.toList());
-        logger.info("Reading "+sender+"'s messages");
+        logger.info("Reading " + sender + "'s messages");
         return senderMessageList;
     }
 
@@ -42,7 +50,7 @@ public class FileChatDatabase implements ChatDatabase {
     @Override
     public synchronized void load() {
         File f = new File("messages.ser");
-        if(f.exists()){
+        if (f.exists()) {
             try (ObjectInputStream in = new ObjectInputStream(
                     new BufferedInputStream(new FileInputStream("messages.ser")))) {
                 messageList = (List<Message>) in.readObject();
@@ -50,8 +58,7 @@ public class FileChatDatabase implements ChatDatabase {
             } catch (IOException | ClassNotFoundException e) {
                 logger.severe(e.getMessage());
             }
-        }
-        else{
+        } else {
             logger.info("messages.ser does not exist");
         }
     }

@@ -184,7 +184,7 @@ class SessionHandler {
     }
 
     private static void sendOKSEN(TcpSend senderTcpSend) throws IOException {
-        senderTcpSend.add("sendOKSEN");
+        senderTcpSend.add("OKSEN");
         senderTcpSend.send();
     }
 

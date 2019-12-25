@@ -13,9 +13,14 @@ import java.util.logging.Logger;
 
 public class NetworkController {
     public static Optional<String> sessionID = Optional.empty();
+    private static String username;
 
     private static Logger logger = Logger.getLogger("logger");
     private Views views;
+
+    public static String getUsername() {
+        return username;
+    }
 
     public void setViews(Views views) {
         this.views = views;
@@ -26,6 +31,7 @@ public class NetworkController {
     }
 
     public void loginUser(LoginData loginData) {
+        username = loginData.getUsername();
         new Thread(new LoginTask(loginData,views,logger)).start();
     }
 
