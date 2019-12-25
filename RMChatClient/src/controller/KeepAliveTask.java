@@ -60,7 +60,6 @@ public class KeepAliveTask implements Runnable{
             if(tcpReceive.readNextString().equals("UserNotLoggedIn")){
                 views.setIndexStatus("OfflineStatus");
                 views.showMessage("UserNotLoggedIn");
-                return;
             }
 
         } catch(IOException e) {

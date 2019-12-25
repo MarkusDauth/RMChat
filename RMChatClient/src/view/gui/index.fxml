@@ -15,9 +15,9 @@
       <SplitPane dividerPositions="0.33277591973244147" prefHeight="400.0" prefWidth="650.0">
         <items>
             <TitledPane animated="false" prefHeight="524.0" prefWidth="213.0" text="Friends">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="422.0" prefWidth="194.0" />
-              </content>
+               <content>
+                  <ListView fx:id="friendList" prefHeight="200.0" prefWidth="200.0" />
+               </content>
             </TitledPane>
             <BorderPane>
                <top>
@@ -31,13 +31,13 @@
                   </AnchorPane>
                </top>
                <center>
-                  <ListView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                  <ListView fx:id="messageHistory" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
                </center>
                <bottom>
                   <AnchorPane prefHeight="73.0" prefWidth="429.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Button layoutX="337.0" layoutY="20.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="60.0" text="Send" />
-                        <TextArea layoutX="37.0" layoutY="15.0" prefHeight="43.0" prefWidth="275.0" />
+                        <Button layoutX="337.0" layoutY="20.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="34.0" prefWidth="60.0" text="Send" />
+                        <TextArea fx:id="messageTextArea" layoutX="37.0" layoutY="15.0" prefHeight="43.0" prefWidth="275.0" />
                      </children>
                   </AnchorPane>
                </bottom>

@@ -37,6 +37,10 @@ public class Views extends Application {
         launch(args);
     }
 
+    public IndexEventHandler getIndexEventHandler() {
+        return indexEventHandler;
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         loginStage = primaryStage;
@@ -77,6 +81,7 @@ public class Views extends Application {
         if(!indexStageIsInitialized) {
             loginStage.close();
             initIndexUI();
+            indexEventHandler.initializeFriendList();
             indexStageIsInitialized = true;
         }
         if(indexStage.isShowing()) {
@@ -113,6 +118,7 @@ public class Views extends Application {
         Parent indexRoot = indexFxmlLoader.load();
         indexStage.setTitle("RM-CHAT");
         indexStage.setScene(new Scene(indexRoot, 350, 200));
+        indexStage.setOnCloseRequest( event -> System.exit(0));
         indexEventHandler = indexFxmlLoader.getController();
         indexEventHandler.setNetworkController(networkController);
     }
