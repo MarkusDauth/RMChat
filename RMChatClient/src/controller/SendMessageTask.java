@@ -47,7 +47,7 @@ public class SendMessageTask implements Runnable{
             tcpReceive.receive();
             String code = tcpReceive.readNextString();
             logger.info("Received message: "+code);
-            processCode(code,message);
+            processCode(code,tcpReceive,message);
 
             views.showMessage(tcpReceive.readNextString());
 
@@ -58,23 +58,26 @@ public class SendMessageTask implements Runnable{
 
     }
 
-    private void processCode(String code, Message message) {
-        switch(code){
-            case "OKSEN":
+    private void processCode(String code, TcpReceive tcpReceive, Message message) {
+        if(code.equals("OKSEN")){
                 FileChatDatabase.getInstance().addMessage(message);
                 views.addMessageToHistory(message);
                 views.finishSend();
-                break;
-            case "UserNotLoggedIn":
-                views.showMessage("UserNotLoggedIn");
-                logger.severe("Received Code UserNotLoggedIn");
-                break;
-            case "RecipientNotLoggedIn":
-                views.showMessage("RecipientNotLoggedIn");
-                logger.severe("Received Code RecipientNotLoggedIn");
-                break;
-            default:
-                logger.severe("ERROR TEST");
+        }
+        else{
+            String errorMsg = tcpReceive.readNextString();
+            switch(errorMsg){
+                case "UserNotLoggedIn":
+                    views.showMessage("UserNotLoggedIn");
+                    logger.severe("Received Code UserNotLoggedIn");
+                    break;
+                case "RecipientNotLoggedIn":
+                    views.showMessage("RecipientNotLoggedIn");
+                    logger.severe("Received Code RecipientNotLoggedIn");
+                    break;
+                default:
+                    logger.severe("ERROR TEST");
+            }
         }
     }
 }
