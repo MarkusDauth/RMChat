@@ -49,8 +49,6 @@ public class SendMessageTask implements Runnable{
             logger.info("Received message: "+code);
             processCode(code,tcpReceive,message);
 
-            views.showMessage(tcpReceive.readNextString());
-
         } catch (Exception e) {
             logger.severe(e.getMessage());
             views.showMessage("Unexpected");

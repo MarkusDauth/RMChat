@@ -5,11 +5,15 @@ import properties.Properties;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.logging.Logger;
 
 /**
  * Same code for client and server
  */
 public class TcpSend {
+    private static final Logger logger = Logger.getLogger("logger");
+
+
     private final OutputStream out;
     private final ByteBuffer bbuf;
 
@@ -26,6 +30,8 @@ public class TcpSend {
             bbuf.put((byte) string.charAt(i));
         }
         bbuf.put((byte) '\0');
+
+        //logger.info("SENT: "+string);
     }
 
     public void send() throws IOException {
@@ -36,6 +42,7 @@ public class TcpSend {
         add("ERROR");
         add(errorType);
         send();
+
     }
 }
 

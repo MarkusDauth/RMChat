@@ -32,16 +32,16 @@ public class UserSession {
         this.inetAddress = inetAddress;
     }
 
+    public UserSession(Socket socket) {
+        socket.getInetAddress();
+    }
+
     public String getUsername() {
         return username;
     }
 
     public String getSessionId() {
         return sessionId;
-    }
-
-    public UserSession(Socket socket) {
-        socket.getInetAddress();
     }
 
     public InetAddress getInetAddress() {

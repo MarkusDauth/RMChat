@@ -178,7 +178,7 @@ class SessionHandler {
         String code = recipientTcpReceive.readNextString();
         String sessionId = recipientTcpReceive.readNextString();
         //Check if the receiver is correct. Let timeout happen, if not.
-        if(code.equals("OKREC") && sessionId == recipientSession.getSessionId()){
+        if(code.equals("OKREC") && sessionId.equals(recipientSession.getSessionId())){
             sendOKSEN(senderTcpSend);
         }
     }

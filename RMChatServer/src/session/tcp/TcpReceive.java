@@ -5,11 +5,15 @@ import properties.Properties;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.logging.Logger;
 
 /**
  * Same Code for server and client
  */
 public class TcpReceive {
+    private static final Logger logger = Logger.getLogger("logger");
+
+
     private final InputStream in;
     private final byte[] buffer;
     private final ByteBuffer bbuf;
@@ -45,6 +49,9 @@ public class TcpReceive {
             readPosition++;
         }
         readPosition++;
+
+        //logger.info("RECEIVED: "+stringBuilder.toString());
+
         return stringBuilder.toString();
     }
 }
