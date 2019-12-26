@@ -13,6 +13,7 @@ import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Logger;
 
 
@@ -76,7 +77,10 @@ public class SessionHandler {
     }
 
     /**
-     * Updates the session which sent an alive Message
+     * Updates the session which sent an alive Message.
+     * Responds to client with OKALV, followed by a list of friends. Example:
+     * OKALV FriendA 0 FriendB 1 FriendC 1
+     * 0 = offline, 1 = online
      *
      * @param tcpSend
      * @param tcpReceive
@@ -86,18 +90,36 @@ public class SessionHandler {
 
         Optional<UserSession> session = sessions.stream().
                 filter(s -> s.getSessionId().equals(sessionId)).
-                findFirst();
+                findAny();
 
         if (session.isPresent()) {
             logger.fine("User " + session.get().getUsername() + " is alive!");
             session.get().updateLastAliveDate();
 
-            tcpSend.add("OKALV");
-            tcpSend.send();
+            sendOKALV(tcpSend, session.get());
         } else {
             logger.info("Someone wants to be alive, but is not logged in");
             tcpSend.sendError("UserNotLoggedIn");
         }
+    }
+
+    private static void sendOKALV(TcpSend tcpSend, UserSession session) throws IOException {
+        tcpSend.add("OKALV");
+
+        Set<String> friends = session.getFriends();
+        for (String friend : friends) {
+            tcpSend.add(friend);
+            if (sessions.stream().filter(s -> s.getUsername().equals(friend)).findAny().isPresent()) {
+                tcpSend.add("1");
+            } else {
+                tcpSend.add("0");
+            }
+            logger.info("Friend "+friend);
+        }
+
+        //Mark end of friend
+        tcpSend.add("");
+        tcpSend.send();
     }
 
     private static Optional<UserSession> findSession(String sessionId) {
@@ -128,7 +150,7 @@ public class SessionHandler {
             //3. Parameter
             String message = senderTcpReceive.readNextString();
 
-            logger.info(chatMessageSenderSession.get().getUsername()+" wants to send a message to "+chatMessageRecipient);
+            logger.info(chatMessageSenderSession.get().getUsername() + " wants to send a message to " + chatMessageRecipient);
 
             //Check if recipient is logged in
             Optional<UserSession> chatMessageRecipientSession = getSession(chatMessageRecipient);
@@ -179,7 +201,7 @@ public class SessionHandler {
         String code = recipientTcpReceive.readNextString();
         String sessionId = recipientTcpReceive.readNextString();
         //Check if the receiver is correct. Let timeout happen, if not.
-        if(code.equals("OKREC") && sessionId.equals(recipientSession.getSessionId())){
+        if (code.equals("OKREC") && sessionId.equals(recipientSession.getSessionId())) {
             sendOKSEN(senderTcpSend);
         }
     }
@@ -190,12 +212,12 @@ public class SessionHandler {
     }
 
     static Socket createSocket(InetAddress inetAddress) {
-        Socket socket=null;
+        Socket socket = null;
         try {
             int clientPort = Properties.getInt("client.port");
             socket = new Socket(inetAddress, clientPort);
             int timeout = Properties.getInt("client.timeout");
-            socket.setSoTimeout(timeout*1000);
+            socket.setSoTimeout(timeout * 1000);
             logger.info("Connected to Client: " + socket);
         } catch (SocketException e) {
             logger.info("Error: " + e.getMessage());
@@ -217,18 +239,17 @@ public class SessionHandler {
             //2. Parameter
             String newFriend = tcpReceive.readNextString();
 
-            logger.info(session.get().getUsername()+" wants to be friends with "+newFriend);
+            logger.info(session.get().getUsername() + " wants to be friends with " + newFriend);
 
-            if(session.get().hasFriend(newFriend)){
+            if (session.get().hasFriend(newFriend)) {
                 logger.info("Friend Request failed: already friends");
                 tcpSend.sendError("AlreadyFriends");
-            }
-            else if (! database.usernameIsPresent(newFriend)) {
-                logger.info("Friend Request from +"+ session.get().getUsername() +"failed: Friend "+newFriend+" net exist.");
+            } else if (!database.usernameIsPresent(newFriend)) {
+                logger.info("Friend Request from +" + session.get().getUsername() + "failed: Friend " + newFriend + " net exist.");
                 tcpSend.sendError("FriendDoesNotExist");
             } else {
                 session.get().addFriend(newFriend);
-                saveFriend(tcpSend, session.get().getUsername(), newFriend );
+                saveFriend(tcpSend, session.get().getUsername(), newFriend);
             }
         } else {
             logger.info("Someone wants to send a message, but is not logged in");
@@ -237,13 +258,13 @@ public class SessionHandler {
     }
 
     private static void saveFriend(TcpSend tcpSend, String requester, String newFriend) throws IOException {
-        if(database.addFriend(requester, newFriend)){
+        if (database.addFriend(requester, newFriend)) {
 
-            logger.info(requester+" is now friends with "+newFriend);
+            logger.info(requester + " is now friends with " + newFriend);
 
             tcpSend.add("OKFRD");
             tcpSend.send();
-        }else{
+        } else {
             tcpSend.sendError("Unexpected");
             logger.info("Unexpected");
         }

@@ -14,7 +14,7 @@ class User implements Serializable {
         this.username = username;
         this.password = password;
 
-        this.friends = new HashSet<String>();
+        this.friends = new HashSet<>();
     }
 
     public String getUsername() {

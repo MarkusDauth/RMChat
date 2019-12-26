@@ -12,6 +12,7 @@ import java.security.SecureRandom;
 import java.time.LocalTime;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -49,6 +50,8 @@ public class UserSession {
     public InetAddress getInetAddress() {
         return inetAddress;
     }
+
+    public Set<String> getFriends() { return Collections.unmodifiableSet(friends) ;};
 
     /**
      * Checks if user login information is correct
