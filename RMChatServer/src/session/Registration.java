@@ -3,13 +3,13 @@ package session;
 import database.DatabaseInterface;
 import database.TextfileDatabase;
 import properties.Properties;
-import session.tcp.TcpReceive;
-import session.tcp.TcpSend;
+import network.TcpReceive;
+import network.TcpSend;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
-class Registration {
+public class Registration {
     private static final Logger logger = Logger.getLogger("logger");
     private static final DatabaseInterface database = TextfileDatabase.getInstance();
 

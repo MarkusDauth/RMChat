@@ -3,7 +3,7 @@ package session;
 import database.DatabaseInterface;
 import database.TextfileDatabase;
 import properties.Properties;
-import session.tcp.TcpSend;
+import network.TcpSend;
 
 import java.io.IOException;
 import java.net.InetAddress;

@@ -1,13 +1,15 @@
-package session;
+package network;
 
-import session.tcp.TcpReceive;
-import session.tcp.TcpSend;
+import network.TcpReceive;
+import network.TcpSend;
+import session.Registration;
+import session.SessionHandler;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.logging.Logger;
 
-class ClientHandler implements Runnable {
+public class ClientHandler implements Runnable {
     private final Socket socket;
     private static final Logger logger = Logger.getLogger("logger");
     private final TcpSend tcpSend;

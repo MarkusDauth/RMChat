@@ -1,6 +1,5 @@
 
-import database.TextfileDatabase;
-import session.NetworkController;
+import network.NetworkController;
 
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;

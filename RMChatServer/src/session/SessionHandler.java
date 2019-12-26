@@ -3,8 +3,8 @@ package session;
 import database.DatabaseInterface;
 import database.TextfileDatabase;
 import properties.Properties;
-import session.tcp.TcpReceive;
-import session.tcp.TcpSend;
+import network.TcpReceive;
+import network.TcpSend;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 /**
  * Class for handling Logins and the resulting Session
  */
-class SessionHandler {
+public class SessionHandler {
     private static final DatabaseInterface database = TextfileDatabase.getInstance();
     private static final Logger logger = Logger.getLogger("logger");
 

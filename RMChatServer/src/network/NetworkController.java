@@ -1,6 +1,7 @@
-package session;
+package network;
 
 import properties.Properties;
+import session.KeepAliveCycle;
 
 import java.io.*;
 import java.net.ServerSocket;

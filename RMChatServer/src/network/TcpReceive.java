@@ -1,4 +1,4 @@
-package session.tcp;
+package network;
 
 import properties.Properties;
 
