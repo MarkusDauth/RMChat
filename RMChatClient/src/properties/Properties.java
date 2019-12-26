@@ -1,4 +1,4 @@
-package controller;
+package properties;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -6,14 +6,15 @@ import java.io.IOException;
 /**
  * Klasse für Zugriff auf config.properties
  * Beispiel aufruf:
- * int length = Properties.getInt("username.maxLength");
+ * int length = properties.getInt("username.maxLength");
  */
 public class Properties {
     private static java.util.Properties properties = new java.util.Properties();
 
-    static {
-        try {
-            properties.load(new FileInputStream("resources/config.properties"));
+    static{
+        String resourceName = "properties/config.properties";
+        try{
+            properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName));
         } catch (IOException e) {
             e.printStackTrace();
         }

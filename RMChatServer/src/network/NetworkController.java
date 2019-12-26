@@ -6,6 +6,7 @@ import session.KeepAliveCycle;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class NetworkController {
@@ -44,12 +45,14 @@ public class NetworkController {
 
     private ServerSocket createServerSocket() {
         int serverPort = Properties.getInt("server.port");
+        logger.info(Integer.toString(serverPort));
 
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(serverPort);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.severe("Can't create server socket. Is port already used?\n"+e.getMessage());
+            System.exit(-1);
         }
         return serverSocket;
     }

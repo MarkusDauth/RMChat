@@ -1,5 +1,6 @@
 package controller;
 
+import properties.Properties;
 import controller.tcp.TcpReceive;
 import controller.tcp.TcpSend;
 import model.Friend;

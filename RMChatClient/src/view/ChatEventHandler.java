@@ -1,10 +1,9 @@
 package view;
 
 import controller.NetworkController;
-import controller.Properties;
+import properties.Properties;
 import controller.chatDatabase.ChatDatabase;
 import controller.chatDatabase.FileChatDatabase;
-import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import model.Friend;

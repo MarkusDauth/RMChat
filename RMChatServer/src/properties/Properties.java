@@ -1,6 +1,5 @@
 package properties;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
@@ -9,11 +8,12 @@ import java.io.IOException;
  * int length = Properties.getInt("username.maxLength");
  */
 public class Properties {
-    private static final java.util.Properties properties = new java.util.Properties();
+    private static java.util.Properties properties = new java.util.Properties();
 
-    static {
-        try {
-            properties.load(new FileInputStream("resources/config.properties"));
+    static{
+        String resourceName = "properties/config.properties";
+        try{
+            properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName));
         } catch (IOException e) {
             e.printStackTrace();
         }

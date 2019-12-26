@@ -1,5 +1,6 @@
 package controller;
 
+import properties.Properties;
 import controller.chatDatabase.FileChatDatabase;
 import controller.tcp.TcpReceive;
 import controller.tcp.TcpSend;

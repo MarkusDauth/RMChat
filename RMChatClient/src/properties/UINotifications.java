@@ -1,4 +1,4 @@
-package view;
+package properties;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -6,9 +6,10 @@ import java.io.IOException;
 public class UINotifications {
     private static java.util.Properties notification = new java.util.Properties();
 
-    static {
-        try {
-            notification.load(new FileInputStream("resources/userInterface.notifications"));
+    static{
+        String resourceName = "properties/userInterface.notifications";
+        try{
+            notification.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,7 +1,7 @@
 package view;
 
 import controller.NetworkController;
-import controller.Properties;
+import properties.Properties;
 import controller.chatDatabase.FileChatDatabase;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -14,6 +14,7 @@ import javafx.scene.control.Control;
 import javafx.stage.Stage;
 import model.Friend;
 import model.Message;
+import properties.UINotifications;
 
 import java.io.IOException;
 import java.util.List;

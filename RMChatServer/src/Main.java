@@ -11,9 +11,8 @@ class Main {
 
     //TODO: better exception
     public static void main(String[] args) {
-        logger.info("START");
-
         configureLogger();
+        logger.info("START");
 
         NetworkController networkController = new NetworkController();
         networkController.start();

@@ -1,6 +1,6 @@
 package controller.tcp;
 
-import controller.Properties;
+import properties.Properties;
 
 import java.io.IOException;
 import java.io.OutputStream;

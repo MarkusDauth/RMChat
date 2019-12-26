@@ -1,5 +1,6 @@
 package controller;
 
+import properties.Properties;
 import model.Friend;
 import model.LoginData;
 import model.Message;
@@ -9,7 +10,6 @@ import view.Views;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 public class NetworkController {
@@ -46,6 +46,7 @@ public class NetworkController {
     }
 
     public void loginUser(LoginData loginData) {
+
         username = loginData.getUsername();
         new Thread(new LoginTask(loginData,views)).start();
     }
