@@ -12,6 +12,7 @@ import java.security.SecureRandom;
 import java.time.LocalTime;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class UserSession {
@@ -20,6 +21,7 @@ public class UserSession {
 
     private String username;
     private String password;
+    private Set<String> friends;
 
     private String sessionId;
     private InetAddress inetAddress;
@@ -48,6 +50,23 @@ public class UserSession {
         return inetAddress;
     }
 
+    /**
+     * Checks if user login information is correct
+     * @param tcpSend
+     * @return true, if user information is correct and session is "online" afterwards. Otherwise return false and session should be discarded
+     * @throws IOException
+     */
+    public boolean setupSession(TcpSend tcpSend) throws IOException {
+        if (!validateCredentials(tcpSend)) {
+            return false;
+        }
+        //Session is online
+        friends = database.getFriends(username);
+        createSessionId();
+        updateLastAliveDate();
+        return true;
+    }
+
     public boolean validateCredentials(TcpSend tcpSend) throws IOException {
         if (!database.usernameIsPresent(username)) {
             tcpSend.sendError("WrongUsername");
@@ -58,15 +77,6 @@ public class UserSession {
             logger.info("WrongPassword");
             return false;
         }
-        return true;
-    }
-
-    public boolean setupSession(TcpSend tcpSend) throws IOException {
-        if (!validateCredentials(tcpSend)) {
-            return false;
-        }
-        createSessionId();
-        updateLastAliveDate();
         return true;
     }
 
@@ -97,5 +107,13 @@ public class UserSession {
         long timePassed = SECONDS.between(lastAliveDate,LocalTime.now());
         logger.fine(username + " last sign of life was "+timePassed+" seconds ago.");
         return (timePassed < timeoutSeconds);
+    }
+
+    public boolean hasFriend(String username){
+        return friends.contains(username);
+    }
+
+    public void addFriend(String newFriend){
+        friends.add(newFriend);
     }
 }
