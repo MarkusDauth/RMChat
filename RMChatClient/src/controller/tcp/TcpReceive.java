@@ -1,5 +1,7 @@
 package controller.tcp;
 
+import controller.Properties;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -11,7 +13,7 @@ public class TcpReceive {
     private InputStream in;
     private byte[] buffer;
     private ByteBuffer bbuf;
-    private int bufferLength = 256;
+    private int bufferLength = Properties.getInt("tcp.byteBufferLength");
     private int readPosition = 0;
     int readbytes;
 
