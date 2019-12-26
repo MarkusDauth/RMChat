@@ -14,5 +14,9 @@ EN.WrongUsername = The specified Username does not exist.
 EN.WrongPassword = The specified Password is wrong.
 EN.AlreadyLoggedIn = The specified Username is already logged in.
 
-EN.UserNotLoggedIn = Fatal Error. User not logged in.
+EN.UserNotLoggedIn = Specified User is not logged in.
 EN.RecipientNotLoggedIn = Friend is offline.
+EN.RecipientNotAFriend = This user is not your friend. Please add this user to your Friend list.
+
+EN.FriendDoesNotExist = Specified user does not exist.
+EN.AlreadyFriends = You are already friends with the specified user.

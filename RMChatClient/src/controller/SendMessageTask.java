@@ -73,8 +73,12 @@ public class SendMessageTask implements Runnable{
                     views.showMessage("RecipientNotLoggedIn");
                     logger.severe("Received Code RecipientNotLoggedIn");
                     break;
+                case "RecipientNotAFriend":
+                    views.showMessage("RecipientNotAFriend");
+                    logger.severe("Received Code RecipientNotAFriend");
                 default:
-                    logger.severe("ERROR TEST");
+                    views.showMessage(code);
+                    logger.severe("Did not catch that error at SendMessageTask: "+code);
             }
         }
     }
