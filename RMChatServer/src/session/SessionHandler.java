@@ -103,6 +103,12 @@ public class SessionHandler {
         }
     }
 
+    /**
+     * Also sends friend requests
+     * @param tcpSend
+     * @param session
+     * @throws IOException
+     */
     private static void sendOKALV(TcpSend tcpSend, UserSession session) throws IOException {
         tcpSend.add("OKALV");
 
@@ -291,9 +297,14 @@ public class SessionHandler {
         String sessionId = recipientTcpReceive.readNextString();
         String acceptance = recipientTcpReceive.readNextString();
 
+        logger.info("Received: "+code+ " " + sessionId + " "+ acceptance);
+
         //Check if the receiver is correct. Let timeout happen, if not.
         if (code.equals("OKFRIENDREQ") && sessionId.equals(newFriendSession.getSessionId())) {
-            saveNewFriendship(requesterTcpSend, newFriendSession.getUsername(), requester);
+            if(acceptance.equals("1"))
+                saveNewFriendship(requesterTcpSend, newFriendSession.getUsername(), requester);
+            else
+                logger.info("Friend request denied");
         }
     }
 
