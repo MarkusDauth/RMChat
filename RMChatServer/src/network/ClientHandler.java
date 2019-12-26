@@ -38,8 +38,9 @@ public class ClientHandler implements Runnable {
                     case "LOGIN":
                         SessionHandler.login(socket, tcpSend, tcpReceive);
                         break;
-                    case "ADDFRD":
+                    case "ADDFRIEND":
                         SessionHandler.addFriend(tcpSend, tcpReceive);
+                        break;
                     case "REGISTER":
                         Registration.registerUser(tcpSend, tcpReceive);
                         break;
@@ -47,7 +48,7 @@ public class ClientHandler implements Runnable {
                 socket.close(); //Can't be in finally block, because of exception
                 logger.fine("Socket closed. Port: " + socket);
             } catch (IOException e) {
-                logger.severe(e.getMessage());
+                logger.severe(String.valueOf(e.getStackTrace()));
             }
         }
     }

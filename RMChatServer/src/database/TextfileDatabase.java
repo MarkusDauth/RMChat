@@ -15,7 +15,7 @@ public class TextfileDatabase implements DatabaseInterface {
     private List<User> users = new LinkedList<>();
 
     public static DatabaseInterface getInstance() {
-        if(instance == null){
+        if (instance == null) {
             instance = new TextfileDatabase();
         }
         return instance;
@@ -50,12 +50,23 @@ public class TextfileDatabase implements DatabaseInterface {
 
     @Override
     public synchronized boolean addFriend(String requester, String newFriend) {
-        Optional<User> user = getUser(requester);
-        if(user.isPresent()){
-            user.get().addFriend(newFriend);
-            return save();
-        }
-        else{
+        //Users need to add each other
+        Optional<User> requesterUser = getUser(requester);
+        if (requesterUser.isPresent()) {
+            requesterUser.get().addFriend(newFriend);
+
+            Optional<User> newFriendUser = getUser(newFriend);
+            if (newFriendUser.isPresent()) {
+                newFriendUser.get().addFriend(requester);
+
+                return save();
+            } else{
+                logger.severe("Friend does not exist");
+                return false;
+            }
+
+
+        } else {
             logger.severe("User does not exist");
             return false;
         }
@@ -64,21 +75,22 @@ public class TextfileDatabase implements DatabaseInterface {
     @Override
     public Set<String> getFriends(String username) {
         Optional<User> user = getUser(username);
-        if(user.isPresent()){ ;
+        if (user.isPresent()) {
+            ;
             return user.get().getFriends();
-        }
-        else{
+        } else {
             logger.severe("User does not exist");
             return null;
         }
     }
 
-    private synchronized Optional<User> getUser(String username){
+    private synchronized Optional<User> getUser(String username) {
         return users.stream().filter(c -> c.getUsername().equals(username)).findAny();
     }
 
     /**
      * Save Userlist to .ser file
+     *
      * @return
      */
     private synchronized boolean save() {
@@ -99,7 +111,7 @@ public class TextfileDatabase implements DatabaseInterface {
     @SuppressWarnings("unchecked")
     private synchronized void load() {
         File f = new File("users.ser");
-        if(f.exists()){
+        if (f.exists()) {
             try (ObjectInputStream in = new ObjectInputStream(
                     new BufferedInputStream(new FileInputStream("users.ser")))) {
                 users = (List<User>) in.readObject();
@@ -107,8 +119,7 @@ public class TextfileDatabase implements DatabaseInterface {
             } catch (IOException | ClassNotFoundException e) {
                 logger.severe(e.getMessage());
             }
-        }
-        else{
+        } else {
             logger.info("users.ser does not exist");
         }
     }

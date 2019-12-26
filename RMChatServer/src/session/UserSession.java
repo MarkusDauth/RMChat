@@ -117,6 +117,6 @@ public class UserSession {
     }
 
     public void addFriend(String newFriend){
-        friends.add(newFriend);
+        friends = database.getFriends(username);
     }
 }

@@ -155,14 +155,13 @@ public class SessionHandler {
             //Check if recipient is logged in
             Optional<UserSession> chatMessageRecipientSession = getSession(chatMessageRecipient);
 
-            if (! chatMessageSenderSession.get().hasFriend(chatMessageRecipient)){
+            if (!chatMessageSenderSession.get().hasFriend(chatMessageRecipient)) {
                 logger.info("Recipient is not a friend");
                 senderTcpSend.sendError("RecipientNotAFriend");
-            }
-            else if (!chatMessageRecipientSession.isPresent()) {
+            } else if (!chatMessageRecipientSession.isPresent()) {
                 logger.info("Recipient is offline");
                 senderTcpSend.sendError("RecipientNotLoggedIn");
-            } else{
+            } else {
                 forwardMessage(
                         senderTcpSend,
                         chatMessageSenderSession.get(),
@@ -250,11 +249,11 @@ public class SessionHandler {
                 logger.info("Friend Request failed: already friends");
                 tcpSend.sendError("AlreadyFriends");
             } else if (!database.usernameIsPresent(newFriend)) {
-                logger.info("Friend Request from +" + session.get().getUsername() + "failed: Friend " + newFriend + " net exist.");
+                logger.info("Friend Request from +" + session.get().getUsername() + "failed: Friend " + newFriend + " does not exist.");
                 tcpSend.sendError("FriendDoesNotExist");
             } else {
                 session.get().addFriend(newFriend);
-                saveFriend(tcpSend, session.get().getUsername(), newFriend);
+                sendFriendRequest(tcpSend, session.get().getUsername(), newFriend);
             }
         } else {
             logger.info("Someone wants to send a message, but is not logged in");
@@ -262,15 +261,50 @@ public class SessionHandler {
         }
     }
 
-    private static void saveFriend(TcpSend tcpSend, String requester, String newFriend) throws IOException {
-        if (database.addFriend(requester, newFriend)) {
+    private static void sendFriendRequest(TcpSend requesterTcpSend, String requester, String newFriend) throws IOException {
+        Optional<UserSession> newFriendSession = getSession(newFriend);
 
+        if (!newFriendSession.isPresent()) {
+            logger.info("That new friend is offline");
+            requesterTcpSend.sendError("FriendNotOnline");
+        } else {
+            logger.info("Sending friend request to " + newFriend);
+
+            //Net socket with recieving client
+            Socket socket = createSocket(newFriendSession.get().getInetAddress());
+            TcpSend recipeintTcpSend = new TcpSend(socket.getOutputStream());
+            TcpReceive recipientTcpReceive = new TcpReceive(socket.getInputStream());
+
+            recipeintTcpSend.add("FRIENDREQ");
+            //Send THIS sessions username, which is the SENDER of the chat message
+            recipeintTcpSend.add(requester);
+            recipeintTcpSend.send();
+
+            receiveOKFRIENDREQ(requesterTcpSend, recipientTcpReceive, newFriendSession.get(), requester);
+        }
+    }
+
+    private static void receiveOKFRIENDREQ(TcpSend requesterTcpSend, TcpReceive recipientTcpReceive, UserSession newFriendSession, String requester) throws IOException {
+        recipientTcpReceive.receive();
+        //Loading 3 Parameters
+        String code = recipientTcpReceive.readNextString();
+        String sessionId = recipientTcpReceive.readNextString();
+        String acceptance = recipientTcpReceive.readNextString();
+
+        //Check if the receiver is correct. Let timeout happen, if not.
+        if (code.equals("OKFRIENDREQ") && sessionId.equals(newFriendSession.getSessionId())) {
+            saveNewFriendship(requesterTcpSend, newFriendSession.getUsername(), requester);
+        }
+    }
+
+    private static void saveNewFriendship(TcpSend requesterTcpSend, String requester, String newFriend) throws IOException {
+        if (database.addFriend(requester, newFriend)) {
             logger.info(requester + " is now friends with " + newFriend);
 
-            tcpSend.add("OKFRD");
-            tcpSend.send();
+            requesterTcpSend.add("OKFRIEND");
+            requesterTcpSend.send();
         } else {
-            tcpSend.sendError("Unexpected");
+            requesterTcpSend.sendError("Unexpected");
             logger.info("Unexpected");
         }
     }
