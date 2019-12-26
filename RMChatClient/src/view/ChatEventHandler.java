@@ -3,14 +3,13 @@ package view;
 import controller.NetworkController;
 import controller.chatDatabase.ChatDatabase;
 import controller.chatDatabase.FileChatDatabase;
+import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import model.Friend;
 import model.Message;
@@ -51,6 +50,16 @@ public class ChatEventHandler {
         networkController.addFriend(friend);
     }
 
+    @FXML public void handleMouseClick() {
+        String friend = friendList.getSelectionModel().getSelectedItem().getText();
+        List<Message> friendMessages = fileChatDatabase.getMessages(friend);
+        shownChatOf = friend;
+        messageHistory.getItems().clear();
+        for(Message message : friendMessages) {
+            addItemToMessageHistory(message);
+        }
+    }
+
     public void setNetworkController(NetworkController networkController) {
         this.networkController = networkController;
     }
@@ -65,14 +74,6 @@ public class ChatEventHandler {
     }
     public void initializeFriendList(){
         Label friend = new Label("monkas");
-        friend.setOnMouseClicked(event -> {
-            List<Message> friendMessages = fileChatDatabase.getMessages(friend.getText());
-            shownChatOf = friend.getText();
-            messageHistory.getItems().clear();
-            for(Message message : friendMessages) {
-                addItemToMessageHistory(message);
-            }
-        });
         friendList.getItems().add(friend);
     }
 

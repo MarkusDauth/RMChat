@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Control;
 import javafx.stage.Stage;
 import model.Message;
 
@@ -26,7 +27,7 @@ public class Views extends Application {
 
     private Stage loginStage;
     private Stage registerStage = new Stage();
-    private Stage indexStage = new Stage();
+    private Stage chatStage = new Stage();
     private boolean registerStageIsInitialized = false;
     private boolean indexStageIsInitialized = false;
 
@@ -81,21 +82,22 @@ public class Views extends Application {
             chatEventHandler.initializeFriendList();
             indexStageIsInitialized = true;
         }
-        if(indexStage.isShowing()) {
-            indexStage.setAlwaysOnTop(true);
-            indexStage.setAlwaysOnTop(false);
+        if(chatStage.isShowing()) {
+            chatStage.setAlwaysOnTop(true);
+            chatStage.setAlwaysOnTop(false);
         }
         else {
-            indexStage.show();
+            chatStage.show();
         }
     }
 
     private void initLoginUI() throws IOException {
         FXMLLoader loginFxmlLoader = new FXMLLoader(getClass().getResource("gui/login.fxml"));
         Parent loginRoot = loginFxmlLoader.load();
-        loginStage.setTitle("RM-CHAT");
-        loginStage.setScene(new Scene(loginRoot, 350, 350));
+        loginStage.setTitle("RM-CHAT Login");
+        loginStage.setScene(new Scene(loginRoot, Control.USE_COMPUTED_SIZE,Control.USE_COMPUTED_SIZE));
         loginStage.setOnCloseRequest( event -> System.exit(0));
+        loginStage.setResizable(false);
         loginEventHandler =loginFxmlLoader.getController();
         loginEventHandler.setNetworkController(networkController);
         loginEventHandler.setViews(this);
@@ -105,7 +107,8 @@ public class Views extends Application {
         FXMLLoader registerFxmlLoader = new FXMLLoader(getClass().getResource("gui/register.fxml"));
         Parent loginRoot = registerFxmlLoader.load();
         registerStage.setTitle("RM-CHAT");
-        registerStage.setScene(new Scene(loginRoot, 350, 333));
+        registerStage.setScene(new Scene(loginRoot, Control.USE_COMPUTED_SIZE,Control.USE_COMPUTED_SIZE));
+        loginStage.setResizable(false);
         registerEventHandler = registerFxmlLoader.getController();
         registerEventHandler.setNetworkController(networkController);
         registerEventHandler.setViews(this);
@@ -114,9 +117,9 @@ public class Views extends Application {
     private void initIndexUI() throws IOException {
         FXMLLoader indexFxmlLoader = new FXMLLoader(getClass().getResource("gui/chat.fxml"));
         Parent indexRoot = indexFxmlLoader.load();
-        indexStage.setTitle("RM-CHAT");
-        indexStage.setScene(new Scene(indexRoot, 660, 500));
-        indexStage.setOnCloseRequest( event -> {
+        chatStage.setTitle("RM-CHAT");
+        chatStage.setScene(new Scene(indexRoot, Control.USE_COMPUTED_SIZE,Control.USE_COMPUTED_SIZE));
+        chatStage.setOnCloseRequest(event -> {
             FileChatDatabase.getInstance().save();
             System.exit(0);
         });
