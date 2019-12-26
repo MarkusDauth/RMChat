@@ -28,12 +28,22 @@ public class IncomingMessagesTask implements Runnable{
         while (true) {
             Socket socket;
             try {
+
                 socket = serverSocket.accept();
                 logger.info("Got new Message " + socket);
-
+                String socketAddress = socket.getRemoteSocketAddress().toString();
+                if(!socketAddress.equals(Properties.getString("server.ip"))){
+                    logger.severe("Message is does not correspond with the server ip: " + socketAddress);
+                    socket.close();
+                    continue;
+                }
+                if(!(NetworkController.getUserStatus() == UserStatus.Online)){
+                    logger.severe("Client is not online. Discarding Message.");
+                    socket.close();
+                    continue;
+                }
                 TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
                 TcpSend tcpSend = new TcpSend(socket.getOutputStream());
-
 
                 tcpReceive.receive();
                 String code = tcpReceive.readNextString();
