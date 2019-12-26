@@ -42,7 +42,6 @@ public class TcpSend {
         add("ERROR");
         add(errorType);
         send();
-
     }
 }
 
