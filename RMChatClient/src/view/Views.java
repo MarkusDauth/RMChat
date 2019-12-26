@@ -12,9 +12,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.stage.Stage;
+import model.Friend;
 import model.Message;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -79,7 +81,6 @@ public class Views extends Application {
         if(!indexStageIsInitialized) {
             loginStage.close();
             initIndexUI();
-            chatEventHandler.initializeFriendList();
             indexStageIsInitialized = true;
         }
         if(chatStage.isShowing()) {
@@ -126,6 +127,11 @@ public class Views extends Application {
         chatEventHandler = indexFxmlLoader.getController();
         chatEventHandler.setNetworkController(networkController);
         chatEventHandler.setViews(this);
+    }
+
+    public void refreshFriendList(List<Friend> friendList){
+        Platform.runLater(() -> {
+            chatEventHandler.refreshFriendList(friendList);});
     }
 
     private static void configureLogger() {

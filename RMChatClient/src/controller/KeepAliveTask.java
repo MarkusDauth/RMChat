@@ -68,7 +68,7 @@ public class KeepAliveTask implements Runnable{
         if(code.equals("OKALV")){
             views.setIndexStatus("OnlineStatus");
             List<Friend> friends = parseFriends(tcpReceive);
-            testFriendList(friends);
+            views.refreshFriendList(friends);
             return;
         }
         //TODO better error-handling
@@ -94,7 +94,4 @@ public class KeepAliveTask implements Runnable{
         return friendList;
     }
 
-    private void testFriendList(List<Friend> friends) {
-        friends.stream().forEach(friend -> logger.info("FriendName:"+friend.getUsername() + " ///// Status: " + friend.isStatus()));
-    }
 }

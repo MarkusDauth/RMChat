@@ -76,6 +76,7 @@ public class SendMessageTask implements Runnable{
                 case "RecipientNotAFriend":
                     views.showMessage("RecipientNotAFriend");
                     logger.severe("Received Code RecipientNotAFriend");
+                    break;
                 default:
                     views.showMessage(code);
                     logger.severe("Did not catch that error at SendMessageTask: "+code);

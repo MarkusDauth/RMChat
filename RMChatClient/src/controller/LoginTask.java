@@ -5,6 +5,7 @@ import controller.tcp.TcpSend;
 import model.LoginData;
 import view.Views;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Logger;
 
@@ -42,7 +43,8 @@ public class LoginTask implements Runnable {
             logger.info("Recieved message: "+code);
             processCode(code,tcpReceive);
 
-        } catch (Exception e) {
+        } catch (IOException e) {
+            logger.severe(e.getMessage());
             views.showMessage("Unexpected");
         }
     }

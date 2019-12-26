@@ -1,16 +1,12 @@
 package view;
 
 import controller.NetworkController;
+import controller.Properties;
 import controller.chatDatabase.ChatDatabase;
 import controller.chatDatabase.FileChatDatabase;
 import javafx.application.Application;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
 import model.Friend;
 import model.Message;
 
@@ -22,7 +18,7 @@ public class ChatEventHandler {
     private NetworkController networkController;
     private ChatDatabase fileChatDatabase = FileChatDatabase.getInstance();
     private Views views;
-    private String shownChatOf = "none";
+    private String shownChatOf = "non";
 
     @FXML
     Label userNameLabel;
@@ -39,6 +35,9 @@ public class ChatEventHandler {
 
     @FXML
     public void sendMessage(){
+        if(shownChatOf.length() < Properties.getInt("username.minLength")){
+            return;
+        }
         Message message = new Message(userNameLabel.getText(), shownChatOf,messageTextArea.getText());
         networkController.sendMessage(message);
     }
@@ -72,10 +71,6 @@ public class ChatEventHandler {
     void setStatusLabelText(String text){
         statusLabel.setText(text);
     }
-    public void initializeFriendList(){
-        Label friend = new Label("monkas");
-        friendList.getItems().add(friend);
-    }
 
     public void addMessageToHistory(Message message) {
         if(shownChatOf.equals(message.getRecipient())){
@@ -86,5 +81,13 @@ public class ChatEventHandler {
     private void addItemToMessageHistory(Message message) {
         String chatHistoryMessage = message.getSender() +":\t"+ message.getText();
         messageHistory.getItems().add(chatHistoryMessage);
+    }
+
+    public void refreshFriendList(List<Friend> friendList) {
+        friendList.clear();
+        for(Friend friend:friendList){
+            Label label = new Label(friend.getUsername());
+            this.friendList.getItems().add(label);
+        }
     }
 }
