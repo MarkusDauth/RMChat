@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 public class LoginTask implements Runnable {
 
     private static Logger logger = Logger.getLogger("logger");
+    private static Thread incomingMessagesTask = null;
+    private static Thread keepAliveTask = null;
 
     private LoginData loginData;
     private Views views;
@@ -40,7 +42,6 @@ public class LoginTask implements Runnable {
             tcpReceive.receive();
             String code = tcpReceive.readNextString();
 
-
             processCode(code,tcpReceive);
 
         } catch (IOException e) {
@@ -51,19 +52,35 @@ public class LoginTask implements Runnable {
 
     private void processCode(String code, TcpReceive tcpReceive) {
         if(code.equals("OKLOG")){
-            views.showIndexUI();
-            String sessionID = tcpReceive.readNextString();
-            logger.info("Recieved message: "+code);
-            NetworkController.setUsername(loginData.getUsername());
-            NetworkController.setSessionID(sessionID);
-            logger.info("SessionID: "+sessionID);
-            new Thread(new KeepAliveTask(views,sessionID)).start();
-            new Thread(new IncomingMessagesTask(views)).start();
+            processOKLOG(code,tcpReceive);
+            finishLogin();
         }
         else{
             String errorMessage = tcpReceive.readNextString();
             logger.info("Recieved Error Message: "+errorMessage);
             views.showMessage(errorMessage);
+        }
+    }
+
+    private void processOKLOG(String code, TcpReceive tcpReceive) {
+        views.showChatUI();
+        String sessionID = tcpReceive.readNextString();
+        NetworkController.setUsername(loginData.getUsername());
+        NetworkController.setPassword(loginData.getPassword());
+        NetworkController.setSessionID(sessionID);
+        NetworkController.setUserStatus(UserStatus.Online);
+        logger.info("Recieved message: "+code);
+        logger.info("SessionID: "+sessionID);
+    }
+
+    private void finishLogin() {
+
+        //is true if the client connects to the server for the first time
+        if(incomingMessagesTask == null || keepAliveTask == null) {
+            incomingMessagesTask = new Thread(new IncomingMessagesTask(views));
+            incomingMessagesTask.start();
+            keepAliveTask = new Thread(new KeepAliveTask(views));
+            keepAliveTask.start();
         }
     }
 }

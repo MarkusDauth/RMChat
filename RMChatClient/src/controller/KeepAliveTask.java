@@ -3,6 +3,7 @@ package controller;
 import controller.tcp.TcpReceive;
 import controller.tcp.TcpSend;
 import model.Friend;
+import model.LoginData;
 import view.Views;
 
 import java.io.IOException;
@@ -17,19 +18,24 @@ public class KeepAliveTask implements Runnable{
     private static Logger logger = Logger.getLogger("logger");
 
     private Views views;
-    private String sessionID;
     private int keepAliveTimeout = Properties.getInt("client.keepAliveTimeout.seconds");
-
-    public KeepAliveTask(Views views, String sessionID) {
+    public KeepAliveTask(Views views) {
         this.views = views;
-        this.sessionID = sessionID;
     }
 
     @Override
     public void run() {
 
         while(true){
-            keepAliveRoutine();
+            if(NetworkController.getUserStatus().equals(UserStatus.Online))
+                keepAliveRoutine();
+            else {
+                try {
+                    reconnect();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             try {
                 TimeUnit.SECONDS.sleep(keepAliveTimeout);
             } catch (InterruptedException e) {
@@ -37,6 +43,7 @@ public class KeepAliveTask implements Runnable{
             }
         }
     }
+
     private void keepAliveRoutine() {
         logger.fine("Sending Keep-Alive-Message");
 
@@ -47,7 +54,7 @@ public class KeepAliveTask implements Runnable{
 
             //Data to send here
             tcpSend.add("ALIVE");
-            tcpSend.add(sessionID);
+            tcpSend.add(NetworkController.getSessionID());
             tcpSend.send();
 
             //Server response here
@@ -60,6 +67,7 @@ public class KeepAliveTask implements Runnable{
         } catch(IOException e) {
             views.showMessage("Unexpected");
             views.setIndexStatus("OfflineStatus");
+            NetworkController.setUserStatus(UserStatus.Offline);
             logger.severe(e.getMessage());
         }
     }
@@ -75,6 +83,7 @@ public class KeepAliveTask implements Runnable{
         if(tcpReceive.readNextString().equals("UserNotLoggedIn")){
             views.setIndexStatus("OfflineStatus");
             views.showMessage("UserNotLoggedIn");
+            NetworkController.setUserStatus(UserStatus.Offline);
         }
     }
 
@@ -92,6 +101,32 @@ public class KeepAliveTask implements Runnable{
             friendList.add(friend);
         }
         return friendList;
+    }
+
+    public void reconnect() throws InterruptedException {
+        LoginData loginData = new LoginData(NetworkController.getUsername(),NetworkController.getPassword());
+        int retries = 0;
+        while( isUserOffline() && retries < Properties.getInt("client.maxReconnect")) {
+            retries++;
+            logger.info("Trying to reconnect to the server. Attempt: "+retries);
+            new LoginTask(loginData, views).run();
+            TimeUnit.SECONDS.sleep(keepAliveTimeout);
+        }
+        evaluateReconnectAttempt();
+    }
+
+    private void evaluateReconnectAttempt() {
+        if(isUserOffline()){
+            logger.info("Reconnect was unsuccessful. Terminating Application..");
+            System.exit(1);
+        }
+        else{
+            logger.info("Reconnect successful. SessionID: "+NetworkController.getSessionID());
+        }
+    }
+
+    private boolean isUserOffline(){
+        return NetworkController.getUserStatus().equals(UserStatus.Offline);
     }
 
 }

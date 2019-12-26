@@ -18,16 +18,20 @@ public class NetworkController {
 
     private static String sessionID = "notSet";
     private static String username;
+    private static String password;
     private static UserStatus userStatus = UserStatus.Offline;
     private Views views;
 
     public static void setSessionID(String sessionID) { NetworkController.sessionID = sessionID; }
     public static void setUsername(String username) { NetworkController.username = username;}
+    public static void setUserStatus(UserStatus userStatus) { NetworkController.userStatus = userStatus; }
+    public static void setPassword(String password) { NetworkController.password = password; }
     public static String getUsername() {
         return username;
     }
     public static String getSessionID() { return sessionID; }
     public static UserStatus getUserStatus() { return userStatus; }
+    public static String getPassword() { return password; }
 
     public static boolean isSessionIDSet(){
         return !sessionID.equals("notSet");

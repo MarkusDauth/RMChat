@@ -180,7 +180,7 @@ public class Views extends Application {
         }
     }
 
-    public void showIndexUI(){
+    public void showChatUI(){
         Platform.runLater(()->{
             try {
                 String text = NetworkController.getUsername();
