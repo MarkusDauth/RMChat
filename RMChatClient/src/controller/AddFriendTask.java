@@ -31,7 +31,7 @@ public class AddFriendTask implements Runnable{
             TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
 
             //Data to send here
-            tcpSend.add("ADDFRD");
+            tcpSend.add("ADDFRIEND");
             tcpSend.add(NetworkController.getSessionID());
             tcpSend.add(friend.getUsername());
             tcpSend.send();
@@ -48,7 +48,7 @@ public class AddFriendTask implements Runnable{
     }
 
     private void processCode(String code, TcpReceive tcpReceive) {
-        if(code.equals("OKFRD")){
+        if(code.equals("OKFRIEND")){
             logger.info("Recieved message: "+code);
             views.showMessage(code);
         }
