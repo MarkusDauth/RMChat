@@ -1,6 +1,7 @@
 package view;
 
 import controller.NetworkController;
+import controller.Properties;
 import controller.chatDatabase.ChatDatabase;
 import controller.chatDatabase.FileChatDatabase;
 import javafx.fxml.FXML;
@@ -40,6 +41,14 @@ public class ChatEventHandler {
 
     @FXML
     public void sendMessage(){
+
+        if(messageTextArea.getText().length() < Properties.getInt("message.minlength")){
+            return;
+        }
+        if(messageTextArea.getText().length() > Properties.getInt("message.maxlength")){
+            views.showMessage("MessageTooLong");
+            return;
+        }
         Message message = new Message(userNameLabel.getText(), shownChatOf,messageTextArea.getText());
         networkController.sendMessage(message);
     }

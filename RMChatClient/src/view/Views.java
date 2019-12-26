@@ -166,7 +166,7 @@ public class Views extends Application {
             showError(message);
         }
         else{
-            String errorMessage = "Specified Code has not been added to the notifications file: "+msgKey;
+            String errorMessage = "Specified Code not added to notifications: "+msgKey;
             showError(errorMessage);
         }
     }

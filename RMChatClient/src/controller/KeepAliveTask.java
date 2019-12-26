@@ -85,7 +85,7 @@ public class KeepAliveTask implements Runnable{
             String friendName = tcpReceive.readNextString();
             UserStatus status = "1".equals(tcpReceive.readNextString())
                     ? UserStatus.Online : UserStatus.Offline;
-            if(friendName.equals("\0"))
+            if(friendName.equals(""))
                 break;
             Friend friend = new Friend(friendName,status);
             friendList.add(friend);

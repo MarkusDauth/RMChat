@@ -3,6 +3,7 @@ EN.OfflineStatus = Offline
 
 
 EN.InvalidUsernameOrPassword = Please check your Username and Password.
+EN.MessageTooLong = Your Message is too long.
 
 EN.OKREG = Account successfully created.
 EN.Unexpected = Server is unreachable.
