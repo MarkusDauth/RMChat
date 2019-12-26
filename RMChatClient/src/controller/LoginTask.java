@@ -57,7 +57,7 @@ public class LoginTask implements Runnable {
         }
         else{
             String errorMessage = tcpReceive.readNextString();
-            logger.info("Recieved Error Message: "+errorMessage);
+            logger.info("Received Error Message: "+errorMessage);
             views.showMessage(errorMessage);
         }
     }
@@ -69,7 +69,7 @@ public class LoginTask implements Runnable {
         NetworkController.setPassword(loginData.getPassword());
         NetworkController.setSessionID(sessionID);
         NetworkController.setUserStatus(UserStatus.Online);
-        logger.info("Recieved message: "+code);
+        logger.info("Received message: "+code);
         logger.info("SessionID: "+sessionID);
     }
 
