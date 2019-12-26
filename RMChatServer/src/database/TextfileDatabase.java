@@ -1,8 +1,11 @@
 package database;
 
+import javax.swing.text.html.Option;
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class TextfileDatabase implements DatabaseInterface {
@@ -43,6 +46,35 @@ public class TextfileDatabase implements DatabaseInterface {
             }
         }
         return false;
+    }
+
+    @Override
+    public synchronized boolean addFriend(String requester, String newFriend) {
+        Optional<User> user = getUser(requester);
+        if(user.isPresent()){
+            user.get().addFriend(newFriend);
+            return save();
+        }
+        else{
+            logger.severe("User does not exist");
+            return false;
+        }
+    }
+
+    @Override
+    public Set<String> getFriends(String username) {
+        Optional<User> user = getUser(username);
+        if(user.isPresent()){ ;
+            return user.get().getFriends();
+        }
+        else{
+            logger.severe("User does not exist");
+            return null;
+        }
+    }
+
+    private synchronized Optional<User> getUser(String username){
+        return users.stream().filter(c -> c.getUsername().equals(username)).findAny();
     }
 
     /**
