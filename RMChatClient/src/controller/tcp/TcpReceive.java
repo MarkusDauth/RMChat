@@ -44,7 +44,7 @@ public class TcpReceive {
      */
     public String readNextString() {
         StringBuilder stringBuilder = new StringBuilder();
-        while ((char) buffer[readPosition] != '\0') {
+        while ((char) buffer[readPosition] != '\0' &&  readPosition < bufferLength) {
             stringBuilder.append((char) buffer[readPosition]);
             readPosition++;
         }

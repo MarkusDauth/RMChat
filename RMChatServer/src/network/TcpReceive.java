@@ -17,6 +17,7 @@ public class TcpReceive {
     private final InputStream in;
     private final byte[] buffer;
     private final ByteBuffer bbuf;
+    private int bufferLength = Properties.getInt("tcp.byteBufferLength");
     private int readPosition = 0;
 
     public TcpReceive(InputStream in) {
@@ -44,7 +45,7 @@ public class TcpReceive {
     public String readNextString() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        while ((char) buffer[readPosition] != '\0') {
+        while ((char) buffer[readPosition] != '\0' &&  readPosition < bufferLength) {
             stringBuilder.append((char) buffer[readPosition]);
             readPosition++;
         }
