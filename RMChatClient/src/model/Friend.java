@@ -1,15 +1,16 @@
 package model;
 
+import controller.UserStatus;
+
 public class Friend {
     private String username;
-    private boolean status;
+    private UserStatus status;
 
     /**
-     *
-     * @param username
-     * @param status    true = online /// false = offline
+     *  @param username
+     *  @param status
      */
-    public Friend(String username, boolean status) {
+    public Friend(String username, UserStatus status) {
         this.username = username;
         this.status = status;
     }
@@ -30,11 +31,11 @@ public class Friend {
         this.username = username;
     }
 
-    public boolean isStatus() {
+    public UserStatus isStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(UserStatus status) {
         this.status = status;
     }
 }
