@@ -49,10 +49,15 @@ public class ChatEventHandler {
         networkController.addFriend(friend);
     }
 
-    @FXML public void handleMouseClick() {
-        String friend = friendList.getSelectionModel().getSelectedItem().getText();
-        List<Message> friendMessages = fileChatDatabase.getMessages(friend);
-        shownChatOf = friend;
+    @FXML
+    public void handleMouseClick() {
+        Label friendLabel = friendList.getSelectionModel().getSelectedItem();
+        if(friendLabel == null){
+            return;
+        }
+        String friendText = friendLabel.getText();
+        List<Message> friendMessages = fileChatDatabase.getMessages(friendText);
+        shownChatOf = friendText;
         messageHistory.getItems().clear();
         for(Message message : friendMessages) {
             addItemToMessageHistory(message);

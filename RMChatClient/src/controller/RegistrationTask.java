@@ -38,8 +38,15 @@ public class RegistrationTask implements Runnable {
             //Server response here
             tcpReceive.receive();
             String result = tcpReceive.readNextString();
-            logger.info("Received message: "+result);
-            views.showMessage(tcpReceive.readNextString());
+            if(result.equals("OKREG")) {
+                logger.info("Received message: " + result);
+                views.showMessage(tcpReceive.readNextString());
+            }
+            else{
+                String errorMessage = tcpReceive.readNextString();
+                logger.info("Recieved Error Message: "+errorMessage);
+                views.showMessage(errorMessage);
+            }
 
         } catch (Exception e) {
             logger.severe(e.getMessage());

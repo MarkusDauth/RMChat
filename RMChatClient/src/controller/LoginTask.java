@@ -40,7 +40,7 @@ public class LoginTask implements Runnable {
             tcpReceive.receive();
             String code = tcpReceive.readNextString();
 
-            logger.info("Recieved message: "+code);
+
             processCode(code,tcpReceive);
 
         } catch (IOException e) {
@@ -53,7 +53,7 @@ public class LoginTask implements Runnable {
         if(code.equals("OKLOG")){
             views.showIndexUI();
             String sessionID = tcpReceive.readNextString();
-
+            logger.info("Recieved message: "+code);
             NetworkController.setUsername(loginData.getUsername());
             NetworkController.setSessionID(sessionID);
             logger.info("SessionID: "+sessionID);
@@ -61,7 +61,9 @@ public class LoginTask implements Runnable {
             new Thread(new IncomingMessagesTask(views)).start();
         }
         else{
-            views.showMessage(tcpReceive.readNextString());
+            String errorMessage = tcpReceive.readNextString();
+            logger.info("Recieved Error Message: "+errorMessage);
+            views.showMessage(errorMessage);
         }
     }
 }
