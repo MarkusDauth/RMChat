@@ -79,13 +79,14 @@ public class KeepAliveTask implements Runnable{
     }
 
     private List<Friend> parseFriends(TcpReceive tcpReceive) {
+        logger.info("Parsing Friends");
         List<Friend> friendList = new ArrayList<>();
 
         while(true){
             String friendName = tcpReceive.readNextString();
             UserStatus status = "1".equals(tcpReceive.readNextString())
                     ? UserStatus.Online : UserStatus.Offline;
-            if(friendName.equals("\0"))
+            if(friendName.equals(""))
                 break;
             Friend friend = new Friend(friendName,status);
             friendList.add(friend);
