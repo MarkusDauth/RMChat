@@ -114,7 +114,7 @@ public class SessionHandler {
             } else {
                 tcpSend.add("0");
             }
-            logger.info("Friend "+friend);
+            logger.info("Friend " + friend);
         }
 
         //Mark end of friend
@@ -154,15 +154,20 @@ public class SessionHandler {
 
             //Check if recipient is logged in
             Optional<UserSession> chatMessageRecipientSession = getSession(chatMessageRecipient);
-            if (chatMessageRecipientSession.isPresent()) {
+
+            if (! chatMessageSenderSession.get().hasFriend(chatMessageRecipient)){
+                logger.info("Recipient is not a friend");
+                senderTcpSend.sendError("RecipientNotAFriend");
+            }
+            else if (!chatMessageRecipientSession.isPresent()) {
+                logger.info("Recipient is offline");
+                senderTcpSend.sendError("RecipientNotLoggedIn");
+            } else{
                 forwardMessage(
                         senderTcpSend,
                         chatMessageSenderSession.get(),
                         chatMessageRecipientSession.get(),
                         message);
-            } else {
-                logger.info("Recipient is offline");
-                senderTcpSend.sendError("RecipientNotLoggedIn");
             }
         } else {
             logger.info("Someone wants to send a message, but is not logged in");
