@@ -10,9 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import model.Friend;
 import model.Message;
 
 import java.util.List;
@@ -35,21 +33,6 @@ public class ChatEventHandler {
     ListView<String> messageHistory;
     @FXML
     TextArea messageTextArea;
-    @FXML
-    TextField addFriendTextField;
-
-    @FXML
-    public void sendMessage(){
-        Message message = new Message(userNameLabel.getText(), shownChatOf,messageTextArea.getText());
-        networkController.sendMessage(message);
-    }
-
-    @FXML
-    public void addFriend(){
-        Friend friend = new Friend(addFriendTextField.getText());
-        addFriendTextField.clear();
-        networkController.addFriend(friend);
-    }
 
     public void setNetworkController(NetworkController networkController) {
         this.networkController = networkController;
@@ -57,9 +40,11 @@ public class ChatEventHandler {
     public TextArea getMessageTextArea(){
         return messageTextArea;
     }
+
     public void setViews(Views views) {
         this.views = views;
     }
+
     void setStatusLabelText(String text){
         statusLabel.setText(text);
     }
@@ -74,6 +59,10 @@ public class ChatEventHandler {
             }
         });
         friendList.getItems().add(friend);
+    }
+    public void sendMessage(){
+        Message message = new Message(userNameLabel.getText(), shownChatOf,messageTextArea.getText());
+        networkController.sendMessage(message);
     }
 
     public void addMessageToHistory(Message message) {

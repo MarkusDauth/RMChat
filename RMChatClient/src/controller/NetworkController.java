@@ -1,6 +1,5 @@
 package controller;
 
-import model.Friend;
 import model.LoginData;
 import model.Message;
 import model.NewUser;
@@ -18,7 +17,6 @@ public class NetworkController {
 
     private static String sessionID = "notSet";
     private static String username;
-    private static UserStatus userStatus = UserStatus.Offline;
     private Views views;
 
     public static void setSessionID(String sessionID) { NetworkController.sessionID = sessionID; }
@@ -27,7 +25,6 @@ public class NetworkController {
         return username;
     }
     public static String getSessionID() { return sessionID; }
-    public static UserStatus getUserStatus() { return userStatus; }
 
     public static boolean isSessionIDSet(){
         return !sessionID.equals("notSet");
@@ -48,10 +45,6 @@ public class NetworkController {
 
     public void sendMessage(Message message) {
         new Thread(new SendMessageTask(message,views)).start();
-    }
-
-    public void addFriend(Friend friend) {
-        new Thread(new AddFriendTask(friend,views)).start();
     }
 
     static Socket createSocket() throws IOException {
