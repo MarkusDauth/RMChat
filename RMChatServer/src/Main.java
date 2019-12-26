@@ -1,5 +1,4 @@
 
-import database.TextfileDatabase;
 import session.NetworkController;
 
 import java.util.logging.FileHandler;
@@ -12,8 +11,6 @@ class Main {
 
     //TODO: better exception
     public static void main(String[] args) {
-        test();
-
         logger.info("START");
 
         configureLogger();
@@ -21,10 +18,6 @@ class Main {
         NetworkController networkController = new NetworkController();
         networkController.start();
         logFileHandler.close();
-    }
-
-    private static void test() {
-        TextfileDatabase.getInstance().addFriend("monkas", "test");
     }
 
     private static void configureLogger() {

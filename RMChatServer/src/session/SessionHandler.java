@@ -47,7 +47,6 @@ class SessionHandler {
         } else {
             UserSession newSession = new UserSession(username, password, socket.getInetAddress());
             if (newSession.setupSession(tcpSend)) {
-                //Session is online
                 sessions.add(newSession);
                 newSession.finishLogin(tcpSend);
                 logger.info("Current Logged in Users: " + sessions.size());
@@ -219,16 +218,11 @@ class SessionHandler {
 
             logger.info(session.get().getUsername()+" wants to be friends with "+newFriend);
 
-            if(session.get().hasFriend(newFriend)){
-                logger.info("Friend Request failed: already friends");
-                tcpSend.sendError("AlreadyFriends");
-            }
-            else if (! database.usernameIsPresent(newFriend)) {
-                logger.info("Friend Request from +"+ session.get().getUsername() +"failed: Friend "+newFriend+" net exist.");
-                tcpSend.sendError("FriendDoesNotExist");
-            } else {
-                session.get().addFriend(newFriend);
+            if (database.usernameIsPresent(newFriend)) {
                 saveFriend(tcpSend, session.get().getUsername(), newFriend );
+            } else {
+                logger.info("Friend Request failed: Friend does net exist.");
+                tcpSend.sendError("FriendDoesNotExist");
             }
         } else {
             logger.info("Someone wants to send a message, but is not logged in");
@@ -238,11 +232,9 @@ class SessionHandler {
 
     private static void saveFriend(TcpSend tcpSend, String requester, String newFriend) throws IOException {
         if(database.addFriend(requester, newFriend)){
-
-            logger.info(requester+" is now friends with "+newFriend);
-
-            tcpSend.add("OKFRD");
+            tcpSend.add("OKREG");
             tcpSend.send();
+            logger.info("OKREG");
         }else{
             tcpSend.sendError("Unexpected");
             logger.info("Unexpected");
