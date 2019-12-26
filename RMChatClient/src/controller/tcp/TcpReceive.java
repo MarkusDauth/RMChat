@@ -13,6 +13,7 @@ public class TcpReceive {
     private ByteBuffer bbuf;
     private int bufferLength = 256;
     private int readPosition = 0;
+    int readbytes;
 
     public TcpReceive(InputStream in) {
         this.in = in;
@@ -27,7 +28,7 @@ public class TcpReceive {
      * @throws Exception
      */
     public void receive() throws IOException {
-        int readbytes = in.read(buffer);
+        readbytes = in.read(buffer);
         for (int i = 0; i < readbytes; i++) {
             bbuf.put(buffer[i]);
         }
@@ -41,12 +42,15 @@ public class TcpReceive {
      */
     public String readNextString() {
         StringBuilder stringBuilder = new StringBuilder();
-
-        while ((char) buffer[readPosition] != '\0') {
-            stringBuilder.append((char) buffer[readPosition]);
+        if (readPosition > readbytes ){
+            while ((char) buffer[readPosition] != '\0') {
+                stringBuilder.append((char) buffer[readPosition]);
+                readPosition++;
+            }
             readPosition++;
+        }else{
+         return "\0";
         }
-        readPosition++;
         return stringBuilder.toString();
     }
 }

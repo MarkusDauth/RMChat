@@ -151,12 +151,24 @@ public class Views extends Application {
 
     public void showMessage(String msgKey) {
         String LANGUAGE = Properties.getString("LANGUAGE");
-        String message = UINotifications.getString(LANGUAGE +msgKey);
+        String message = UINotifications.getString(LANGUAGE + msgKey);
         if(msgKey.startsWith("OK")) {
             showInfo(message);
         }
-        else
+        else{
+            processErrorCode(msgKey, message);
+        }
+
+    }
+
+    private void processErrorCode(String msgKey, String message) {
+        if(message != null) {
             showError(message);
+        }
+        else{
+            String errorMessage = "Specified Code has not been added to the notifications file: "+msgKey;
+            showError(errorMessage);
+        }
     }
 
     public void showIndexUI(){

@@ -1,5 +1,6 @@
 package controller;
 
+import model.Friend;
 import model.LoginData;
 import model.Message;
 import model.NewUser;
@@ -45,6 +46,10 @@ public class NetworkController {
 
     public void sendMessage(Message message) {
         new Thread(new SendMessageTask(message,views)).start();
+    }
+
+    public void addFriend(Friend friend) {
+        new Thread(new AddFriendTask(friend,views)).start();
     }
 
     static Socket createSocket() throws IOException {

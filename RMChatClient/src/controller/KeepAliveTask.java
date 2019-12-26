@@ -2,10 +2,13 @@ package controller;
 
 import controller.tcp.TcpReceive;
 import controller.tcp.TcpSend;
+import model.Friend;
 import view.Views;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -50,7 +53,7 @@ public class KeepAliveTask implements Runnable{
             //Server response here
             tcpReceive.receive();
             String code = tcpReceive.readNextString();
-            logger.fine("Recieved message: "+code);
+            logger.fine("Received message: "+code);
             processCode(code,tcpReceive);
 
 
@@ -64,11 +67,32 @@ public class KeepAliveTask implements Runnable{
     private void processCode(String code, TcpReceive tcpReceive) {
         if(code.equals("OKALV")){
             views.setIndexStatus("OnlineStatus");
+            List<Friend> friends = parseFriends(tcpReceive);
+            testFriendList(friends);
             return;
         }
+        //TODO better error-handling
         if(tcpReceive.readNextString().equals("UserNotLoggedIn")){
             views.setIndexStatus("OfflineStatus");
             views.showMessage("UserNotLoggedIn");
         }
+    }
+
+    private List<Friend> parseFriends(TcpReceive tcpReceive) {
+        List<Friend> friendList = new ArrayList<>();
+
+        while(true){
+            String friendName = tcpReceive.readNextString();
+            boolean status = "1".equals(tcpReceive.readNextString());
+            if(friendName.equals("\0"))
+                break;
+            Friend friend = new Friend(friendName,status);
+            friendList.add(friend);
+        }
+        return friendList;
+    }
+
+    private void testFriendList(List<Friend> friends) {
+        friends.stream().forEach(friend -> logger.info("FriendName:"+friend.getUsername() + " ///// Status: " + friend.isStatus()));
     }
 }
