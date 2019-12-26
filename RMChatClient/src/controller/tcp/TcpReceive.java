@@ -1,5 +1,7 @@
 package controller.tcp;
 
+import controller.Properties;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -11,8 +13,9 @@ public class TcpReceive {
     private InputStream in;
     private byte[] buffer;
     private ByteBuffer bbuf;
-    private int bufferLength = 256;
+    private int bufferLength = Properties.getInt("tcp.byteBufferLength");
     private int readPosition = 0;
+    int readbytes;
 
     public TcpReceive(InputStream in) {
         this.in = in;
@@ -27,7 +30,7 @@ public class TcpReceive {
      * @throws Exception
      */
     public void receive() throws IOException {
-        int readbytes = in.read(buffer);
+        readbytes = in.read(buffer);
         for (int i = 0; i < readbytes; i++) {
             bbuf.put(buffer[i]);
         }
@@ -41,12 +44,12 @@ public class TcpReceive {
      */
     public String readNextString() {
         StringBuilder stringBuilder = new StringBuilder();
-
         while ((char) buffer[readPosition] != '\0') {
             stringBuilder.append((char) buffer[readPosition]);
             readPosition++;
         }
         readPosition++;
+
         return stringBuilder.toString();
     }
 }

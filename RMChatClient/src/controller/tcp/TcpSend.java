@@ -1,5 +1,7 @@
 package controller.tcp;
 
+import controller.Properties;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
@@ -9,7 +11,7 @@ import java.nio.ByteBuffer;
  */
 public class TcpSend {
     private OutputStream out;
-    private final int bufferLength = 256;
+    private final int bufferLength = Properties.getInt("tcp.byteBufferLength");
     private byte[] buffer;
     private ByteBuffer bbuf;
 
