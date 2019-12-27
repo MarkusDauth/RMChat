@@ -1,41 +1,40 @@
 package network;
 
-import properties.Properties;
-
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Same code for client and server
  */
 public class TcpSend {
-    private static final Logger logger = Logger.getLogger("logger");
-
-
-    private final OutputStream out;
-    private final ByteBuffer bbuf;
+    private OutputStream out;
+    private List<Byte> bufferList = new ArrayList<>();
 
 
     public TcpSend(OutputStream out) {
         this.out = out;
-        int bufferLength = Properties.getInt("tcp.byteBufferLength");
-        byte[] buffer = new byte[bufferLength];
-        bbuf = ByteBuffer.wrap(buffer);
     }
 
     public void add(String string) {
         for (int i = 0; i < string.length(); i++) {
-            bbuf.put((byte) string.charAt(i));
+            bufferList.add((byte) string.charAt(i));
         }
-        bbuf.put((byte) '\0');
-
-        //logger.info("SENT: "+string);
+        bufferList.add((byte) '\0');
     }
 
     public void send() throws IOException {
-        out.write(bbuf.array());
+        byte[] byteArray = listToPrimitiveByteArray(bufferList);
+        out.write(byteArray);
+    }
+
+    private byte[] listToPrimitiveByteArray(List<Byte> bufferList) {
+        byte[] byteArray = new byte[bufferList.size()];
+        for(int i = 0; i < bufferList.size(); i++){
+            byteArray[i] = bufferList.get(i);
+        }
+        return byteArray;
     }
 
     public void sendError(String errorType) throws IOException {
@@ -44,4 +43,3 @@ public class TcpSend {
         send();
     }
 }
-
