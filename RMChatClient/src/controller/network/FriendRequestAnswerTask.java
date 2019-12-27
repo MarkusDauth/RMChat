@@ -21,7 +21,7 @@ public class FriendRequestAnswerTask implements Runnable {
 
     @Override
     public void run() {
-        logger.info("Accepting friend request of "+friendRequest.getRequester());
+        logger.info("Sending answer to a friend request from "+friendRequest.getRequester());
         try {
             Socket socket = NetworkController.createSocket();
             TcpSend tcpSend = new TcpSend(socket.getOutputStream());

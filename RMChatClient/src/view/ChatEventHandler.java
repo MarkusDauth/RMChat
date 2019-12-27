@@ -74,7 +74,7 @@ public class ChatEventHandler {
     }
     public void setViews(Views views) {
     }
-    void setStatusLabelText(String text){
+    public void setStatusLabelText(String text){
         if(text.equals("Online")){
             statusLabel.setTextFill(Color.GREEN);
         }
@@ -105,11 +105,22 @@ public class ChatEventHandler {
 
     public void showFriendRequest(String sender) {
         String addFriendText = getFriendRequestText(sender);
-        Alert friendRequestAlert = new Alert(Alert.AlertType.INFORMATION,addFriendText, ButtonType.YES);
-        Optional<ButtonType> result = friendRequestAlert.showAndWait();
-        boolean acceptedFriendRequest = didUserAcceptFriendRequest(result);
+        Alert friendRequestAlert = createFriendRequestAlert(addFriendText);
+
+        friendRequestAlert.showAndWait();
+        ButtonBar.ButtonData clickedButton = friendRequestAlert.getResult().getButtonData();
+        boolean acceptedFriendRequest = didUserAcceptFriendRequest(clickedButton);
         FriendRequest friendRequest = new FriendRequest(acceptedFriendRequest,sender);
         networkController.sendFriendRequestAnswer(friendRequest);
+    }
+
+    private Alert createFriendRequestAlert(String addFriendText) {
+        Alert friendRequestAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        friendRequestAlert.setContentText(addFriendText);
+        ButtonType okButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+        ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
+        friendRequestAlert.getButtonTypes().setAll(okButton, noButton);
+        return friendRequestAlert;
     }
 
     private String getFriendRequestText(String sender) {
@@ -123,14 +134,12 @@ public class ChatEventHandler {
 
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private boolean didUserAcceptFriendRequest(Optional<ButtonType> result) {
-        if(result.isPresent()){
-            if(result.get() == ButtonType.CANCEL){
-                return false;
-            }
-            else if(result.get() == ButtonType.OK){
-                return true;
-            }
+    private boolean didUserAcceptFriendRequest(ButtonBar.ButtonData result) {
+        if(result == ButtonBar.ButtonData.YES){
+            return true;
+        }
+        if(result == ButtonBar.ButtonData.NO){
+            return false;
         }
         return false;
     }

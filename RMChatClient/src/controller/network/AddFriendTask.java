@@ -5,6 +5,7 @@ import controller.network.tcp.TcpSend;
 import model.Friend;
 import view.Views;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Logger;
 
@@ -42,8 +43,8 @@ public class AddFriendTask implements Runnable{
 
             processCode(code,tcpReceive);
 
-        } catch (Exception e) {
-            views.showMessage("Unexpected");
+        } catch (IOException e) {
+            logger.severe(e.getMessage());
         }
     }
 
@@ -54,7 +55,7 @@ public class AddFriendTask implements Runnable{
         }
         else{
             String errorMessage = tcpReceive.readNextString();
-            logger.info("Received Error Message: "+errorMessage);
+            logger.severe("Received Error Code: "+ code +"Message: "+errorMessage);
             views.showMessage(errorMessage);
         }
     }
