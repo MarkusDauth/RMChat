@@ -206,7 +206,7 @@ public class Views extends Application {
         chatEventHandler.getMessageTextArea().clear();
     }
 
-    public void showFriendRequest(String sender) {
-        Platform.runLater(() -> chatEventHandler.showFriendRequest(sender));
+    public void showFriendRequest(Friend friend) {
+        Platform.runLater(() -> chatEventHandler.showFriendRequest(friend));
     }
 }

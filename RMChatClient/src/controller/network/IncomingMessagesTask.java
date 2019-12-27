@@ -1,6 +1,7 @@
 package controller.network;
 
 import controller.UserStatus;
+import model.Friend;
 import properties.Properties;
 import controller.database.chatDatabase.FileChatDatabase;
 import controller.network.tcp.TcpReceive;
@@ -69,7 +70,8 @@ public class IncomingMessagesTask implements Runnable{
 
     private void processFriendRequest(TcpReceive tcpReceive) {
         String sender = tcpReceive.readNextString();
-        views.showFriendRequest(sender);
+        Friend friend = new Friend(sender);
+        views.showFriendRequest(friend);
     }
 
     private void processReceiveMessage(TcpReceive tcpReceive, TcpSend tcpSend, Socket socket) throws IOException {

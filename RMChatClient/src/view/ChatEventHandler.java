@@ -103,14 +103,14 @@ public class ChatEventHandler {
         }
     }
 
-    public void showFriendRequest(String sender) {
-        String addFriendText = getFriendRequestText(sender);
+    public void showFriendRequest(Friend friend) {
+        String addFriendText = getFriendRequestText(friend.getUsername());
         Alert friendRequestAlert = createFriendRequestAlert(addFriendText);
 
         friendRequestAlert.showAndWait();
         ButtonBar.ButtonData clickedButton = friendRequestAlert.getResult().getButtonData();
         boolean acceptedFriendRequest = didUserAcceptFriendRequest(clickedButton);
-        FriendRequest friendRequest = new FriendRequest(acceptedFriendRequest,sender);
+        FriendRequest friendRequest = new FriendRequest(acceptedFriendRequest,friend.getUsername());
         networkController.sendFriendRequestAnswer(friendRequest);
     }
 
