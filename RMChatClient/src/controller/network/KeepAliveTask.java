@@ -81,7 +81,6 @@ public class KeepAliveTask implements Runnable{
             views.refreshFriendList(friends);
             return;
         }
-        //TODO better error-handling
         if(tcpReceive.readNextString().equals("UserNotLoggedIn")){
             views.setIndexStatus("OfflineStatus");
             views.showMessage("UserNotLoggedIn");
