@@ -160,8 +160,7 @@ public class Views extends Application {
     }
 
     public void showMessage(String msgKey) {
-        String LANGUAGE = Properties.getString("LANGUAGE");
-        String message = UINotifications.getString(LANGUAGE + msgKey);
+        String message = UINotifications.getString(msgKey);
         if(msgKey.startsWith("OK")) {
             showInfo(message);
         }
@@ -194,8 +193,7 @@ public class Views extends Application {
     }
     public void setIndexStatus(String statusKey){
         Platform.runLater(() ->{
-            String LANGUAGE = Properties.getString("LANGUAGE");
-            String status = UINotifications.getString(LANGUAGE+statusKey);
+            String status = UINotifications.getString(statusKey);
             chatEventHandler.setStatusLabelText(status);
         });
     }
@@ -207,5 +205,9 @@ public class Views extends Application {
 
     public void finishSend() {
         chatEventHandler.getMessageTextArea().clear();
+    }
+
+    public void showFriendRequest(String sender) {
+        Platform.runLater(() -> chatEventHandler.showFriendRequest(sender));
     }
 }

@@ -1,6 +1,7 @@
 package view;
 
 import controller.NetworkController;
+import model.FriendRequest;
 import properties.Properties;
 import controller.chatDatabase.ChatDatabase;
 import controller.chatDatabase.FileChatDatabase;
@@ -8,8 +9,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import model.Friend;
 import model.Message;
+import properties.UINotifications;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public class ChatEventHandler {
@@ -93,5 +96,36 @@ public class ChatEventHandler {
             Label label = new Label(friend.getUsername());
             this.friendList.getItems().add(label);
         }
+    }
+
+    public void showFriendRequest(String sender) {
+        String addFriendText = getFriendRequestText(sender);
+        Alert friendRequestAlert = new Alert(Alert.AlertType.INFORMATION,addFriendText, ButtonType.YES);
+        Optional<ButtonType> result = friendRequestAlert.showAndWait();
+        boolean acceptedFriendRequest = didUserAcceptFriendRequest(result);
+        FriendRequest friendRequest = new FriendRequest(acceptedFriendRequest,sender);
+        networkController.sendFriendRequestAnswer(friendRequest);
+    }
+
+    private String getFriendRequestText(String sender) {
+        String requestNotification = UINotifications.getString("FriendRequest");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(sender);
+        stringBuilder.append(" ");
+        stringBuilder.append(requestNotification);
+        return stringBuilder.toString();
+    }
+
+
+    private boolean didUserAcceptFriendRequest(Optional<ButtonType> result) {
+        if(result.isPresent()){
+            if(result.get() == ButtonType.CANCEL){
+                return false;
+            }
+            else if(result.get() == ButtonType.OK){
+                return true;
+            }
+        }
+        return false;
     }
 }

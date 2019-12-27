@@ -3,6 +3,7 @@ EN.OfflineStatus = Offline
 
 
 EN.InvalidUsernameOrPassword = Please check your Username and Password.
+EN.FriendRequest = sent you an friend request. Do you want to accept the request?
 
 EN.OKREG = Account successfully created.
 EN.Unexpected = Server is unreachable.

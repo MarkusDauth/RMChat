@@ -1,10 +1,7 @@
 package controller;
 
+import model.*;
 import properties.Properties;
-import model.Friend;
-import model.LoginData;
-import model.Message;
-import model.NewUser;
 import view.Views;
 
 import java.io.IOException;
@@ -57,6 +54,10 @@ public class NetworkController {
 
     public void addFriend(Friend friend) {
         new Thread(new AddFriendTask(friend,views)).start();
+    }
+
+    public void sendFriendRequestAnswer(FriendRequest friendRequest) {
+        new Thread(new FriendRequestAnswerTask(friendRequest,views)).start();
     }
 
     static Socket createSocket() throws IOException {
