@@ -4,6 +4,8 @@ EN.OfflineStatus = Offline
 
 EN.InvalidUsernameOrPassword = Please check your Username and Password.
 EN.FriendRequest = sent you an friend request. Do you want to accept the request?
+EN.ReconnectError = Reconnect was unsuccessful. Terminating Application..
+EN.OKFRIENDREQ = Friend successfully added.
 
 EN.OKREG = Account successfully created.
 EN.Unexpected = Server is unreachable.

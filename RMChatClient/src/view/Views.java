@@ -1,8 +1,7 @@
 package view;
 
-import controller.NetworkController;
-import properties.Properties;
-import controller.chatDatabase.FileChatDatabase;
+import controller.network.NetworkController;
+import controller.database.chatDatabase.FileChatDatabase;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -24,13 +23,13 @@ import java.util.logging.SimpleFormatter;
 
 public class Views extends Application {
 
-    private static Logger logger = Logger.getLogger("logger");
+    private static final Logger logger = Logger.getLogger("logger");
     private static FileHandler logFileHandler;
     private static NetworkController networkController;
 
     private Stage loginStage;
-    private Stage registerStage = new Stage();
-    private Stage chatStage = new Stage();
+    private final Stage registerStage = new Stage();
+    private final Stage chatStage = new Stage();
     private boolean registerStageIsInitialized = false;
     private boolean indexStageIsInitialized = false;
 
@@ -78,7 +77,7 @@ public class Views extends Application {
         }
     }
 
-    void showIndexUIifNotShowing() throws IOException {
+    private void showIndexUIifNotShowing() throws IOException {
         if(!indexStageIsInitialized) {
             loginStage.close();
             initIndexUI();

@@ -1,4 +1,4 @@
-package controller.chatDatabase;
+package controller.database.chatDatabase;
 
 import model.Message;
 
@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 public class FileChatDatabase implements ChatDatabase {
     private static FileChatDatabase instance = null;
 
-    private Logger logger = Logger.getLogger("logger");
+    private final Logger logger = Logger.getLogger("logger");
     private List<Message> messageList = new ArrayList<>();
 
-    public FileChatDatabase() {
+    private FileChatDatabase() {
         load();
     }
 
@@ -48,6 +48,7 @@ public class FileChatDatabase implements ChatDatabase {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public synchronized void load() {
         File f = new File("messages.ser");

@@ -1,8 +1,8 @@
-package controller;
+package controller.network;
 
-import controller.chatDatabase.FileChatDatabase;
-import controller.tcp.TcpReceive;
-import controller.tcp.TcpSend;
+import controller.database.chatDatabase.FileChatDatabase;
+import controller.network.tcp.TcpReceive;
+import controller.network.tcp.TcpSend;
 import model.Message;
 import view.Views;
 
@@ -11,9 +11,9 @@ import java.util.logging.Logger;
 
 public class SendMessageTask implements Runnable{
 
-    private Logger logger = Logger.getLogger("logger");
-    private Message message;
-    private Views views;
+    private final Logger logger = Logger.getLogger("logger");
+    private final Message message;
+    private final Views views;
 
     public SendMessageTask(Message message, Views views) {
         this.message = message;

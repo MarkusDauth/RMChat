@@ -1,6 +1,6 @@
 package view;
 
-import controller.NetworkController;
+import controller.network.NetworkController;
 import properties.Properties;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;

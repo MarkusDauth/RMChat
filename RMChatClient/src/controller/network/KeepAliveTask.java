@@ -1,8 +1,9 @@
-package controller;
+package controller.network;
 
+import controller.UserStatus;
 import properties.Properties;
-import controller.tcp.TcpReceive;
-import controller.tcp.TcpSend;
+import controller.network.tcp.TcpReceive;
+import controller.network.tcp.TcpSend;
 import model.Friend;
 import model.LoginData;
 import view.Views;
@@ -16,10 +17,10 @@ import java.util.logging.Logger;
 
 public class KeepAliveTask implements Runnable{
 
-    private static Logger logger = Logger.getLogger("logger");
+    private static final Logger logger = Logger.getLogger("logger");
 
-    private Views views;
-    private int keepAliveTimeout = Properties.getInt("client.keepAliveTimeout.seconds");
+    private final Views views;
+    private final int keepAliveTimeout = Properties.getInt("client.keepAliveTimeout.seconds");
     public KeepAliveTask(Views views) {
         this.views = views;
     }
@@ -104,7 +105,7 @@ public class KeepAliveTask implements Runnable{
         return friendList;
     }
 
-    public void reconnect() throws InterruptedException {
+    private void reconnect() throws InterruptedException {
         LoginData loginData = new LoginData(NetworkController.getUsername(),NetworkController.getPassword());
         int retries = 0;
         while( isUserOffline() && retries < Properties.getInt("client.maxReconnect")) {
@@ -116,9 +117,12 @@ public class KeepAliveTask implements Runnable{
         evaluateReconnectAttempt();
     }
 
-    private void evaluateReconnectAttempt() {
+    private void evaluateReconnectAttempt() throws InterruptedException {
         if(isUserOffline()){
-            logger.info("Reconnect was unsuccessful. Terminating Application..");
+            String errorMessage = Properties.getString("ReconnectError");
+            logger.severe(errorMessage);
+            views.showMessage("ReconnectError");
+            TimeUnit.SECONDS.sleep(5);
             System.exit(1);
         }
         else{

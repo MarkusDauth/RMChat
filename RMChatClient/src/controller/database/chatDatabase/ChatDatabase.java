@@ -1,4 +1,4 @@
-package controller.chatDatabase;
+package controller.database.chatDatabase;
 
 import model.Message;
 

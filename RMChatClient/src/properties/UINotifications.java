@@ -1,10 +1,9 @@
 package properties;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 
 public class UINotifications {
-    private static java.util.Properties notification = new java.util.Properties();
+    private static final java.util.Properties notification = new java.util.Properties();
     private final static String LANGUAGE;
 
     static{

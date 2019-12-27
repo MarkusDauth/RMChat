@@ -1,7 +1,8 @@
-package controller;
+package controller.network;
 
-import controller.tcp.TcpReceive;
-import controller.tcp.TcpSend;
+import controller.UserStatus;
+import controller.network.tcp.TcpReceive;
+import controller.network.tcp.TcpSend;
 import model.LoginData;
 import view.Views;
 
@@ -11,14 +12,14 @@ import java.util.logging.Logger;
 
 public class LoginTask implements Runnable {
 
-    private static Logger logger = Logger.getLogger("logger");
+    private static final Logger logger = Logger.getLogger("logger");
     private static Thread incomingMessagesTask = null;
     private static Thread keepAliveTask = null;
 
-    private LoginData loginData;
-    private Views views;
+    private final LoginData loginData;
+    private final Views views;
 
-    LoginTask(LoginData loginData, Views views) {
+    public LoginTask(LoginData loginData, Views views) {
         this.loginData = loginData;
         this.views = views;
     }
@@ -46,7 +47,9 @@ public class LoginTask implements Runnable {
 
         } catch (IOException e) {
             logger.severe(e.getMessage());
-            views.showMessage("Unexpected");
+            if(firstConnect()) {
+                views.showMessage("Unexpected");
+            }
         }
     }
 
@@ -58,7 +61,9 @@ public class LoginTask implements Runnable {
         else{
             String errorMessage = tcpReceive.readNextString();
             logger.info("Received Error Message: "+errorMessage);
-            views.showMessage(errorMessage);
+            if(firstConnect()) {
+                views.showMessage(errorMessage);
+            }
         }
     }
 
@@ -76,11 +81,14 @@ public class LoginTask implements Runnable {
     private void finishLogin() {
 
         //is true if the client connects to the server for the first time
-        if(incomingMessagesTask == null || keepAliveTask == null) {
+        if(firstConnect()) {
             incomingMessagesTask = new Thread(new IncomingMessagesTask(views));
             incomingMessagesTask.start();
             keepAliveTask = new Thread(new KeepAliveTask(views));
             keepAliveTask.start();
         }
+    }
+    private boolean firstConnect(){
+        return (incomingMessagesTask == null || keepAliveTask == null);
     }
 }

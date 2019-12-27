@@ -1,7 +1,7 @@
-package controller;
+package controller.network;
 
-import controller.tcp.TcpReceive;
-import controller.tcp.TcpSend;
+import controller.network.tcp.TcpReceive;
+import controller.network.tcp.TcpSend;
 import model.NewUser;
 import view.Views;
 
@@ -10,11 +10,11 @@ import java.util.logging.Logger;
 
 public class RegistrationTask implements Runnable {
 
-    private Logger logger = Logger.getLogger("logger");
-    private Views views;
-    private NewUser newUser;
+    private final Logger logger = Logger.getLogger("logger");
+    private final Views views;
+    private final NewUser newUser;
 
-    RegistrationTask(NewUser newUser, Views views) {
+    public RegistrationTask(NewUser newUser, Views views) {
         this.newUser = newUser;
         this.views = views;
     }

@@ -1,9 +1,8 @@
-package controller;
+package controller.network;
 
-import controller.tcp.TcpReceive;
-import controller.tcp.TcpSend;
+import controller.network.tcp.TcpReceive;
+import controller.network.tcp.TcpSend;
 import model.Friend;
-import model.LoginData;
 import view.Views;
 
 import java.net.Socket;
@@ -11,12 +10,12 @@ import java.util.logging.Logger;
 
 public class AddFriendTask implements Runnable{
 
-    private static Logger logger = Logger.getLogger("logger");
+    private static final Logger logger = Logger.getLogger("logger");
 
-    private Friend friend;
-    private Views views;
+    private final Friend friend;
+    private final Views views;
 
-    AddFriendTask(Friend friend, Views views) {
+    public AddFriendTask(Friend friend, Views views) {
         this.friend = friend;
         this.views = views;
     }
@@ -37,6 +36,7 @@ public class AddFriendTask implements Runnable{
             tcpSend.send();
 
             //Server response here
+            //Sender does not receive anything yet
             tcpReceive.receive();
             String code = tcpReceive.readNextString();
 

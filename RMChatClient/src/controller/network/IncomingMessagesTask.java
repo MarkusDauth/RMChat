@@ -1,24 +1,22 @@
-package controller;
+package controller.network;
 
-import model.Friend;
+import controller.UserStatus;
 import properties.Properties;
-import controller.chatDatabase.FileChatDatabase;
-import controller.tcp.TcpReceive;
-import controller.tcp.TcpSend;
+import controller.database.chatDatabase.FileChatDatabase;
+import controller.network.tcp.TcpReceive;
+import controller.network.tcp.TcpSend;
 import model.Message;
 import view.Views;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
 
 public class IncomingMessagesTask implements Runnable{
 
-    private Logger logger = Logger.getLogger("logger");
-    private Views views;
+    private final Logger logger = Logger.getLogger("logger");
+    private final Views views;
 
     public IncomingMessagesTask(Views views) {
         this.views = views;

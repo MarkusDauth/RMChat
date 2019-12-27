@@ -1,7 +1,7 @@
-package controller;
+package controller.network;
 
-import controller.tcp.TcpReceive;
-import controller.tcp.TcpSend;
+import controller.network.tcp.TcpReceive;
+import controller.network.tcp.TcpSend;
 import model.FriendRequest;
 import view.Views;
 
@@ -10,9 +10,9 @@ import java.net.Socket;
 import java.util.logging.Logger;
 
 public class FriendRequestAnswerTask implements Runnable {
-    private static Logger logger = Logger.getLogger("logger");
-    private FriendRequest friendRequest;
-    private Views views;
+    private static final Logger logger = Logger.getLogger("logger");
+    private final FriendRequest friendRequest;
+    private final Views views;
 
     public FriendRequestAnswerTask(FriendRequest friendRequest, Views views) {
         this.friendRequest = friendRequest;
@@ -32,6 +32,8 @@ public class FriendRequestAnswerTask implements Runnable {
             tcpSend.add(NetworkController.getSessionID());
             tcpSend.add(friendRequest.isRequestAcceptedString());
             tcpSend.send();
+
+            views.showMessage("OKFRIENDREQ");
 
             //According to the protocol no response here
 

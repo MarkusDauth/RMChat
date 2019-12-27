@@ -1,4 +1,4 @@
-import controller.NetworkController;
+import controller.network.NetworkController;
 import view.Views;
 
 import java.util.logging.FileHandler;

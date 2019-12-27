@@ -1,4 +1,4 @@
-package controller.tcp;
+package controller.network.tcp;
 
 import properties.Properties;
 

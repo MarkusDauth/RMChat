@@ -1,12 +1,11 @@
 package view;
 
-import controller.NetworkController;
+import controller.network.NetworkController;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import model.LoginData;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 
 public class LoginEventHandler {

@@ -1,10 +1,11 @@
 package view;
 
-import controller.NetworkController;
+import controller.network.NetworkController;
+import javafx.scene.paint.Color;
 import model.FriendRequest;
 import properties.Properties;
-import controller.chatDatabase.ChatDatabase;
-import controller.chatDatabase.FileChatDatabase;
+import controller.database.chatDatabase.ChatDatabase;
+import controller.database.chatDatabase.FileChatDatabase;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import model.Friend;
@@ -18,8 +19,7 @@ import java.util.Optional;
 public class ChatEventHandler {
 
     private NetworkController networkController;
-    private ChatDatabase fileChatDatabase = FileChatDatabase.getInstance();
-    private Views views;
+    private final ChatDatabase fileChatDatabase = FileChatDatabase.getInstance();
     private String shownChatOf = "non";
 
     @FXML
@@ -73,9 +73,14 @@ public class ChatEventHandler {
         return messageTextArea;
     }
     public void setViews(Views views) {
-        this.views = views;
     }
     void setStatusLabelText(String text){
+        if(text.equals("Online")){
+            statusLabel.setTextFill(Color.GREEN);
+        }
+        else{
+            statusLabel.setTextFill(Color.RED);
+        }
         statusLabel.setText(text);
     }
 
@@ -117,6 +122,7 @@ public class ChatEventHandler {
     }
 
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private boolean didUserAcceptFriendRequest(Optional<ButtonType> result) {
         if(result.isPresent()){
             if(result.get() == ButtonType.CANCEL){
