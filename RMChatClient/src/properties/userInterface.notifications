@@ -13,14 +13,14 @@ EN.InvalidUsername = Please check your Username. It is invalid.
 EN.InvalidPassword = Please check your Password. It is invalid.
 EN.UsernameTaken = The specified Username is already in use.
 
-EN.WrongUsername = The specified Username does not exist.
-EN.WrongPassword = The specified Password is wrong.
-EN.AlreadyLoggedIn = The specified Username is already logged in.
+EN.WrongUsername = Username does not exist.
+EN.WrongPassword = Wrong password.
+EN.AlreadyLoggedIn = Username is already logged in.
 
-EN.UserNotLoggedIn = Specified User is not logged in.
+EN.UserNotLoggedIn = User is not logged in.
 EN.RecipientNotLoggedIn = Friend is offline.
 EN.RecipientNotAFriend = This user is not your friend. Please add this user to your Friend list.
 
-EN.FriendDoesNotExist = Specified user does not exist.
+EN.FriendDoesNotExist = User does not exist.
 EN.AlreadyFriends = You are already friends with the specified user.
 EN.FriendRequestDenied = Your request has been denied.
