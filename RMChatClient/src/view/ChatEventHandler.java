@@ -1,6 +1,8 @@
 package view;
 
 import controller.network.NetworkController;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import model.FriendRequest;
 import properties.Properties;
@@ -19,14 +21,15 @@ public class ChatEventHandler {
 
     private NetworkController networkController;
     private final ChatDatabase fileChatDatabase = FileChatDatabase.getInstance();
-    private String shownChatOf = "non";
+    private List<Friend> friendListData;
+    private Friend selectedFriend = null;
 
     @FXML
     Label userNameLabel;
     @FXML
     Label statusLabel;
     @FXML
-    ListView<String> friendListView;
+    ListView<Friend> friendListView;
     @FXML
     ListView<String> messageHistory;
     @FXML
@@ -36,13 +39,13 @@ public class ChatEventHandler {
 
     @FXML
     public void sendMessage(){
-        if(shownChatOf.length() < Properties.getInt("message.minLength")){
+        if(selectedFriend.getUsername().length() < Properties.getInt("message.minLength")){
             return;
-        }if(shownChatOf.length() > Properties.getInt("message.maxLength")){
+        }if(selectedFriend.getUsername().length() > Properties.getInt("message.maxLength")){
             //TODO errormessage
             return;
         }
-        Message message = new Message(userNameLabel.getText(), shownChatOf,messageTextArea.getText());
+        Message message = new Message(userNameLabel.getText(), selectedFriend.getUsername(),messageTextArea.getText());
         networkController.sendMessage(message);
     }
 
@@ -55,12 +58,12 @@ public class ChatEventHandler {
 
     @FXML
     public void handleMouseClick() {
-        String friend = friendListView.getSelectionModel().getSelectedItem();
-        if(friend == null){
+        Friend selectedFriend = friendListView.getSelectionModel().getSelectedItem();
+        if(selectedFriend == null){
             return;
         }
-        List<Message> friendMessages = fileChatDatabase.getMessages(friend);
-        shownChatOf = friend;
+        List<Message> friendMessages = fileChatDatabase.getMessages(selectedFriend.getUsername());
+        this.selectedFriend = selectedFriend;
         messageHistory.getItems().clear();
         for(Message message : friendMessages) {
             addItemToMessageHistory(message);
@@ -86,7 +89,7 @@ public class ChatEventHandler {
     }
 
     public void addMessageToHistory(Message message) {
-        if(shownChatOf.equals(message.getRecipient())){
+        if(selectedFriend.equals(message.getRecipient())){
             addItemToMessageHistory(message);
             handleMouseClick();
             //TODO experimental
@@ -100,10 +103,11 @@ public class ChatEventHandler {
     }
 
     public void refreshFriendList(List<Friend> friendList) {
-        this.friendListView.getItems().clear();
-        for(Friend friend:friendList){
-            this.friendListView.getItems().add(friend.getUsername()+" "+friend.isStatus().toString());
-        }
+        //this.friendListView.getItems().clear();
+        this.friendListData = friendList;
+
+        ObservableList<Friend> friendObservableList = FXCollections.observableList(friendList);
+        friendListView.getItems().setAll(friendObservableList);
     }
 
     public FriendRequest showFriendRequest(Friend friend) {
