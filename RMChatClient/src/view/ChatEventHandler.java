@@ -36,7 +36,10 @@ public class ChatEventHandler {
 
     @FXML
     public void sendMessage(){
-        if(shownChatOf.length() < Properties.getInt("username.minLength")){
+        if(shownChatOf.length() < Properties.getInt("message.minLength")){
+            return;
+        }if(shownChatOf.length() > Properties.getInt("message.maxLength")){
+            //TODO errormessage
             return;
         }
         Message message = new Message(userNameLabel.getText(), shownChatOf,messageTextArea.getText());
@@ -85,6 +88,9 @@ public class ChatEventHandler {
     public void addMessageToHistory(Message message) {
         if(shownChatOf.equals(message.getRecipient())){
             addItemToMessageHistory(message);
+            handleMouseClick();
+            //TODO experimental
+            FileChatDatabase.getInstance().save();
         }
     }
 
@@ -96,7 +102,7 @@ public class ChatEventHandler {
     public void refreshFriendList(List<Friend> friendList) {
         this.friendListView.getItems().clear();
         for(Friend friend:friendList){
-            this.friendListView.getItems().add(friend.getUsername());
+            this.friendListView.getItems().add(friend.getUsername()+" "+friend.isStatus().toString());
         }
     }
 
