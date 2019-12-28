@@ -40,7 +40,7 @@ public class RegistrationTask implements Runnable {
             String result = tcpReceive.readNextString();
             if(result.equals("OKREG")) {
                 logger.info("Received message: " + result);
-                views.showMessage(tcpReceive.readNextString());
+                views.showMessage("OKREG");
             }
             else{
                 String errorMessage = tcpReceive.readNextString();
