@@ -105,6 +105,7 @@ public class SessionHandler {
 
     /**
      * Also sends friend requests
+     *
      * @param tcpSend
      * @param session
      * @throws IOException
@@ -211,12 +212,18 @@ public class SessionHandler {
         String code = recipientTcpReceive.readNextString();
         String sessionId = recipientTcpReceive.readNextString();
         //Check if the receiver is correct. Let timeout happen, if not.
-        if (code.equals("OKREC") && sessionId.equals(recipientSession.getSessionId())) {
+        if (!code.equals("OKREC")) {
+            logger.info("Wrong Code");
+        } else if (! sessionId.equals(recipientSession.getSessionId())) {
+            logger.info("Error: wrong SessionId");
+        } else {
             sendOKSEN(senderTcpSend);
         }
+
     }
 
     private static void sendOKSEN(TcpSend senderTcpSend) throws IOException {
+        logger.info("Sending OKSEN");
         senderTcpSend.add("OKSEN");
         senderTcpSend.send();
     }
@@ -279,7 +286,7 @@ public class SessionHandler {
             //Net socket with recieving client
             Socket socket = createSocket(newFriendSession.get().getInetAddress());
             int timeout = Properties.getInt("tcp.friendRequestTimeout");
-            socket.setSoTimeout(60*1000);
+            socket.setSoTimeout(60 * 1000);
 
             TcpSend recipeintTcpSend = new TcpSend(socket.getOutputStream());
             TcpReceive recipientTcpReceive = new TcpReceive(socket.getInputStream());
@@ -301,11 +308,11 @@ public class SessionHandler {
         String sessionId = recipientTcpReceive.readNextString();
         String acceptance = recipientTcpReceive.readNextString();
 
-        logger.info("Received: "+code+ " " + sessionId + " "+ acceptance);
+        logger.info("Received: " + code + " " + sessionId + " " + acceptance);
 
         //Check if the receiver is correct. Let timeout happen, if not.
         if (code.equals("OKFRIENDREQ") && sessionId.equals(newFriendSession.getSessionId())) {
-            if(acceptance.equals("1"))
+            if (acceptance.equals("1"))
                 saveNewFriendship(requesterTcpSend, newFriendSession.getUsername(), requester);
             else
                 logger.info("Friend request denied");
