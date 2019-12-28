@@ -1,6 +1,5 @@
 package controller.network;
 
-import controller.UserStatus;
 import model.Friend;
 import properties.Properties;
 import controller.database.chatDatabase.FileChatDatabase;
@@ -10,6 +9,8 @@ import model.Message;
 import view.Views;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
@@ -31,60 +32,30 @@ public class IncomingMessagesTask implements Runnable{
         while (true) {
             Socket socket;
             try {
-
                 socket = serverSocket.accept();
-                logger.info("Got new Message " + socket);
-//                InetSocketAddress sockaddr = (InetSocketAddress)socket.getRemoteSocketAddress();
-//                if(!socketAddress.equals(Properties.getString("server.ip"))){
-//                    logger.severe("Message does not correspond with the server ip: " + socketAddress);
-//                    socket.close();
-//                    continue;
-//                }
-                if(!(NetworkController.getUserStatus() == UserStatus.Online)){
-                    logger.severe("Client is not online. Discarding Message.");
-                    socket.close();
-                    continue;
-                }
-                TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
-                TcpSend tcpSend = new TcpSend(socket.getOutputStream());
+                logger.fine("A new client is connected: " + socket);
 
-                tcpReceive.receive();
-                String code = tcpReceive.readNextString();
-                logger.info("Received Code: "+code);
-                switch(code){
-                    case "RECMSG":
-                        processReceiveMessage(tcpReceive,tcpSend,socket);
-                        break;
-                    case "FRIENDREQ":
-                        processFriendRequest(tcpReceive);
-                        break;
-                    default:
-                        logger.severe("didnt catch that error");
-                }
+                OutputStream outputStream = socket.getOutputStream();
+                InputStream inputStream = socket.getInputStream();
+
+                //                //TODO
+////                InetSocketAddress sockaddr = (InetSocketAddress)socket.getRemoteSocketAddress();
+////                if(!socketAddress.equals(Properties.getString("server.ip"))){
+////                    logger.severe("Message does not correspond with the server ip: " + socketAddress);
+////                    socket.close();
+////                    continue;
+////                }
+
+                //New Thread
+                Runnable runnable  = new ServerHandler(socket, outputStream, inputStream, views);
+                Thread thread = new Thread(runnable);
+                thread.start();
             } catch (Exception e) {
-                logger.severe(e.getMessage());
+                e.printStackTrace();
             }
         }
-
     }
 
-    private void processFriendRequest(TcpReceive tcpReceive) {
-        String sender = tcpReceive.readNextString();
-        Friend friend = new Friend(sender);
-        views.showFriendRequest(friend);
-    }
-
-    private void processReceiveMessage(TcpReceive tcpReceive, TcpSend tcpSend, Socket socket) throws IOException {
-        String sender = tcpReceive.readNextString();
-        String text = tcpReceive.readNextString();
-        Message message = new Message(sender,NetworkController.getUsername(),text);
-        FileChatDatabase.getInstance().addMessage(message);
-        views.addMessageToHistory(message);
-        tcpSend.add("OKREC");
-        tcpSend.add(NetworkController.getSessionID());
-        tcpSend.send();
-        socket.close();
-    }
 
     private ServerSocket createServerSocket() {
         int serverPort = Properties.getInt("client.port");

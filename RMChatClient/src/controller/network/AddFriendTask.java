@@ -3,6 +3,7 @@ package controller.network;
 import controller.network.tcp.TcpReceive;
 import controller.network.tcp.TcpSend;
 import model.Friend;
+import properties.Properties;
 import view.Views;
 
 import java.io.IOException;
@@ -27,6 +28,8 @@ public class AddFriendTask implements Runnable{
 
         try{
             Socket socket = NetworkController.createSocket();
+            int timeout = Properties.getInt("tcp.friendRequestTimeout");
+            socket.setSoTimeout(timeout*1000);
             TcpSend tcpSend = new TcpSend(socket.getOutputStream());
             TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
 

@@ -13,7 +13,6 @@ import model.Message;
 import properties.UINotifications;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public class ChatEventHandler {
@@ -27,7 +26,7 @@ public class ChatEventHandler {
     @FXML
     Label statusLabel;
     @FXML
-    ListView<Label> friendList;
+    ListView<String> friendListView;
     @FXML
     ListView<String> messageHistory;
     @FXML
@@ -53,13 +52,12 @@ public class ChatEventHandler {
 
     @FXML
     public void handleMouseClick() {
-        Label friendLabel = friendList.getSelectionModel().getSelectedItem();
-        if(friendLabel == null){
+        String friend = friendListView.getSelectionModel().getSelectedItem();
+        if(friend == null){
             return;
         }
-        String friendText = friendLabel.getText();
-        List<Message> friendMessages = fileChatDatabase.getMessages(friendText);
-        shownChatOf = friendText;
+        List<Message> friendMessages = fileChatDatabase.getMessages(friend);
+        shownChatOf = friend;
         messageHistory.getItems().clear();
         for(Message message : friendMessages) {
             addItemToMessageHistory(message);
@@ -96,14 +94,13 @@ public class ChatEventHandler {
     }
 
     public void refreshFriendList(List<Friend> friendList) {
-        friendList.clear();
+        this.friendListView.getItems().clear();
         for(Friend friend:friendList){
-            Label label = new Label(friend.getUsername());
-            this.friendList.getItems().add(label);
+            this.friendListView.getItems().add(friend.getUsername());
         }
     }
 
-    public void showFriendRequest(Friend friend) {
+    public FriendRequest showFriendRequest(Friend friend) {
         String addFriendText = getFriendRequestText(friend.getUsername());
         Alert friendRequestAlert = createFriendRequestAlert(addFriendText);
 
@@ -111,7 +108,7 @@ public class ChatEventHandler {
         ButtonBar.ButtonData clickedButton = friendRequestAlert.getResult().getButtonData();
         boolean acceptedFriendRequest = didUserAcceptFriendRequest(clickedButton);
         FriendRequest friendRequest = new FriendRequest(acceptedFriendRequest,friend.getUsername());
-        networkController.sendFriendRequestAnswer(friendRequest);
+        return friendRequest;
     }
 
     private Alert createFriendRequestAlert(String addFriendText) {

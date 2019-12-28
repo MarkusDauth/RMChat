@@ -20,7 +20,7 @@
                <children>
                   <TitledPane animated="false" prefWidth="257.0" text="Friends">
                      <content>
-                        <ListView fx:id="friendList" onMouseClicked="#handleMouseClick" prefHeight="255.0" prefWidth="246.0" />
+                        <ListView fx:id="friendListView" onMouseClicked="#handleMouseClick" prefHeight="255.0" prefWidth="246.0" />
                      </content>
                   </TitledPane>
                   <AnchorPane>

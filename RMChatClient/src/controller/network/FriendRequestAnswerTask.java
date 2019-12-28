@@ -28,14 +28,9 @@ public class FriendRequestAnswerTask implements Runnable {
             TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
 
             //Data to send here
-            tcpSend.add("OKFRIENDREQ");
-            tcpSend.add(NetworkController.getSessionID());
-            tcpSend.add(friendRequest.isRequestAcceptedString());
-            tcpSend.send();
 
-            views.showMessage("OKFRIENDREQ");
 
-            //According to the protocol no response here
+
 
         } catch (IOException e) {
             e.printStackTrace();

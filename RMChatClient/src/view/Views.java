@@ -12,11 +12,14 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.stage.Stage;
 import model.Friend;
+import model.FriendRequest;
 import model.Message;
 import properties.UINotifications;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -206,7 +209,9 @@ public class Views extends Application {
         chatEventHandler.getMessageTextArea().clear();
     }
 
-    public void showFriendRequest(Friend friend) {
-        Platform.runLater(() -> chatEventHandler.showFriendRequest(friend));
+    public FutureTask<FriendRequest> showFriendRequest(Friend friend) {
+        final FutureTask query = new FutureTask(() -> chatEventHandler.showFriendRequest(friend));
+        Platform.runLater(query);
+        return query;
     }
 }

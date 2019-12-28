@@ -38,4 +38,12 @@ public class Friend {
     public void setStatus(UserStatus status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "Friend{" +
+                "username='" + username + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }
