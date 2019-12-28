@@ -24,3 +24,4 @@ EN.RecipientNotAFriend = This user is not your friend. Please add this user to y
 EN.FriendDoesNotExist = User does not exist.
 EN.AlreadyFriends = You are already friends with the specified user.
 EN.FriendRequestDenied = Your request has been denied.
+EN.FriendNotOnline = That user is not online.
