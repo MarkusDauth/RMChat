@@ -278,6 +278,9 @@ public class SessionHandler {
 
             //Net socket with recieving client
             Socket socket = createSocket(newFriendSession.get().getInetAddress());
+            int timeout = Properties.getInt("tcp.friendRequestTimeout");
+            socket.setSoTimeout(60*1000);
+
             TcpSend recipeintTcpSend = new TcpSend(socket.getOutputStream());
             TcpReceive recipientTcpReceive = new TcpReceive(socket.getInputStream());
 
@@ -289,6 +292,7 @@ public class SessionHandler {
             receiveOKFRIENDREQ(requesterTcpSend, recipientTcpReceive, newFriendSession.get(), requester);
         }
     }
+
 
     private static void receiveOKFRIENDREQ(TcpSend requesterTcpSend, TcpReceive recipientTcpReceive, UserSession newFriendSession, String requester) throws IOException {
         recipientTcpReceive.receive();
