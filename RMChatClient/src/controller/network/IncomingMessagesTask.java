@@ -1,11 +1,6 @@
 package controller.network;
 
-import model.Friend;
 import properties.Properties;
-import controller.database.chatDatabase.FileChatDatabase;
-import controller.network.tcp.TcpReceive;
-import controller.network.tcp.TcpSend;
-import model.Message;
 import view.Views;
 
 import java.io.IOException;
@@ -14,6 +9,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 public class IncomingMessagesTask implements Runnable{
@@ -38,13 +34,12 @@ public class IncomingMessagesTask implements Runnable{
 
                 OutputStream outputStream = socket.getOutputStream();
                 InputStream inputStream = socket.getInputStream();
-
-                InetAddress serverINetAddress = InetAddress.getByName(Properties.getString("server.ip"));
-                InetAddress socketINetAddress = socket.getInetAddress();
-                if(!serverINetAddress.equals(socketINetAddress)){
-                    logger.severe("Message does not correspond with the server ip: " + socketINetAddress.getHostAddress());
-                    socket.close();
-                    continue;
+                if(isConnectionFromServer(socket)) {
+                    if (isConnectionFromServer(socket)) {
+                        logger.severe("Message does not correspond with the server ip: " + socket);
+                        socket.close();
+                        continue;
+                    }
                 }
 
                 //New Thread
@@ -52,9 +47,20 @@ public class IncomingMessagesTask implements Runnable{
                 Thread thread = new Thread(runnable);
                 thread.start();
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.info(e.getMessage());
             }
         }
+    }
+
+    private boolean isConnectionFromServer(Socket socket) {
+        InetAddress serverINetAddress = null;
+        try {
+            serverINetAddress = InetAddress.getByName(Properties.getString("server.ip"));
+        } catch (UnknownHostException e) {
+            logger.info(e.getMessage());
+        }
+        InetAddress socketINetAddress = socket.getInetAddress();
+        return !serverINetAddress.equals(socketINetAddress);
     }
 
 
