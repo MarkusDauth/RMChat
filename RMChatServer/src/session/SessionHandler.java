@@ -121,7 +121,7 @@ public class SessionHandler {
             } else {
                 tcpSend.add("0");
             }
-            logger.info("Friend " + friend);
+            logger.fine("Friend " + friend);
         }
 
         //Mark end of friend
