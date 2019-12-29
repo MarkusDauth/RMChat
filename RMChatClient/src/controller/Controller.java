@@ -1,6 +1,6 @@
-package controller.network;
+package controller;
 
-import controller.UserStatus;
+import controller.network.*;
 import model.*;
 import properties.Properties;
 import view.Views;
@@ -10,7 +10,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Logger;
 
-public class NetworkController {
+public class Controller {
 
     private static final Logger logger = Logger.getLogger("logger");
 
@@ -20,13 +20,13 @@ public class NetworkController {
     private static UserStatus userStatus = UserStatus.Offline;
     private Views views;
 
-    public static void setSessionID(String sessionID) { NetworkController.sessionID = sessionID; }
+    public static void setSessionID(String sessionID) { Controller.sessionID = sessionID; }
 
-    public static void setUsername(String username) { NetworkController.username = username;}
+    public static void setUsername(String username) { Controller.username = username;}
 
-    public static void setUserStatus(UserStatus userStatus) { NetworkController.userStatus = userStatus; }
+    public static void setUserStatus(UserStatus userStatus) { Controller.userStatus = userStatus; }
 
-    public static void setPassword(String password) { NetworkController.password = password; }
+    public static void setPassword(String password) { Controller.password = password; }
 
     public static String getUsername() {
         return username;
@@ -62,10 +62,6 @@ public class NetworkController {
 
     public void addFriend(Friend friend) {
         new Thread(new AddFriendTask(friend,views)).start();
-    }
-
-    public void sendFriendRequestAnswer(FriendRequest friendRequest) {
-        new Thread(new FriendRequestAnswerTask(friendRequest,views)).start();
     }
 
     public static Socket createSocket() throws IOException {

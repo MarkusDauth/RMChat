@@ -1,9 +1,9 @@
 package controller.network;
 
+import controller.Controller;
 import controller.database.chatDatabase.FileChatDatabase;
 import controller.network.tcp.TcpReceive;
 import controller.network.tcp.TcpSend;
-import javafx.application.Platform;
 import model.Friend;
 import model.FriendRequest;
 import model.Message;
@@ -14,10 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 import java.util.logging.Logger;
 
 public class ServerHandler implements Runnable {
@@ -67,31 +65,33 @@ public class ServerHandler implements Runnable {
         try {
             FriendRequest friendRequest = friendRequestFuture.get();
             tcpSend.add("OKFRIENDREQ");
-            tcpSend.add(NetworkController.getSessionID());
+            tcpSend.add(Controller.getSessionID());
             tcpSend.add(friendRequest.isRequestAcceptedString());
             tcpSend.send();
+            tcpReceive.receive();
+            processCode(tcpReceive);
             if(friendRequest.isRequestAccepted()){
                 views.showMessage("OKFRIENDREQ");
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (InterruptedException | ExecutionException | IOException e) {
+            logger.severe(e.getMessage());
         }
     }
 
+    private void processCode(TcpReceive tcpReceive) {
+        String code = tcpReceive.readNextString();
+        views.showMessage(code);
+    }
 
 
     private void processReceiveMessage(TcpReceive tcpReceive, TcpSend tcpSend, Socket socket) throws IOException {
         String sender = tcpReceive.readNextString();
         String text = tcpReceive.readNextString();
-        Message message = new Message(sender,NetworkController.getUsername(),text);
+        Message message = new Message(sender, Controller.getUsername(),text);
         FileChatDatabase.getInstance().addMessage(message);
         views.addMessageToHistory(message);
         tcpSend.add("OKREC");
-        tcpSend.add(NetworkController.getSessionID());
+        tcpSend.add(Controller.getSessionID());
         tcpSend.send();
         socket.close();
     }

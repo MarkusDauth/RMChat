@@ -11,6 +11,7 @@ import view.Views;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
@@ -38,13 +39,13 @@ public class IncomingMessagesTask implements Runnable{
                 OutputStream outputStream = socket.getOutputStream();
                 InputStream inputStream = socket.getInputStream();
 
-                //                //TODO
-////                InetSocketAddress sockaddr = (InetSocketAddress)socket.getRemoteSocketAddress();
-////                if(!socketAddress.equals(Properties.getString("server.ip"))){
-////                    logger.severe("Message does not correspond with the server ip: " + socketAddress);
-////                    socket.close();
-////                    continue;
-////                }
+                InetAddress serverINetAddress = InetAddress.getByName(Properties.getString("server.ip"));
+                InetAddress socketINetAddress = socket.getInetAddress();
+                if(!serverINetAddress.equals(socketINetAddress)){
+                    logger.severe("Message does not correspond with the server ip: " + socketINetAddress.getHostAddress());
+                    socket.close();
+                    continue;
+                }
 
                 //New Thread
                 Runnable runnable  = new ServerHandler(socket, outputStream, inputStream, views);

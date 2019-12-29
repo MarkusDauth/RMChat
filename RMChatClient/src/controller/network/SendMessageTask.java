@@ -1,5 +1,6 @@
 package controller.network;
 
+import controller.Controller;
 import controller.database.chatDatabase.FileChatDatabase;
 import controller.network.tcp.TcpReceive;
 import controller.network.tcp.TcpSend;
@@ -26,15 +27,15 @@ public class SendMessageTask implements Runnable{
 
         try {
 
-            Socket socket = NetworkController.createSocket();
+            Socket socket = Controller.createSocket();
             TcpSend tcpSend = new TcpSend(socket.getOutputStream());
             TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
 
-            if(!NetworkController.isSessionIDSet()) {
+            if(!Controller.isSessionIDSet()) {
                 logger.info("Trying to send Message without logging in.");
                 return;
             }
-            String sessionID = NetworkController.getSessionID();
+            String sessionID = Controller.getSessionID();
 
             //Data to send here
             tcpSend.add("SENDMSG");

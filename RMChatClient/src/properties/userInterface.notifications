@@ -6,12 +6,15 @@ EN.InvalidUsernameOrPassword = Please check your Username and Password.
 EN.FriendRequest = sent you an friend request. Do you want to accept the request?
 EN.ReconnectError = Reconnect was unsuccessful. Terminating Application..
 EN.OKFRIENDREQ = Friend successfully added.
+EN.OKFRIEND = Friend successfully added.
+EN.ReconnectMessage = Trying to reconnect. Attempt: 
+EN.OKReconnect= Reconnect successful.
 
 EN.OKREG = Account successfully created.
 EN.Unexpected = Server is unreachable.
 EN.InvalidUsername = Please check your Username. It is invalid.
 EN.InvalidPassword = Please check your Password. It is invalid.
-EN.UsernameTaken = The specified Username is already in use.
+EN.UsernameTaken = The Username is already in use.
 
 EN.WrongUsername = Username does not exist.
 EN.WrongPassword = Wrong password.
@@ -22,6 +25,6 @@ EN.RecipientNotLoggedIn = Friend is offline.
 EN.RecipientNotAFriend = This user is not your friend. Please add this user to your Friend list.
 
 EN.FriendDoesNotExist = User does not exist.
-EN.AlreadyFriends = You are already friends with the specified user.
+EN.AlreadyFriends = You are already friends with the user.
 EN.FriendRequestDenied = Your request has been denied.
 EN.FriendNotOnline = That user is not online.

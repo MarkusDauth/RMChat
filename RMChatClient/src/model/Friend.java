@@ -41,9 +41,6 @@ public class Friend {
 
     @Override
     public String toString() {
-        return "Friend{" +
-                "username='" + username + '\'' +
-                ", status=" + status +
-                '}';
+        return username + '\t' + status;
     }
 }

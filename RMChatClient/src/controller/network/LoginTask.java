@@ -1,5 +1,6 @@
 package controller.network;
 
+import controller.Controller;
 import controller.UserStatus;
 import controller.network.tcp.TcpReceive;
 import controller.network.tcp.TcpSend;
@@ -29,7 +30,7 @@ public class LoginTask implements Runnable {
         logger.info("Logging in: " + loginData.getUsername());
 
         try{
-            Socket socket = NetworkController.createSocket();
+            Socket socket = Controller.createSocket();
             TcpSend tcpSend = new TcpSend(socket.getOutputStream());
             TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
 
@@ -60,7 +61,7 @@ public class LoginTask implements Runnable {
         }
         else{
             String errorMessage = tcpReceive.readNextString();
-            logger.info("Received Error Message: "+errorMessage);
+            logger.severe("Received Error Message: "+errorMessage);
             if(firstConnect()) {
                 views.showMessage(errorMessage);
             }
@@ -70,10 +71,10 @@ public class LoginTask implements Runnable {
     private void processOKLOG(String code, TcpReceive tcpReceive) {
         views.showChatUI();
         String sessionID = tcpReceive.readNextString();
-        NetworkController.setUsername(loginData.getUsername());
-        NetworkController.setPassword(loginData.getPassword());
-        NetworkController.setSessionID(sessionID);
-        NetworkController.setUserStatus(UserStatus.Online);
+        Controller.setUsername(loginData.getUsername());
+        Controller.setPassword(loginData.getPassword());
+        Controller.setSessionID(sessionID);
+        Controller.setUserStatus(UserStatus.Online);
         logger.info("Received message: "+code);
         logger.info("SessionID: "+sessionID);
     }

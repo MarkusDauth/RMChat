@@ -1,5 +1,6 @@
 package controller.network;
 
+import controller.Controller;
 import controller.network.tcp.TcpReceive;
 import controller.network.tcp.TcpSend;
 import model.NewUser;
@@ -25,7 +26,7 @@ public class RegistrationTask implements Runnable {
 
         try {
 
-            Socket socket = NetworkController.createSocket();
+            Socket socket = Controller.createSocket();
             TcpSend tcpSend = new TcpSend(socket.getOutputStream());
             TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
 
@@ -44,7 +45,7 @@ public class RegistrationTask implements Runnable {
             }
             else{
                 String errorMessage = tcpReceive.readNextString();
-                logger.info("Recieved Error Message: "+errorMessage);
+                logger.severe("Recieved Error Message: "+errorMessage);
                 views.showMessage(errorMessage);
             }
 

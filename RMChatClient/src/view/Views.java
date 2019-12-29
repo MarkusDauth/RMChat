@@ -1,6 +1,6 @@
 package view;
 
-import controller.network.NetworkController;
+import controller.Controller;
 import controller.database.chatDatabase.FileChatDatabase;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -18,7 +18,6 @@ import properties.UINotifications;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -28,7 +27,7 @@ public class Views extends Application {
 
     private static final Logger logger = Logger.getLogger("logger");
     private static FileHandler logFileHandler;
-    private static NetworkController networkController;
+    private static Controller controller;
 
     private Stage loginStage;
     private final Stage registerStage = new Stage();
@@ -40,8 +39,8 @@ public class Views extends Application {
     private RegisterEventHandler registerEventHandler;
     private ChatEventHandler chatEventHandler;
 
-    public static void launchApplication(NetworkController networkController) {
-        Views.networkController = networkController;
+    public static void launchApplication(Controller controller) {
+        Views.controller = controller;
         launch();
     }
 
@@ -50,7 +49,7 @@ public class Views extends Application {
         loginStage = primaryStage;
 
         //MVC Setup
-        networkController.setViews(this);
+        controller.setViews(this);
 
         initLoginUI();
         showLoginUIifNotShowing();
@@ -103,7 +102,7 @@ public class Views extends Application {
         loginStage.setOnCloseRequest( event -> System.exit(0));
         loginStage.setResizable(false);
         loginEventHandler =loginFxmlLoader.getController();
-        loginEventHandler.setNetworkController(networkController);
+        loginEventHandler.setController(controller);
         loginEventHandler.setViews(this);
     }
 
@@ -114,7 +113,7 @@ public class Views extends Application {
         registerStage.setScene(new Scene(loginRoot, Control.USE_COMPUTED_SIZE,Control.USE_COMPUTED_SIZE));
         loginStage.setResizable(false);
         registerEventHandler = registerFxmlLoader.getController();
-        registerEventHandler.setNetworkController(networkController);
+        registerEventHandler.setController(controller);
         registerEventHandler.setViews(this);
     }
 
@@ -128,7 +127,7 @@ public class Views extends Application {
             System.exit(0);
         });
         chatEventHandler = indexFxmlLoader.getController();
-        chatEventHandler.setNetworkController(networkController);
+        chatEventHandler.setController(controller);
         chatEventHandler.setViews(this);
     }
 
@@ -185,7 +184,7 @@ public class Views extends Application {
     public void showChatUI(){
         Platform.runLater(()->{
             try {
-                String text = NetworkController.getUsername();
+                String text = Controller.getUsername();
                 showIndexUIifNotShowing();
                 chatEventHandler.userNameLabel.setText(text);
             } catch (IOException e) {
@@ -193,7 +192,7 @@ public class Views extends Application {
             }
         });
     }
-    public void setIndexStatus(String statusKey){
+    public void setChatStatus(String statusKey){
         Platform.runLater(() ->{
             String status = UINotifications.getString(statusKey);
             chatEventHandler.setStatusLabelText(status);
@@ -213,5 +212,8 @@ public class Views extends Application {
         final FutureTask query = new FutureTask(() -> chatEventHandler.showFriendRequest(friend));
         Platform.runLater(query);
         return query;
+    }
+    public void setReconnectText(int attempt, boolean wasConnectionSuccessful){
+        Platform.runLater(() -> chatEventHandler.setReconnectLabelText(attempt,wasConnectionSuccessful));
     }
 }

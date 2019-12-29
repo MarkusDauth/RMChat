@@ -1,4 +1,4 @@
-import controller.network.NetworkController;
+import controller.Controller;
 import view.Views;
 
 import java.util.logging.FileHandler;
@@ -14,9 +14,9 @@ public class Main {
         logger.info("START");
 
         //MVC setup
-        NetworkController networkController = new NetworkController();
+        Controller controller = new Controller();
         //Launch
-        Views.launchApplication(networkController);
+        Views.launchApplication(controller);
 
         logFileHandler.close();
     }

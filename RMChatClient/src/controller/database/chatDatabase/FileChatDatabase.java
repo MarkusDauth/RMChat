@@ -40,7 +40,7 @@ public class FileChatDatabase implements ChatDatabase {
     @Override
     public synchronized void save() {
         try (ObjectOutputStream out = new ObjectOutputStream(
-                new BufferedOutputStream(new FileOutputStream("messages.ser")))) {
+                new BufferedOutputStream(new FileOutputStream("messages.ser",false)))) {
             out.writeObject(messageList);
             out.flush();
         } catch (IOException e) {

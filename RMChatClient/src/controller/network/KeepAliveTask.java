@@ -1,5 +1,6 @@
 package controller.network;
 
+import controller.Controller;
 import controller.UserStatus;
 import properties.Properties;
 import controller.network.tcp.TcpReceive;
@@ -29,34 +30,26 @@ public class KeepAliveTask implements Runnable{
     public void run() {
 
         while(true){
-            if(NetworkController.getUserStatus().equals(UserStatus.Online))
-                keepAliveRoutine();
-            else {
-                try {
-                    reconnect();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
             try {
+                keepAliveRoutine();
                 TimeUnit.SECONDS.sleep(keepAliveTimeout);
             } catch (InterruptedException e) {
-                logger.severe(e.getMessage());
+                e.printStackTrace();
             }
         }
     }
 
-    private void keepAliveRoutine() {
+    private void keepAliveRoutine() throws InterruptedException {
         logger.fine("Sending Keep-Alive-Message");
 
         try{
-            Socket socket = NetworkController.createSocket();
+            Socket socket = Controller.createSocket();
             TcpSend tcpSend = new TcpSend(socket.getOutputStream());
             TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
 
             //Data to send here
             tcpSend.add("ALIVE");
-            tcpSend.add(NetworkController.getSessionID());
+            tcpSend.add(Controller.getSessionID());
             tcpSend.send();
 
             //Server response here
@@ -67,24 +60,25 @@ public class KeepAliveTask implements Runnable{
 
 
         } catch(IOException e) {
-            views.showMessage("Unexpected");
-            views.setIndexStatus("OfflineStatus");
-            NetworkController.setUserStatus(UserStatus.Offline);
             logger.severe(e.getMessage());
+            views.showMessage("Unexpected");
+            views.setChatStatus("OfflineStatus");
+            Controller.setUserStatus(UserStatus.Offline);
+            reconnectRoutine();
         }
     }
 
-    private void processCode(String code, TcpReceive tcpReceive) {
+    private void processCode(String code, TcpReceive tcpReceive) throws InterruptedException {
         if(code.equals("OKALV")){
-            views.setIndexStatus("OnlineStatus");
+            views.setChatStatus("OnlineStatus");
             List<Friend> friends = parseFriends(tcpReceive);
             views.refreshFriendList(friends);
             return;
         }
         if(tcpReceive.readNextString().equals("UserNotLoggedIn")){
-            views.setIndexStatus("OfflineStatus");
-            views.showMessage("UserNotLoggedIn");
-            NetworkController.setUserStatus(UserStatus.Offline);
+            views.setChatStatus("OfflineStatus");
+            Controller.setUserStatus(UserStatus.Offline);
+            reconnectRoutine();
         }
     }
 
@@ -104,12 +98,13 @@ public class KeepAliveTask implements Runnable{
         return friendList;
     }
 
-    private void reconnect() throws InterruptedException {
-        LoginData loginData = new LoginData(NetworkController.getUsername(),NetworkController.getPassword());
+    private void reconnectRoutine() throws InterruptedException {
+        LoginData loginData = new LoginData(Controller.getUsername(), Controller.getPassword());
         int retries = 0;
         while( isUserOffline() && retries < Properties.getInt("client.maxReconnect")) {
             retries++;
             logger.info("Trying to reconnect to the server. Attempt: "+retries);
+            views.setReconnectText(retries,!isUserOffline());
             new LoginTask(loginData, views).run();
             TimeUnit.SECONDS.sleep(keepAliveTimeout);
         }
@@ -125,12 +120,14 @@ public class KeepAliveTask implements Runnable{
             System.exit(1);
         }
         else{
-            logger.info("Reconnect successful. SessionID: "+NetworkController.getSessionID());
+            logger.info("Reconnect successful. SessionID: "+ Controller.getSessionID());
+            views.setReconnectText(0,!isUserOffline());
+            views.showMessage("OKReconnect");
         }
     }
 
     private boolean isUserOffline(){
-        return NetworkController.getUserStatus().equals(UserStatus.Offline);
+        return Controller.getUserStatus().equals(UserStatus.Offline);
     }
 
 }

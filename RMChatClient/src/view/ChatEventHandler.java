@@ -1,6 +1,6 @@
 package view;
 
-import controller.network.NetworkController;
+import controller.Controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ChatEventHandler {
 
-    private NetworkController networkController;
+    private Controller controller;
     private final ChatDatabase fileChatDatabase = FileChatDatabase.getInstance();
     private List<Friend> friendListData;
     private Friend selectedFriend = null;
@@ -29,6 +29,8 @@ public class ChatEventHandler {
     @FXML
     Label statusLabel;
     @FXML
+    Label reconnectLabel;
+    @FXML
     ListView<Friend> friendListView;
     @FXML
     ListView<String> messageHistory;
@@ -36,24 +38,31 @@ public class ChatEventHandler {
     TextArea messageTextArea;
     @FXML
     TextField addFriendTextField;
+    @FXML
+    Button addFriendButton;
+    @FXML
+    Button sendButton;
+
 
     @FXML
     public void sendMessage(){
-        if(selectedFriend.getUsername().length() < Properties.getInt("message.minLength")){
+        if(selectedFriend == null)
             return;
-        }if(selectedFriend.getUsername().length() > Properties.getInt("message.maxLength")){
+        if(messageTextArea.getText().length() < Properties.getInt("message.minLength")){
+            return;
+        }if(messageTextArea.getText().length() > Properties.getInt("message.maxLength")){
             //TODO errormessage
             return;
         }
         Message message = new Message(userNameLabel.getText(), selectedFriend.getUsername(),messageTextArea.getText());
-        networkController.sendMessage(message);
+        controller.sendMessage(message);
     }
 
     @FXML
     public void addFriend(){
         Friend friend = new Friend(addFriendTextField.getText());
         addFriendTextField.clear();
-        networkController.addFriend(friend);
+        controller.addFriend(friend);
     }
 
     @FXML
@@ -70,8 +79,8 @@ public class ChatEventHandler {
         }
     }
 
-    public void setNetworkController(NetworkController networkController) {
-        this.networkController = networkController;
+    public void setController(Controller controller) {
+        this.controller = controller;
     }
     public TextArea getMessageTextArea(){
         return messageTextArea;
@@ -89,11 +98,11 @@ public class ChatEventHandler {
     }
 
     public void addMessageToHistory(Message message) {
-        if(selectedFriend.equals(message.getRecipient())){
-            addItemToMessageHistory(message);
-            handleMouseClick();
-            //TODO experimental
-            FileChatDatabase.getInstance().save();
+        if(selectedFriend !=null) {
+            if (selectedFriend.getUsername().equals(message.getRecipient())) {
+                addItemToMessageHistory(message);
+                handleMouseClick();
+            }
         }
     }
 
@@ -103,7 +112,6 @@ public class ChatEventHandler {
     }
 
     public void refreshFriendList(List<Friend> friendList) {
-        //this.friendListView.getItems().clear();
         this.friendListData = friendList;
 
         ObservableList<Friend> friendObservableList = FXCollections.observableList(friendList);
@@ -137,6 +145,20 @@ public class ChatEventHandler {
         stringBuilder.append(" ");
         stringBuilder.append(requestNotification);
         return stringBuilder.toString();
+    }
+
+    public void setReconnectLabelText(int attempt, boolean wasConnectionSuccessful){
+        if(wasConnectionSuccessful){
+            sendButton.setDisable(false);
+            addFriendButton.setDisable(false);
+            reconnectLabel.setText("");
+        }
+        else {
+            String reconnectMessage = UINotifications.getString("ReconnectMessage") + attempt;
+            sendButton.setDisable(true);
+            addFriendButton.setDisable(true);
+            reconnectLabel.setText(reconnectMessage);
+        }
     }
 
 

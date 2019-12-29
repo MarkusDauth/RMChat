@@ -1,5 +1,6 @@
 package controller.network;
 
+import controller.Controller;
 import controller.network.tcp.TcpReceive;
 import controller.network.tcp.TcpSend;
 import model.Friend;
@@ -27,7 +28,7 @@ public class AddFriendTask implements Runnable{
         logger.info("Adding Friend: " + friend.getUsername());
 
         try{
-            Socket socket = NetworkController.createSocket();
+            Socket socket = Controller.createSocket();
             int timeout = Properties.getInt("tcp.friendRequestTimeout");
             socket.setSoTimeout(timeout*1000);
             TcpSend tcpSend = new TcpSend(socket.getOutputStream());
@@ -35,7 +36,7 @@ public class AddFriendTask implements Runnable{
 
             //Data to send here
             tcpSend.add("ADDFRIEND");
-            tcpSend.add(NetworkController.getSessionID());
+            tcpSend.add(Controller.getSessionID());
             tcpSend.add(friend.getUsername());
             tcpSend.send();
 

@@ -1,5 +1,6 @@
 package controller.network;
 
+import controller.Controller;
 import controller.network.tcp.TcpReceive;
 import controller.network.tcp.TcpSend;
 import model.FriendRequest;
@@ -23,7 +24,7 @@ public class FriendRequestAnswerTask implements Runnable {
     public void run() {
         logger.info("Sending answer to a friend request from "+friendRequest.getRequester());
         try {
-            Socket socket = NetworkController.createSocket();
+            Socket socket = Controller.createSocket();
             TcpSend tcpSend = new TcpSend(socket.getOutputStream());
             TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
 
