@@ -27,11 +27,7 @@ public class RegisterEventHandler {
 
     @FXML
     private void handleRegisterButton(){
-        if(usernameField.getText().length() >= Properties.getInt("username.minLength") &&
-                usernameField.getText().length() < Properties.getInt("username.maxLength")&&
-                passwordField.getText().length() >= Properties.getInt("password.minLength") &&
-                passwordField.getText().length() < Properties.getInt("password.maxLength")
-        ) {
+        if(isUsernameAndPasswordCorrect()) {
             NewUser newUser = new NewUser();
             newUser.setUsername(usernameField.getText());
             newUser.setPassword(passwordField.getText());
@@ -41,5 +37,18 @@ public class RegisterEventHandler {
             views.showMessage("InvalidUsernameOrPassword");
         }
 
+    }
+
+    private boolean isUsernameAndPasswordCorrect(){
+        return checkUsername() && checkPassword();
+    }
+
+    private boolean checkPassword(){
+        return usernameField.getText().length() >= Properties.getInt("username.minLength") &&
+                usernameField.getText().length() < Properties.getInt("username.maxLength");
+    }
+    private boolean checkUsername(){
+        return passwordField.getText().length() >= Properties.getInt("password.minLength") &&
+                        passwordField.getText().length() < Properties.getInt("password.maxLength");
     }
 }

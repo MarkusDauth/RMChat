@@ -36,7 +36,7 @@
                   <AnchorPane prefHeight="81.0" prefWidth="451.0" BorderPane.alignment="CENTER">
                      <children>
                         <Label layoutX="22.0" layoutY="18.0" text="Logged in as" />
-                        <Label fx:id="userNameLabel" layoutX="117.0" layoutY="18.0" prefHeight="17.0" prefWidth="334.0" text="Label" />
+                        <Label fx:id="userNameLabel" layoutX="117.0" layoutY="18.0" prefHeight="17.0" prefWidth="334.0" text="Username" />
                         <Label layoutX="22.0" layoutY="50.0" text="Status" />
                         <Label fx:id="statusLabel" layoutX="117.0" layoutY="50.0" prefHeight="17.0" prefWidth="46.0" text="Offline" />
                         <Label fx:id="reconnectLabel" layoutX="193.0" layoutY="50.0" prefHeight="17.0" prefWidth="235.0" textFill="RED" />

@@ -33,7 +33,7 @@ public class Views extends Application {
     private final Stage registerStage = new Stage();
     private final Stage chatStage = new Stage();
     private boolean registerStageIsInitialized = false;
-    private boolean indexStageIsInitialized = false;
+    private boolean chatStageIsInitialized = false;
 
     private LoginEventHandler loginEventHandler;
     private RegisterEventHandler registerEventHandler;
@@ -79,11 +79,11 @@ public class Views extends Application {
         }
     }
 
-    private void showIndexUIifNotShowing() throws IOException {
-        if(!indexStageIsInitialized) {
+    private void showChatUIifNotShowing() throws IOException {
+        if(!chatStageIsInitialized) {
             loginStage.close();
-            initIndexUI();
-            indexStageIsInitialized = true;
+            initChatUI();
+            chatStageIsInitialized = true;
         }
         if(chatStage.isShowing()) {
             chatStage.setAlwaysOnTop(true);
@@ -117,16 +117,16 @@ public class Views extends Application {
         registerEventHandler.setViews(this);
     }
 
-    private void initIndexUI() throws IOException {
-        FXMLLoader indexFxmlLoader = new FXMLLoader(getClass().getResource("gui/chat.fxml"));
-        Parent indexRoot = indexFxmlLoader.load();
+    private void initChatUI() throws IOException {
+        FXMLLoader chatFxmlLoader = new FXMLLoader(getClass().getResource("gui/chat.fxml"));
+        Parent chatRoot = chatFxmlLoader.load();
         chatStage.setTitle("RM-CHAT");
-        chatStage.setScene(new Scene(indexRoot, Control.USE_COMPUTED_SIZE,Control.USE_COMPUTED_SIZE));
+        chatStage.setScene(new Scene(chatRoot, Control.USE_COMPUTED_SIZE,Control.USE_COMPUTED_SIZE));
         chatStage.setOnCloseRequest(event -> {
             FileChatDatabase.getInstance().save();
             System.exit(0);
         });
-        chatEventHandler = indexFxmlLoader.getController();
+        chatEventHandler = chatFxmlLoader.getController();
         chatEventHandler.setController(controller);
         chatEventHandler.setViews(this);
     }
@@ -185,7 +185,7 @@ public class Views extends Application {
         Platform.runLater(()->{
             try {
                 String text = Controller.getUsername();
-                showIndexUIifNotShowing();
+                showChatUIifNotShowing();
                 chatEventHandler.userNameLabel.setText(text);
             } catch (IOException e) {
                 logger.info(e.getMessage());
