@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class FileChatDatabase implements ChatDatabase {
+public class FileChatDatabase implements ChatDatabaseInterface {
     private static FileChatDatabase instance = null;
 
     private final Logger logger = Logger.getLogger("logger");
@@ -18,7 +18,7 @@ public class FileChatDatabase implements ChatDatabase {
         load();
     }
 
-    public static ChatDatabase getInstance() {
+    public static ChatDatabaseInterface getInstance() {
         if (instance == null)
             instance = new FileChatDatabase();
         return instance;

@@ -6,7 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import model.FriendRequest;
 import properties.Properties;
-import controller.database.chatDatabase.ChatDatabase;
+import controller.database.chatDatabase.ChatDatabaseInterface;
 import controller.database.chatDatabase.FileChatDatabase;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -20,7 +20,7 @@ import java.util.List;
 public class ChatEventHandler {
 
     private Controller controller;
-    private final ChatDatabase fileChatDatabase = FileChatDatabase.getInstance();
+    private final ChatDatabaseInterface fileChatDatabase = FileChatDatabase.getInstance();
     private List<Friend> friendListData;
     private Friend selectedFriend = null;
 
