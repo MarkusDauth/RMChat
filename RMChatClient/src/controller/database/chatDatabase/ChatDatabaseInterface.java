@@ -4,7 +4,7 @@ import model.Message;
 
 import java.util.List;
 
-public interface ChatDatabase {
+public interface ChatDatabaseInterface {
     List<Message> getMessages(String sender);
     void addMessage(Message message);
     void save();
