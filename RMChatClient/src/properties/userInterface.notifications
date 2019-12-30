@@ -15,6 +15,8 @@ EN.Unexpected = Server is unreachable.
 EN.InvalidUsername = Please check your Username. It is invalid.
 EN.InvalidPassword = Please check your Password. It is invalid.
 EN.UsernameTaken = The Username is already in use.
+EN-MessageTooShort = Your Message is too short.
+EN.MessageTooLong = Your Message is too long.
 
 EN.WrongUsername = Username does not exist.
 EN.WrongPassword = Wrong password.
