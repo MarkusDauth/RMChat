@@ -161,6 +161,9 @@ public class SessionHandler {
 
             //Check if recipient is logged in
             Optional<UserSession> chatMessageRecipientSession = getSession(chatMessageRecipient);
+            int messageMinLength = Properties.getInt("message.minLength");
+            int messageMaxLength = Properties.getInt("message.maxLength");
+
 
             if (!chatMessageSenderSession.get().hasFriend(chatMessageRecipient)) {
                 logger.info("Recipient is not a friend");
@@ -168,6 +171,12 @@ public class SessionHandler {
             } else if (!chatMessageRecipientSession.isPresent()) {
                 logger.info("Recipient is offline");
                 senderTcpSend.sendError("RecipientNotLoggedIn");
+            } else if (message.length() < messageMinLength) {
+                logger.info("Message too short");
+                senderTcpSend.sendError("MessageTooShort");
+            } else if (message.length() > messageMaxLength) {
+                logger.info("Message Too Long");
+                senderTcpSend.sendError("MessageTooLong");
             } else {
                 forwardMessage(
                         senderTcpSend,
@@ -214,7 +223,7 @@ public class SessionHandler {
         //Check if the receiver is correct. Let timeout happen, if not.
         if (!code.equals("OKREC")) {
             logger.info("Wrong Code");
-        } else if (! sessionId.equals(recipientSession.getSessionId())) {
+        } else if (!sessionId.equals(recipientSession.getSessionId())) {
             logger.info("Error: wrong SessionId");
         } else {
             sendOKSEN(senderTcpSend);
@@ -233,7 +242,7 @@ public class SessionHandler {
         try {
             int clientPort = Properties.getInt("client.port");
             socket = new Socket(inetAddress, clientPort);
-            int timeout = Properties.getInt("client.timeout");
+            int timeout = Properties.getInt("tcp.clientSessionTimeout.seconds");
             socket.setSoTimeout(timeout * 1000);
             logger.info("Connected to Client: " + socket);
         } catch (SocketException e) {
@@ -262,7 +271,7 @@ public class SessionHandler {
                 logger.info("Friend Request failed: already friends");
                 tcpSend.sendError("AlreadyFriends");
             } else if (!database.usernameIsPresent(newFriend)) {
-                logger.info("Friend Request from +" + session.get().getUsername() + "failed: Friend " + newFriend + " does not exist.");
+                logger.info("Friend Request from " + session.get().getUsername() + "failed: Friend " + newFriend + " does not exist.");
                 tcpSend.sendError("FriendDoesNotExist");
             } else {
                 session.get().addFriend(newFriend);
@@ -285,7 +294,7 @@ public class SessionHandler {
 
             //Net socket with recieving client
             Socket socket = createSocket(newFriendSession.get().getInetAddress());
-            int timeout = Properties.getInt("tcp.friendRequestTimeout");
+            int timeout = Properties.getInt("tcp.friendRequestTimeout.seconds");
             socket.setSoTimeout(60 * 1000);
 
             TcpSend recipeintTcpSend = new TcpSend(socket.getOutputStream());
@@ -299,7 +308,6 @@ public class SessionHandler {
             receiveOKFRIENDREQ(requesterTcpSend, recipientTcpReceive, newFriendSession.get(), requester);
         }
     }
-
 
     private static void receiveOKFRIENDREQ(TcpSend requesterTcpSend, TcpReceive recipientTcpReceive, UserSession newFriendSession, String requester) throws IOException {
         recipientTcpReceive.receive();

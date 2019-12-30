@@ -106,7 +106,7 @@ public class UserSession {
      * @return
      */
     public boolean isAlive(){
-        int timeoutSeconds = Properties.getInt("tcp.clientSessionTimeout");
+        int timeoutSeconds = Properties.getInt("server.keepAliveTimeout.seconds");
         long timePassed = SECONDS.between(lastAliveDate,LocalTime.now());
         logger.fine(username + " last sign of life was "+timePassed+" seconds ago.");
         return (timePassed < timeoutSeconds);
