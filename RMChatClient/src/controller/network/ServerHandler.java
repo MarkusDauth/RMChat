@@ -47,6 +47,7 @@ public class ServerHandler implements Runnable {
                         int timeout = Properties.getInt("tcp.friendRequestTimeout");
                         socket.setSoTimeout(timeout*1000);
                         processFriendRequest(tcpReceive);
+                        break;
                     default:
                         logger.severe("didnt catch that error");
                 }

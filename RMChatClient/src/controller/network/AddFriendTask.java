@@ -59,8 +59,10 @@ public class AddFriendTask implements Runnable{
         }
         else{
             String errorMessage = tcpReceive.readNextString();
-            logger.severe("Received Error Code: "+ code +"Message: "+errorMessage);
-            views.showMessage(errorMessage);
+            if(!errorMessage.equals("")) {
+                logger.severe("Received Error Code: " + code + "Message: " + errorMessage);
+                views.showMessage(errorMessage);
+            }
         }
     }
 }
