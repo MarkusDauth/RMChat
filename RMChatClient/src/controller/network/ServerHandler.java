@@ -70,18 +70,24 @@ public class ServerHandler implements Runnable {
             tcpSend.add(friendRequest.isRequestAcceptedString());
             tcpSend.send();
             tcpReceive.receive();
-            processCode(tcpReceive);
-            if(friendRequest.isRequestAccepted()){
-                views.showMessage("OKFRIENDREQ");
-            }
+            processCode(tcpReceive,friendRequest);
+
         } catch (InterruptedException | ExecutionException | IOException e) {
             logger.severe(e.getMessage());
         }
     }
 
-    private void processCode(TcpReceive tcpReceive) {
+    private void processCode(TcpReceive tcpReceive, FriendRequest friendRequest) {
         String code = tcpReceive.readNextString();
-        views.showMessage(code);
+        if(!code.equals("")) {
+            logger.info("Read new Friendrequest: " + code);
+            views.showMessage(code);
+        }
+        else {
+            if(friendRequest.isRequestAccepted()){
+                views.showMessage("OKFRIENDREQ");
+            }
+        }
     }
 
 

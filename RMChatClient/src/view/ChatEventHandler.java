@@ -23,6 +23,7 @@ public class ChatEventHandler {
     private final ChatDatabaseInterface fileChatDatabase = FileChatDatabase.getInstance();
     private List<Friend> friendListData;
     private Friend selectedFriend = null;
+    private Views views;
 
     @FXML
     Label userNameLabel;
@@ -51,7 +52,7 @@ public class ChatEventHandler {
         if(messageTextArea.getText().length() < Properties.getInt("message.minLength")){
             return;
         }if(messageTextArea.getText().length() > Properties.getInt("message.maxLength")){
-            //TODO errormessage
+            views.showMessage("MessageTooLong");
             return;
         }
         Message message = new Message(userNameLabel.getText(), selectedFriend.getUsername(),messageTextArea.getText());
@@ -60,6 +61,12 @@ public class ChatEventHandler {
 
     @FXML
     public void addFriend(){
+        if(addFriendTextField.getText().length() < Properties.getInt("username.minLength")){
+            return;
+        }if(addFriendTextField.getText().length() > Properties.getInt("username.maxLength")){
+            views.showMessage("FriendnameTooLong");
+            return;
+        }
         Friend friend = new Friend(addFriendTextField.getText());
         addFriendTextField.clear();
         controller.addFriend(friend);
@@ -86,6 +93,7 @@ public class ChatEventHandler {
         return messageTextArea;
     }
     public void setViews(Views views) {
+        this.views = views;
     }
     public void setStatusLabelText(String text){
         if(text.equals("Online")){

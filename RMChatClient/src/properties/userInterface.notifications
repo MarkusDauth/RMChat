@@ -25,7 +25,7 @@ EN.AlreadyLoggedIn = Username is already logged in.
 EN.UserNotLoggedIn = User is not logged in.
 EN.RecipientNotLoggedIn = Friend is offline.
 EN.RecipientNotAFriend = This user is not your friend. Please add this user to your Friend list.
-
+EN.FriendnameTooLong = Please check the name of your friend. It is too long.
 EN.FriendDoesNotExist = User does not exist.
 EN.AlreadyFriends = You are already friends with the user.
 EN.FriendRequestDenied = Your request has been denied.
