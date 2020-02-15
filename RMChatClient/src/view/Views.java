@@ -216,4 +216,7 @@ public class Views extends Application {
     public void setReconnectText(int attempt, boolean wasConnectionSuccessful){
         Platform.runLater(() -> chatEventHandler.setReconnectLabelText(attempt,wasConnectionSuccessful));
     }
+    public void refreshMessageList(String sender) {
+        Platform.runLater(()->chatEventHandler.refreshMessageList(sender));
+    }
 }

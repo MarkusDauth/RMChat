@@ -1,5 +1,6 @@
 package controller.database.chatDatabase;
 
+import controller.Controller;
 import model.Message;
 
 import java.io.*;
@@ -27,9 +28,15 @@ public class FileChatDatabase implements ChatDatabaseInterface {
 
     @Override
     public synchronized List<Message> getMessages(String sender) {
-        List<Message> senderMessageList = messageList.stream().filter(message -> message.getSender().equals(sender)).collect(Collectors.toList());
+        List<Message> senderMessageList = messageList.stream().filter(message -> isMessageToOrFromSender(message,sender)).collect(Collectors.toList());
         logger.info("Reading " + sender + "'s messages");
         return senderMessageList;
+    }
+    private boolean isMessageToOrFromSender(Message message, String sender){
+        if(message.getSender().equals(sender) && message.getRecipient().equals(Controller.getUsername())
+            || message.getSender().equals(Controller.getUsername()) && message.getRecipient().equals(sender))
+            return true;
+        return false;
     }
 
     @Override

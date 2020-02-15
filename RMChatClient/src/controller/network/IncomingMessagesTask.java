@@ -60,7 +60,7 @@ public class IncomingMessagesTask implements Runnable{
             logger.info(e.getMessage());
         }
         InetAddress socketINetAddress = socket.getInetAddress();
-        return !serverINetAddress.equals(socketINetAddress);
+        return !serverINetAddress.equals(socketINetAddress); //TODO returnt false wenn eig true zurückgegeben werden sollte
     }
 
 

@@ -100,6 +100,7 @@ public class ServerHandler implements Runnable {
         tcpSend.add("OKREC");
         tcpSend.add(Controller.getSessionID());
         tcpSend.send();
+        views.refreshMessageList(sender);
         socket.close();
     }
 }

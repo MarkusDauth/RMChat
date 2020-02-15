@@ -78,6 +78,7 @@ public class ChatEventHandler {
         if(selectedFriend == null){
             return;
         }
+
         List<Message> friendMessages = fileChatDatabase.getMessages(selectedFriend.getUsername());
         this.selectedFriend = selectedFriend;
         messageHistory.getItems().clear();
@@ -179,5 +180,15 @@ public class ChatEventHandler {
             return false;
         }
         return false;
+    }
+
+    public void refreshMessageList(String sender) {
+        if(sender.equals(selectedFriend.getUsername())){
+            List<Message> friendMessages = fileChatDatabase.getMessages(selectedFriend.getUsername());
+            messageHistory.getItems().clear();
+            for(Message message : friendMessages) {
+                addItemToMessageHistory(message);
+            }
+        }
     }
 }
