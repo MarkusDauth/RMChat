@@ -61,7 +61,7 @@ public class TextfileDatabase implements DatabaseInterface {
 
                 return save();
             } else{
-                logger.severe("Friend does not exist");
+                logger.info("Friend does not exist");
                 return false;
             }
 
