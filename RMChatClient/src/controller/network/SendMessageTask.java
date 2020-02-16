@@ -53,7 +53,7 @@ public class SendMessageTask implements Runnable{
 
         } catch (IOException e) {
             logger.severe(e.getMessage());
-            views.showMessage("Unexpected");
+            views.showMessage("UnexpectedSendMessage");
         }
         finally {
             views.finishSendMessage();

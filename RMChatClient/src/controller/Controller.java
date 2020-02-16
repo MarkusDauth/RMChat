@@ -74,6 +74,8 @@ public class Controller {
         InetAddress ip = InetAddress.getByName(serverIP);
         int serverPort = Properties.getInt("server.port");
         Socket socket = new Socket(ip, serverPort);
+        int timeout = Properties.getInt("tcp.generalTimeout.seconds")*1000;
+        socket.setSoTimeout(timeout);
         logger.info("Connected to Server: " + socket);
         return socket;
     }
