@@ -44,7 +44,7 @@ public class ServerHandler implements Runnable {
                         processReceiveMessage(tcpReceive,tcpSend,socket);
                         break;
                     case "FRIENDREQ":
-                        int timeout = Properties.getInt("tcp.friendRequestTimeout");
+                        int timeout = Properties.getInt("tcp.clientSessionTimeout.seconds");
                         socket.setSoTimeout(timeout*1000);
                         processFriendRequest(tcpReceive);
                         break;
