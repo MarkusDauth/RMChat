@@ -94,7 +94,7 @@ public class ChatEventHandler {
             return;
         }
         if(showingChatFromLabel.getText().isEmpty()){
-            showingChatFromLabel.setText("Showing Chat from:");
+            showingChatFromLabel.setText("Showing Chat from");
         }
         showingChatFromNameLabel.setText(selectedFriend.getUsername());
         List<Message> friendMessages = fileChatDatabase.getMessages(selectedFriend.getUsername());

@@ -36,12 +36,12 @@
                   <AnchorPane prefHeight="89.0" prefWidth="451.0" BorderPane.alignment="CENTER">
                      <children>
                         <Label layoutX="22.0" layoutY="11.0" text="Logged in as" />
-                        <Label fx:id="userNameLabel" layoutX="154.0" layoutY="11.0" prefHeight="17.0" prefWidth="251.0" text="Username" />
+                        <Label fx:id="userNameLabel" layoutX="167.0" layoutY="11.0" prefHeight="17.0" prefWidth="251.0" text="Username" />
                         <Label layoutX="22.0" layoutY="37.0" text="Status" />
-                        <Label fx:id="statusLabel" layoutX="154.0" layoutY="37.0" prefHeight="17.0" prefWidth="46.0" text="Offline" />
-                        <Label fx:id="reconnectLabel" layoutX="200.0" layoutY="37.0" prefHeight="17.0" prefWidth="235.0" textFill="RED" />
-                        <Label fx:id="showingChatFromLabel" layoutX="22.0" layoutY="65.0" prefHeight="17.0" prefWidth="119.0" />
-                        <Label fx:id="showingChatFromNameLabel" layoutX="154.0" layoutY="65.0" prefHeight="17.0" prefWidth="204.0" />
+                        <Label fx:id="statusLabel" layoutX="167.0" layoutY="37.0" prefHeight="17.0" prefWidth="46.0" text="Offline" />
+                        <Label fx:id="reconnectLabel" layoutX="213.0" layoutY="37.0" prefHeight="17.0" prefWidth="235.0" textFill="RED" />
+                        <Label fx:id="showingChatFromLabel" layoutX="22.0" layoutY="65.0" prefHeight="17.0" prefWidth="138.0" />
+                        <Label fx:id="showingChatFromNameLabel" layoutX="167.0" layoutY="65.0" prefHeight="17.0" prefWidth="204.0" />
                      </children>
                   </AnchorPane>
                </top>
