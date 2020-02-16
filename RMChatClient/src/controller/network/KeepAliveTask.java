@@ -10,6 +10,7 @@ import model.LoginData;
 import view.Views;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +23,11 @@ public class KeepAliveTask implements Runnable{
 
     private final Views views;
     private final int keepAliveTimeout = Properties.getInt("client.keepAliveTimeout.seconds");
-    public KeepAliveTask(Views views) {
+    private ServerSocket serverSocket;
+
+    public KeepAliveTask(ServerSocket serverSocket, Views views) {
         this.views = views;
+        this.serverSocket = serverSocket;
     }
 
     @Override

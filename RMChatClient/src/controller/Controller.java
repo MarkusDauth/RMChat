@@ -23,7 +23,7 @@ public class Controller {
     private ServerSocket serverSocket;
 
     public Controller(){
-        ServerSocket serverSocket = createServerSocket();
+        serverSocket = createServerSocket();
     }
 
     public static void setSessionID(String sessionID) { Controller.sessionID = sessionID; }
@@ -55,7 +55,6 @@ public class Controller {
     public void registerNewUser(NewUser newUser) {
         new Thread(new RegistrationTask(newUser,views)).start();
     }
-
 
     public void loginUser(LoginData loginData) {
         username = loginData.getUsername();

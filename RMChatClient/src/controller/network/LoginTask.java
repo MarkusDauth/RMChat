@@ -90,7 +90,7 @@ public class LoginTask implements Runnable {
         if(firstConnect()) {
             incomingMessagesTask = new Thread(new IncomingMessagesTask(serverSocket, views));
             incomingMessagesTask.start();
-            keepAliveTask = new Thread(new KeepAliveTask(views));
+            keepAliveTask = new Thread(new KeepAliveTask(serverSocket, views));
             keepAliveTask.start();
         }
     }
