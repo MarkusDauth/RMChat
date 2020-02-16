@@ -34,7 +34,7 @@ public class KeepAliveTask implements Runnable{
                 keepAliveRoutine();
                 TimeUnit.SECONDS.sleep(keepAliveTimeout);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.severe(e.getMessage());
             }
         }
     }
