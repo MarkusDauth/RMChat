@@ -183,12 +183,16 @@ public class ChatEventHandler {
     }
 
     public void refreshMessageList(String sender) {
-        if(sender.equals(selectedFriend.getUsername())){
-            List<Message> friendMessages = fileChatDatabase.getMessages(selectedFriend.getUsername());
-            messageHistory.getItems().clear();
-            for(Message message : friendMessages) {
-                addItemToMessageHistory(message);
+        try {
+            if (sender.equals(selectedFriend.getUsername())) {
+                List<Message> friendMessages = fileChatDatabase.getMessages(selectedFriend.getUsername());
+                messageHistory.getItems().clear();
+                for (Message message : friendMessages) {
+                    addItemToMessageHistory(message);
+                }
             }
+        }catch(NullPointerException e){
+
         }
     }
 }

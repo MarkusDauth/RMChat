@@ -17,23 +17,23 @@
                         <Font size="28.0" />
                     </font>
                 </Label>
-                <Label layoutX="49.0" layoutY="190.0" text="Password">
-                    <font>
-                        <Font size="20.0" />
-                    </font>
-                </Label>
                 <Label layoutX="49.0" layoutY="132.0" text="Username">
                     <font>
                         <Font size="20.0" />
                     </font>
                 </Label>
+                <Label layoutX="49.0" layoutY="190.0" text="Password">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
                 <TextField fx:id="usernameField" layoutX="161.0" layoutY="134.0" />
+            <PasswordField fx:id="passwordField" layoutX="161.0" layoutY="193.0" />
                 <Button layoutX="115.0" layoutY="274.0" mnemonicParsing="false" onAction="#handleRegisterButton" prefHeight="42.0" prefWidth="120.0" text="Sign up">
                     <font>
                         <Font size="20.0" />
                     </font>
                 </Button>
-            <PasswordField fx:id="passwordField" layoutX="161.0" layoutY="193.0" />
             </children>
         </AnchorPane>
    </top>

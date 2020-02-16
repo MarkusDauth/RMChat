@@ -14,7 +14,7 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChatEventHandler">
    <children>
-      <SplitPane dividerPositions="0.3641456582633053">
+      <SplitPane dividerPositions="0.38231292517006804">
         <items>
             <VBox prefWidth="278.0">
                <children>
@@ -26,7 +26,7 @@
                   <AnchorPane prefHeight="70.0" prefWidth="242.0">
                      <children>
                         <TextField fx:id="addFriendTextField" layoutX="10.0" layoutY="13.0" prefHeight="43.0" prefWidth="147.0" />
-                        <Button fx:id="addFriendButton" layoutX="167.0" layoutY="17.0" mnemonicParsing="false" onAction="#addFriend" prefHeight="35.0" prefWidth="85.0" text="Add Friend" />
+                        <Button fx:id="addFriendButton" layoutX="163.0" layoutY="17.0" mnemonicParsing="false" onAction="#addFriend" prefHeight="35.0" prefWidth="110.0" text="Add Friend" />
                      </children>
                   </AnchorPane>
                </children>
@@ -49,7 +49,7 @@
                <bottom>
                   <AnchorPane prefHeight="70.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Button fx:id="sendButton" layoutX="325.0" layoutY="17.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="35.0" prefWidth="85.0" text="Send" />
+                        <Button fx:id="sendButton" layoutX="325.0" layoutY="17.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="35.0" prefWidth="110.0" text="Send" />
                         <TextArea fx:id="messageTextArea" layoutX="42.0" layoutY="13.0" prefHeight="43.0" prefWidth="275.0" />
                      </children>
                   </AnchorPane>

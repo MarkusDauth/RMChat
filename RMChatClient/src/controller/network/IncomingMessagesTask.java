@@ -34,19 +34,17 @@ public class IncomingMessagesTask implements Runnable{
 
                 OutputStream outputStream = socket.getOutputStream();
                 InputStream inputStream = socket.getInputStream();
-                if(isConnectionFromServer(socket)) {
-                    if (isConnectionFromServer(socket)) {
-                        logger.severe("Message does not correspond with the server ip: " + socket);
-                        socket.close();
-                        continue;
-                    }
+                if(!isConnectionFromServer(socket)) {
+                    logger.severe("Message does not correspond with the server ip: " + socket);
+                    socket.close();
+                    continue;
                 }
 
                 //New Thread
                 Runnable runnable  = new ServerHandler(socket, outputStream, inputStream, views);
                 Thread thread = new Thread(runnable);
                 thread.start();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 logger.info(e.getMessage());
             }
         }
@@ -60,7 +58,7 @@ public class IncomingMessagesTask implements Runnable{
             logger.info(e.getMessage());
         }
         InetAddress socketINetAddress = socket.getInetAddress();
-        return !serverINetAddress.equals(socketINetAddress); //TODO returnt false wenn eig true zurückgegeben werden sollte
+        return serverINetAddress.equals(socketINetAddress);
     }
 
 
