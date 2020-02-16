@@ -29,7 +29,7 @@ public class AddFriendTask implements Runnable{
 
         try{
             Socket socket = Controller.createSocket();
-            int timeout = Properties.getInt("tcp.friendRequestTimeout");
+            int timeout = Properties.getInt("tcp.friendRequestTimeout.seconds");
             socket.setSoTimeout(timeout*1000);
             TcpSend tcpSend = new TcpSend(socket.getOutputStream());
             TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
