@@ -43,7 +43,10 @@ public class ChatEventHandler {
     Button addFriendButton;
     @FXML
     Button sendButton;
-
+    @FXML
+    Label showingChatFromLabel;
+    @FXML
+    Label showingChatFromNameLabel;
 
     @FXML
     public void sendMessage(){
@@ -55,8 +58,18 @@ public class ChatEventHandler {
             views.showMessage("MessageTooLong");
             return;
         }
+        sendButton.setDisable(true);
+        sendButton.setText(UINotifications.getString("Sending"));
         Message message = new Message(userNameLabel.getText(), selectedFriend.getUsername(),messageTextArea.getText());
         controller.sendMessage(message);
+    }
+    public void finishSendMessage(){
+        sendButton.setDisable(false);
+        sendButton.setText(UINotifications.getString("Send"));
+    }
+    public void finishAddFriend(){
+        addFriendButton.setDisable(false);
+        addFriendButton.setText(UINotifications.getString("addFriendBtn"));
     }
 
     @FXML
@@ -67,6 +80,8 @@ public class ChatEventHandler {
             views.showMessage("FriendnameTooLong");
             return;
         }
+        addFriendButton.setDisable(true);
+        addFriendButton.setText(UINotifications.getString("sendFriendRequest"));
         Friend friend = new Friend(addFriendTextField.getText());
         addFriendTextField.clear();
         controller.addFriend(friend);
@@ -78,7 +93,10 @@ public class ChatEventHandler {
         if(selectedFriend == null){
             return;
         }
-
+        if(showingChatFromLabel.getText().isEmpty()){
+            showingChatFromLabel.setText("Showing Chat from:");
+        }
+        showingChatFromNameLabel.setText(selectedFriend.getUsername());
         List<Message> friendMessages = fileChatDatabase.getMessages(selectedFriend.getUsername());
         this.selectedFriend = selectedFriend;
         messageHistory.getItems().clear();

@@ -126,6 +126,7 @@ public class Views extends Application {
             FileChatDatabase.getInstance().save();
             System.exit(0);
         });
+        chatStage.setResizable(false);
         chatEventHandler = chatFxmlLoader.getController();
         chatEventHandler.setController(controller);
         chatEventHandler.setViews(this);
@@ -162,11 +163,11 @@ public class Views extends Application {
 
     public void showMessage(String msgKey) {
         String message = UINotifications.getString(msgKey);
-        if(msgKey.startsWith("OK")) {
-            showInfo(message);
+        if(!msgKey.startsWith("OK")) {
+            processErrorCode(msgKey, message);
         }
         else{
-            processErrorCode(msgKey, message);
+            showInfo(message);
         }
 
     }
@@ -218,5 +219,13 @@ public class Views extends Application {
     }
     public void refreshMessageList(String sender) {
         Platform.runLater(()->chatEventHandler.refreshMessageList(sender));
+    }
+
+    public void finishSendMessage() {
+        Platform.runLater(()->chatEventHandler.finishSendMessage());
+    }
+
+    public void finishAddFriend() {
+        Platform.runLater(()->chatEventHandler.finishAddFriend());
     }
 }

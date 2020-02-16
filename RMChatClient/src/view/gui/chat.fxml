@@ -12,45 +12,47 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChatEventHandler">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="378.0" prefWidth="770.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChatEventHandler">
    <children>
-      <SplitPane dividerPositions="0.38231292517006804">
+      <SplitPane dividerPositions="0.3941908713692946">
         <items>
-            <VBox prefWidth="278.0">
+            <VBox prefHeight="376.0" prefWidth="336.0">
                <children>
                   <TitledPane animated="false" prefWidth="260.0" text="Friends">
                      <content>
-                        <ListView fx:id="friendListView" onMouseClicked="#handleMouseClick" prefHeight="255.0" prefWidth="246.0" />
+                        <ListView fx:id="friendListView" onMouseClicked="#handleMouseClick" prefHeight="290.0" prefWidth="271.0" />
                      </content>
                   </TitledPane>
-                  <AnchorPane prefHeight="70.0" prefWidth="242.0">
+                  <AnchorPane prefHeight="70.0" prefWidth="278.0">
                      <children>
-                        <TextField fx:id="addFriendTextField" layoutX="10.0" layoutY="13.0" prefHeight="43.0" prefWidth="147.0" />
-                        <Button fx:id="addFriendButton" layoutX="163.0" layoutY="17.0" mnemonicParsing="false" onAction="#addFriend" prefHeight="35.0" prefWidth="110.0" text="Add Friend" />
+                        <TextField fx:id="addFriendTextField" layoutX="14.0" layoutY="11.0" prefHeight="43.0" prefWidth="147.0" />
+                        <Button fx:id="addFriendButton" layoutX="178.0" layoutY="15.0" mnemonicParsing="false" onAction="#addFriend" prefHeight="35.0" prefWidth="107.0" text="Add Friend" />
                      </children>
                   </AnchorPane>
                </children>
             </VBox>
-            <BorderPane>
+            <BorderPane prefHeight="309.0" prefWidth="451.0">
                <top>
-                  <AnchorPane BorderPane.alignment="CENTER">
+                  <AnchorPane prefHeight="89.0" prefWidth="451.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label layoutX="22.0" layoutY="18.0" text="Logged in as" />
-                        <Label fx:id="userNameLabel" layoutX="117.0" layoutY="18.0" prefHeight="17.0" prefWidth="334.0" text="Username" />
-                        <Label layoutX="22.0" layoutY="50.0" text="Status" />
-                        <Label fx:id="statusLabel" layoutX="117.0" layoutY="50.0" prefHeight="17.0" prefWidth="46.0" text="Offline" />
-                        <Label fx:id="reconnectLabel" layoutX="193.0" layoutY="50.0" prefHeight="17.0" prefWidth="235.0" textFill="RED" />
+                        <Label layoutX="22.0" layoutY="11.0" text="Logged in as" />
+                        <Label fx:id="userNameLabel" layoutX="154.0" layoutY="11.0" prefHeight="17.0" prefWidth="251.0" text="Username" />
+                        <Label layoutX="22.0" layoutY="37.0" text="Status" />
+                        <Label fx:id="statusLabel" layoutX="154.0" layoutY="37.0" prefHeight="17.0" prefWidth="46.0" text="Offline" />
+                        <Label fx:id="reconnectLabel" layoutX="200.0" layoutY="37.0" prefHeight="17.0" prefWidth="235.0" textFill="RED" />
+                        <Label fx:id="showingChatFromLabel" layoutX="22.0" layoutY="65.0" prefHeight="17.0" prefWidth="119.0" />
+                        <Label fx:id="showingChatFromNameLabel" layoutX="154.0" layoutY="65.0" prefHeight="17.0" prefWidth="204.0" />
                      </children>
                   </AnchorPane>
                </top>
                <center>
-                  <ListView fx:id="messageHistory" prefHeight="200.0" BorderPane.alignment="CENTER" />
+                  <ListView fx:id="messageHistory" prefHeight="161.0" prefWidth="451.0" BorderPane.alignment="CENTER" />
                </center>
                <bottom>
-                  <AnchorPane prefHeight="70.0" BorderPane.alignment="CENTER">
+                  <AnchorPane prefHeight="70.0" prefWidth="451.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Button fx:id="sendButton" layoutX="325.0" layoutY="17.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="35.0" prefWidth="110.0" text="Send" />
-                        <TextArea fx:id="messageTextArea" layoutX="42.0" layoutY="13.0" prefHeight="43.0" prefWidth="275.0" />
+                        <Button fx:id="sendButton" layoutX="334.0" layoutY="18.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="35.0" prefWidth="110.0" text="Send" />
+                        <TextArea fx:id="messageTextArea" layoutX="9.0" layoutY="14.0" prefHeight="43.0" prefWidth="308.0" />
                      </children>
                   </AnchorPane>
                </bottom>

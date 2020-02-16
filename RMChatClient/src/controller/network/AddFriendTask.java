@@ -49,6 +49,8 @@ public class AddFriendTask implements Runnable{
 
         } catch (IOException e) {
             logger.severe(e.getMessage());
+        }finally {
+            views.finishAddFriend();
         }
     }
 

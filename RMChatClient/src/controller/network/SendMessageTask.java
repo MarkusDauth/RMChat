@@ -5,8 +5,10 @@ import controller.database.chatDatabase.FileChatDatabase;
 import controller.network.tcp.TcpReceive;
 import controller.network.tcp.TcpSend;
 import model.Message;
+import properties.UINotifications;
 import view.Views;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Logger;
 
@@ -36,7 +38,6 @@ public class SendMessageTask implements Runnable{
                 return;
             }
             String sessionID = Controller.getSessionID();
-
             //Data to send here
             tcpSend.add("SENDMSG");
             tcpSend.add(sessionID);
@@ -50,9 +51,12 @@ public class SendMessageTask implements Runnable{
             logger.info("Received message: "+code);
             processCode(code,tcpReceive,message);
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             logger.severe(e.getMessage());
             views.showMessage("Unexpected");
+        }
+        finally {
+            views.finishSendMessage();
         }
 
     }
@@ -79,8 +83,8 @@ public class SendMessageTask implements Runnable{
                     logger.severe("Received Code RecipientNotAFriend");
                     break;
                 default:
-                    views.showMessage(code);
-                    logger.severe("Did not catch that error at SendMessageTask: "+code);
+                    views.showMessage("UnexpectedSendMessage");
+                    logger.severe("Server sent unexpected code. Code: "+code);
             }
         }
     }
