@@ -26,17 +26,15 @@ public class UserSession {
 
     private String sessionId;
     private InetAddress inetAddress;
+    private int clientPort;
 
     private LocalTime lastAliveDate;
 
-    public UserSession(String username, String password, InetAddress inetAddress) {
+    public UserSession(String username, String password, InetAddress inetAddress, int clientPort) {
         this.username = username;
         this.password = password;
         this.inetAddress = inetAddress;
-    }
-
-    public UserSession(Socket socket) {
-        socket.getInetAddress();
+        this.clientPort = clientPort;
     }
 
     public String getUsername() {
@@ -118,5 +116,9 @@ public class UserSession {
 
     public void addFriend(String newFriend){
         friends = database.getFriends(username);
+    }
+
+    public int getClientPort() {
+        return clientPort;
     }
 }

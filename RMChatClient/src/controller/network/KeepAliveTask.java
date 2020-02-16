@@ -105,7 +105,7 @@ public class KeepAliveTask implements Runnable{
             retries++;
             logger.info("Trying to reconnect to the server. Attempt: "+retries);
             views.setReconnectText(retries,!isUserOffline());
-            new LoginTask(loginData, views).run();
+            new LoginTask(loginData, serverSocket, views).run();
             TimeUnit.SECONDS.sleep(keepAliveTimeout);
         }
         evaluateReconnectAttempt();

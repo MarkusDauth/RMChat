@@ -16,16 +16,15 @@ public class IncomingMessagesTask implements Runnable{
 
     private final Logger logger = Logger.getLogger("logger");
     private final Views views;
+    private ServerSocket serverSocket;
 
-    public IncomingMessagesTask(Views views) {
+    public IncomingMessagesTask(ServerSocket serverSocket, Views views) {
         this.views = views;
+        this.serverSocket = serverSocket;
     }
 
     @Override
     public void run() {
-
-        ServerSocket serverSocket = createServerSocket();
-
         while (true) {
             Socket socket;
             try {
@@ -59,18 +58,5 @@ public class IncomingMessagesTask implements Runnable{
         }
         InetAddress socketINetAddress = socket.getInetAddress();
         return serverINetAddress.equals(socketINetAddress);
-    }
-
-
-    private ServerSocket createServerSocket() {
-        int serverPort = Properties.getInt("client.port");
-
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(serverPort);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return serverSocket;
     }
 }

@@ -7,6 +7,7 @@ import view.Views;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
 
@@ -19,6 +20,11 @@ public class Controller {
     private static String password;
     private static UserStatus userStatus = UserStatus.Offline;
     private Views views;
+    private ServerSocket serverSocket;
+
+    public Controller(){
+        ServerSocket serverSocket = createServerSocket();
+    }
 
     public static void setSessionID(String sessionID) { Controller.sessionID = sessionID; }
 
@@ -53,7 +59,7 @@ public class Controller {
 
     public void loginUser(LoginData loginData) {
         username = loginData.getUsername();
-        new Thread(new LoginTask(loginData,views)).start();
+        new Thread(new LoginTask(loginData, serverSocket ,views)).start();
     }
 
     public void sendMessage(Message message) {
@@ -71,5 +77,16 @@ public class Controller {
         Socket socket = new Socket(ip, serverPort);
         logger.info("Connected to Server: " + socket);
         return socket;
+    }
+
+
+    private ServerSocket createServerSocket() {
+        ServerSocket serverSocket = null;
+        try {
+            serverSocket = new ServerSocket(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return serverSocket;
     }
 }

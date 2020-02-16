@@ -8,6 +8,7 @@ import model.LoginData;
 import view.Views;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
 
@@ -19,10 +20,12 @@ public class LoginTask implements Runnable {
 
     private final LoginData loginData;
     private final Views views;
+    private ServerSocket serverSocket;
 
-    public LoginTask(LoginData loginData, Views views) {
+    public LoginTask(LoginData loginData, ServerSocket serverSocket, Views views) {
         this.loginData = loginData;
         this.views = views;
+        this.serverSocket = serverSocket;
     }
 
     @Override
@@ -34,10 +37,13 @@ public class LoginTask implements Runnable {
             TcpSend tcpSend = new TcpSend(socket.getOutputStream());
             TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
 
+
+
             //Data to send here
             tcpSend.add("LOGIN");
             tcpSend.add(loginData.getUsername());
             tcpSend.add(loginData.getPassword());
+            tcpSend.add(Integer.toString(serverSocket.getLocalPort()));
             tcpSend.send();
 
             //Server response here
@@ -80,15 +86,15 @@ public class LoginTask implements Runnable {
     }
 
     private void finishLogin() {
-
         //is true if the client connects to the server for the first time
         if(firstConnect()) {
-            incomingMessagesTask = new Thread(new IncomingMessagesTask(views));
+            incomingMessagesTask = new Thread(new IncomingMessagesTask(serverSocket, views));
             incomingMessagesTask.start();
             keepAliveTask = new Thread(new KeepAliveTask(views));
             keepAliveTask.start();
         }
     }
+
     private boolean firstConnect(){
         return (incomingMessagesTask == null || keepAliveTask == null);
     }

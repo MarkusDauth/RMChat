@@ -39,20 +39,26 @@ public class SessionHandler {
     public static void login(Socket socket, TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
         String username = tcpReceive.readNextString();
         String password = tcpReceive.readNextString();
-        logger.info("Trying to login: " + username);
+        int clientPort = 0;
+        try{
+            clientPort = Integer.parseInt(tcpReceive.readNextString());
+            logger.info("Trying to login: " + username);
 
-        Optional<UserSession> session = getSession(username);
-        if (session.isPresent()) {
-            tcpSend.sendError("AlreadyLoggedIn");
-            logger.info("User " + username + " already logged in ");
-        } else {
-            UserSession newSession = new UserSession(username, password, socket.getInetAddress());
-            if (newSession.setupSession(tcpSend)) {
-                //Session is online
-                sessions.add(newSession);
-                newSession.finishLogin(tcpSend);
-                logger.info("Current Logged in Users: " + sessions.size());
+            Optional<UserSession> session = getSession(username);
+            if (session.isPresent()) {
+                tcpSend.sendError("AlreadyLoggedIn");
+                logger.info("User " + username + " already logged in ");
+            } else {
+                UserSession newSession = new UserSession(username, password, socket.getInetAddress(), clientPort);
+                if (newSession.setupSession(tcpSend)) {
+                    //Session is online
+                    sessions.add(newSession);
+                    newSession.finishLogin(tcpSend);
+                    logger.info("Current Logged in Users: " + sessions.size());
+                }
             }
+        }catch (Exception e){
+            logger.info("Invalid Port from client");
         }
     }
 
@@ -202,7 +208,7 @@ public class SessionHandler {
         recipientSession.updateLastAliveDate();
 
         //Net socket with recieving client
-        Socket socket = createSocket(recipientSession.getInetAddress());
+        Socket socket = createSocket(recipientSession.getInetAddress(), recipientSession.getClientPort());
         TcpSend recipeintTcpSend = new TcpSend(socket.getOutputStream());
         TcpReceive recipientTcpReceive = new TcpReceive(socket.getInputStream());
 
@@ -237,10 +243,9 @@ public class SessionHandler {
         senderTcpSend.send();
     }
 
-    static Socket createSocket(InetAddress inetAddress) {
+    static Socket createSocket(InetAddress inetAddress, int clientPort) {
         Socket socket = null;
         try {
-            int clientPort = Properties.getInt("client.port");
             socket = new Socket(inetAddress, clientPort);
             int timeout = Properties.getInt("tcp.clientSessionTimeout.seconds");
             socket.setSoTimeout(timeout * 1000);
@@ -293,7 +298,7 @@ public class SessionHandler {
             logger.info("Sending friend request to " + newFriend);
 
             //Net socket with recieving client
-            Socket socket = createSocket(newFriendSession.get().getInetAddress());
+            Socket socket = createSocket(newFriendSession.get().getInetAddress(), newFriendSession.get().getClientPort());
             int timeout = Properties.getInt("tcp.friendRequestTimeout.seconds");
             socket.setSoTimeout(60 * 1000);
 
