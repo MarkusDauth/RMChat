@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * Mithilfe dieser Klasse werden Chatnachrichten lokal auf einer datei serialisiert
+ */
 public class FileChatDatabase implements ChatDatabaseInterface {
     private static FileChatDatabase instance = null;
 
@@ -25,25 +28,30 @@ public class FileChatDatabase implements ChatDatabaseInterface {
         return instance;
     }
 
-
+    /**
+     * Diese Klasse gibt alle nachrichten von sender und Nutzer zurueck
+     * @param sender
+     * @return
+     */
     @Override
     public synchronized List<Message> getMessages(String sender) {
         List<Message> senderMessageList = messageList.stream().filter(message -> isMessageToOrFromSender(message,sender)).collect(Collectors.toList());
         logger.info("Reading " + sender + "'s messages");
         return senderMessageList;
     }
-    private boolean isMessageToOrFromSender(Message message, String sender){
-        if(message.getSender().equals(sender) && message.getRecipient().equals(Controller.getUsername())
-            || message.getSender().equals(Controller.getUsername()) && message.getRecipient().equals(sender))
-            return true;
-        return false;
-    }
 
+    /**
+     * Mit dieser methode wird eine neue nachricht zur liste hinzugefuegt
+     * @param message
+     */
     @Override
     public synchronized void addMessage(Message message) {
         messageList.add(message);
     }
 
+    /**
+     * Mit dieser methode werden die gespeicherten nachrichten in die datei messages.ser geschrieben
+     */
     @Override
     public synchronized void save() {
         try (ObjectOutputStream out = new ObjectOutputStream(
@@ -55,7 +63,9 @@ public class FileChatDatabase implements ChatDatabaseInterface {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * Hier werden die serialisierten Objekte in die Liste geladen
+     */
     @Override
     public synchronized void load() {
         File f = new File("messages.ser");
@@ -70,5 +80,12 @@ public class FileChatDatabase implements ChatDatabaseInterface {
         } else {
             logger.info("messages.ser does not exist");
         }
+    }
+
+    private boolean isMessageToOrFromSender(Message message, String sender){
+        if(message.getSender().equals(sender) && message.getRecipient().equals(Controller.getUsername())
+                || message.getSender().equals(Controller.getUsername()) && message.getRecipient().equals(sender))
+            return true;
+        return false;
     }
 }

@@ -48,6 +48,10 @@ public class ChatEventHandler {
     @FXML
     Label showingChatFromNameLabel;
 
+    /**
+     * Prueft die vorgaben der Nachricht. Sind diese erfuellt, wird der Button zum senden von weiteren nachrichten ausgeschaltet.
+     * Danach wird die Anfrage an den Controller weitergeleitet
+     */
     @FXML
     public void sendMessage(){
         if(selectedFriend == null)
@@ -63,15 +67,11 @@ public class ChatEventHandler {
         Message message = new Message(userNameLabel.getText(), selectedFriend.getUsername(),messageTextArea.getText());
         controller.sendMessage(message);
     }
-    public void finishSendMessage(){
-        sendButton.setDisable(false);
-        sendButton.setText(UINotifications.getString("Send"));
-    }
-    public void finishAddFriend(){
-        addFriendButton.setDisable(false);
-        addFriendButton.setText(UINotifications.getString("addFriendBtn"));
-    }
 
+    /**
+     * Prueft die vorgaben des angegebenen Namen. Sind diese erfuellt, wird der Button zum senden von weiteren nachrichten ausgeschaltet.
+     * Danach wird die Anfrage an den Controller weitergeleitet
+     */
     @FXML
     public void addFriend(){
         if(addFriendTextField.getText().length() < Properties.getInt("username.minLength")){
@@ -86,7 +86,10 @@ public class ChatEventHandler {
         addFriendTextField.clear();
         controller.addFriend(friend);
     }
-
+    /**
+     * Dieses Event wird ausgeloest, wenn der Nutzer auf ein Element der Freundesliste klickt.
+     * Der lokal gespeicherte Chatverlauf wird in das Chatverlauf fenster geladen.
+     */
     @FXML
     public void handleMouseClick() {
         Friend selectedFriend = friendListView.getSelectionModel().getSelectedItem();
@@ -105,15 +108,35 @@ public class ChatEventHandler {
         }
     }
 
-    public void setController(Controller controller) {
-        this.controller = controller;
+    /**
+     * Nachricht senden ist abgeschlossen. Die Sperre des Buttons wird hier aufgehoben.
+     */
+    public void finishSendMessage(){
+        sendButton.setDisable(false);
+        sendButton.setText(UINotifications.getString("Send"));
     }
+
+    /**
+     * Freund hinzufuegen ist abgeschlossen. Die Sperre des Buttons wird hier aufgehoben.
+     */
+    public void finishAddFriend(){
+        addFriendButton.setDisable(false);
+        addFriendButton.setText(UINotifications.getString("addFriendBtn"));
+    }
+
     public TextArea getMessageTextArea(){
         return messageTextArea;
+    }
+    public void setController(Controller controller) {
+        this.controller = controller;
     }
     public void setViews(Views views) {
         this.views = views;
     }
+
+    /**
+     * Onlinestatus wird angepasst
+     */
     public void setStatusLabelText(String text){
         if(text.equals("Online")){
             statusLabel.setTextFill(Color.GREEN);
@@ -124,6 +147,10 @@ public class ChatEventHandler {
         statusLabel.setText(text);
     }
 
+    /**
+     * Die Nachricht wird dem Chat-Verlauf des entsprechenden freundes hinzugefuegt
+     * @param message zu speichernde nachricht
+     */
     public void addMessageToHistory(Message message) {
         if(selectedFriend !=null) {
             if (selectedFriend.getUsername().equals(message.getRecipient())) {
@@ -133,11 +160,10 @@ public class ChatEventHandler {
         }
     }
 
-    private void addItemToMessageHistory(Message message) {
-        String chatHistoryMessage = message.getSender() +":\t"+ message.getText();
-        messageHistory.getItems().add(chatHistoryMessage);
-    }
-
+    /**
+     * hier wird die Freundesliste aktualisiert
+     * @param friendList
+     */
     public void refreshFriendList(List<Friend> friendList) {
         this.friendListData = friendList;
 
@@ -145,6 +171,11 @@ public class ChatEventHandler {
         friendListView.getItems().setAll(friendObservableList);
     }
 
+    /**
+     * Hier wird dem Nutzer eine Freundschaftsanfrage gezeigt
+     * @param friend objekt des Nutzers, der die anfrage gesendet hat
+     * @return
+     */
     public FriendRequest showFriendRequest(Friend friend) {
         String addFriendText = getFriendRequestText(friend.getUsername());
         Alert friendRequestAlert = createFriendRequestAlert(addFriendText);
@@ -154,6 +185,45 @@ public class ChatEventHandler {
         boolean acceptedFriendRequest = didUserAcceptFriendRequest(clickedButton);
         FriendRequest friendRequest = new FriendRequest(acceptedFriendRequest,friend.getUsername());
         return friendRequest;
+    }
+
+    /**
+     * Hier wird der Reconnect Zyklus dem Nutzer sichtbar gemacht.
+     * @param attempt
+     * @param wasConnectionSuccessful
+     */
+    public void setReconnectLabelText(int attempt, boolean wasConnectionSuccessful){
+        if(wasConnectionSuccessful){
+            sendButton.setDisable(false);
+            addFriendButton.setDisable(false);
+            reconnectLabel.setText("");
+        }
+        else {
+            String reconnectMessage = UINotifications.getString("ReconnectMessage") + attempt;
+            sendButton.setDisable(true);
+            addFriendButton.setDisable(true);
+            reconnectLabel.setText(reconnectMessage);
+        }
+    }
+
+
+    public void refreshMessageList(String sender) {
+        try {
+            if (sender.equals(selectedFriend.getUsername())) {
+                List<Message> friendMessages = fileChatDatabase.getMessages(selectedFriend.getUsername());
+                messageHistory.getItems().clear();
+                for (Message message : friendMessages) {
+                    addItemToMessageHistory(message);
+                }
+            }
+        }catch(NullPointerException e){
+
+        }
+    }
+
+    private void addItemToMessageHistory(Message message) {
+        String chatHistoryMessage = message.getSender() +":\t"+ message.getText();
+        messageHistory.getItems().add(chatHistoryMessage);
     }
 
     private Alert createFriendRequestAlert(String addFriendText) {
@@ -174,21 +244,6 @@ public class ChatEventHandler {
         return stringBuilder.toString();
     }
 
-    public void setReconnectLabelText(int attempt, boolean wasConnectionSuccessful){
-        if(wasConnectionSuccessful){
-            sendButton.setDisable(false);
-            addFriendButton.setDisable(false);
-            reconnectLabel.setText("");
-        }
-        else {
-            String reconnectMessage = UINotifications.getString("ReconnectMessage") + attempt;
-            sendButton.setDisable(true);
-            addFriendButton.setDisable(true);
-            reconnectLabel.setText(reconnectMessage);
-        }
-    }
-
-
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private boolean didUserAcceptFriendRequest(ButtonBar.ButtonData result) {
         if(result == ButtonBar.ButtonData.YES){
@@ -198,19 +253,5 @@ public class ChatEventHandler {
             return false;
         }
         return false;
-    }
-
-    public void refreshMessageList(String sender) {
-        try {
-            if (sender.equals(selectedFriend.getUsername())) {
-                List<Message> friendMessages = fileChatDatabase.getMessages(selectedFriend.getUsername());
-                messageHistory.getItems().clear();
-                for (Message message : friendMessages) {
-                    addItemToMessageHistory(message);
-                }
-            }
-        }catch(NullPointerException e){
-
-        }
     }
 }

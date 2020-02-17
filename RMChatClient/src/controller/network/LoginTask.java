@@ -28,6 +28,12 @@ public class LoginTask implements Runnable {
         this.serverSocket = serverSocket;
     }
 
+    /**
+     * Hier wird eine Login-Anfrage an den Server gesendet.
+     * Wenn der erste Login erfolgreich ist, wird
+     *      ein IncomingMessage Zyklus in einem eigenen Thread gestartet
+     *      ein Keep-Alive Zyklis in einem eigenen Thread gestartet
+     */
     @Override
     public void run() {
         logger.info("Logging in: " + loginData.getUsername());
@@ -37,21 +43,15 @@ public class LoginTask implements Runnable {
             TcpSend tcpSend = new TcpSend(socket.getOutputStream());
             TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
 
-
-
-            //Data to send here
             tcpSend.add("LOGIN");
             tcpSend.add(loginData.getUsername());
             tcpSend.add(loginData.getPassword());
             tcpSend.add(Integer.toString(serverSocket.getLocalPort()));
             tcpSend.send();
 
-            //Server response here
             tcpReceive.receive();
             String code = tcpReceive.readNextString();
-
             processCode(code,tcpReceive);
-
         } catch (IOException e) {
             logger.severe(e.getMessage());
             if(firstConnect()) {

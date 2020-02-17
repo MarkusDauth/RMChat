@@ -23,6 +23,10 @@ public class AddFriendTask implements Runnable{
         this.views = views;
     }
 
+    /**
+     * Hier wird eine Freundschaftsanfrage an den Server gesendet
+     * Sobald die freundschaftsanfrage abgeschlossen wurde, wird eine abschließende Methode von Views aufgerufen
+     */
     @Override
     public void run() {
         logger.info("Adding Friend: " + friend.getUsername());
@@ -34,14 +38,11 @@ public class AddFriendTask implements Runnable{
             TcpSend tcpSend = new TcpSend(socket.getOutputStream());
             TcpReceive tcpReceive = new TcpReceive(socket.getInputStream());
 
-            //Data to send here
             tcpSend.add("ADDFRIEND");
             tcpSend.add(Controller.getSessionID());
             tcpSend.add(friend.getUsername());
             tcpSend.send();
 
-            //Server response here
-            //Sender does not receive anything yet
             tcpReceive.receive();
             String code = tcpReceive.readNextString();
 

@@ -23,6 +23,9 @@ public class SendMessageTask implements Runnable{
         this.views = views;
     }
 
+    /**
+     * Hiermit werden Nachrichten an den Server gesendet.
+     */
     @Override
     public void run() {
         logger.info("Sending message: " + message.getText() + " to "+message.getRecipient());

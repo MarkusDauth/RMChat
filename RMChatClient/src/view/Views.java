@@ -23,6 +23,9 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+/**
+ * Diese Klasse dient zur weiterleitung von Anfragen des controllers auf den GUI-Thread.
+ */
 public class Views extends Application {
 
     private static final Logger logger = Logger.getLogger("logger");

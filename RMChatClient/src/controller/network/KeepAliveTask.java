@@ -30,6 +30,13 @@ public class KeepAliveTask implements Runnable{
         this.serverSocket = serverSocket;
     }
 
+    /**
+     * Hier befindet sich der Keep-Alive-Zyklus und der Reconnect Zyklus
+     * Keep-Alive-Zyklus:
+     *      Sendet an den Server eine alive Nachricht, um dem Server zu signalisieren dass der Client verbunden ist.
+     * Reconnect Zyklus:
+     *      Sendet login Anfragen an den Server. Falls diese nicht erfolgreich sind, schliesst sich die Applikation
+     */
     @Override
     public void run() {
 

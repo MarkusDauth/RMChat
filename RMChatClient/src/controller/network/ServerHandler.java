@@ -18,6 +18,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
+/**
+ * Diese Klasse bearbeitet Anfragen des Servers
+ */
 public class ServerHandler implements Runnable {
     private final Socket socket;
     private static final Logger logger = Logger.getLogger("logger");
@@ -32,6 +35,12 @@ public class ServerHandler implements Runnable {
         this.views = views;
     }
 
+    /**
+     * Hier werden die Nachrichten vom Server bearbeitet.
+     * Es wurden 2 moegliche Nachrichten vom Server implementiert
+     * RECMSG: Ein anderer Nutzer sendet eine Nachricht
+     * FRIENDREQ: Freundschaftsfrage eines anderen Nutzers
+     */
     @Override
     public void run() {
         {
