@@ -16,6 +16,9 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
 
+/**
+ * Objects of this class represent an active user session (user is online)
+ */
 public class UserSession {
     private static final DatabaseInterface database = TextfileDatabase.getInstance();
     private static final Logger logger = Logger.getLogger("logger");
@@ -68,6 +71,12 @@ public class UserSession {
         return true;
     }
 
+    /**
+     * Überprüft, ob Logindaten korrekt sind.
+     * @param tcpSend
+     * @return
+     * @throws IOException
+     */
     public boolean validateCredentials(TcpSend tcpSend) throws IOException {
         if (!database.usernameIsPresent(username)) {
             tcpSend.sendError("WrongUsername");

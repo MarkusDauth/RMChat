@@ -4,6 +4,7 @@ import properties.Properties;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 /**
  * Same Code for server and client
  */

@@ -9,6 +9,9 @@ import network.TcpSend;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+/**
+ * Hier befindet sich die Logik für das Registrieren neuer Nutzer
+ */
 public class Registration {
     private static final Logger logger = Logger.getLogger("logger");
     private static final DatabaseInterface database = TextfileDatabase.getInstance();

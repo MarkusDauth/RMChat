@@ -18,23 +18,19 @@ import java.util.logging.Logger;
 
 
 /**
- * Class for handling Logins and the resulting Session
+ * Klasse, die sich um den Login von Nutzern kümmert und die dadurch entstehende Session
  */
 public class SessionHandler {
     private static final DatabaseInterface database = TextfileDatabase.getInstance();
     private static final Logger logger = Logger.getLogger("logger");
 
-    /**
-     * Has all UserSession objects, that are logged in
-     */
+
+    // Has all UserSession objects of users that are currently logged in
+    // KeepAliveCycle deletes UserSession when they are inactive
     private static final List<UserSession> sessions = new LinkedList<>();
 
     /**
      * Checks if login credentials are correct and creates new session
-     *
-     * @param tcpSend
-     * @param tcpReceive
-     * @throws IOException
      */
     public static void login(Socket socket, TcpSend tcpSend, TcpReceive tcpReceive) throws IOException {
         String username = tcpReceive.readNextString();
@@ -143,7 +139,7 @@ public class SessionHandler {
     }
 
     /**
-     * A client wants to send a message from another client
+     * A client wants to send a message to another client
      *
      * @param senderTcpSend
      * @param senderTcpReceive
