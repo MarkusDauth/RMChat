@@ -11,6 +11,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
 
+/**
+ * In dieser Klasse werden die Anfragen des GUI-Thread auf neuen Threads bearbeitet.
+ */
 public class Controller {
 
     private static final Logger logger = Logger.getLogger("logger");
@@ -69,6 +72,11 @@ public class Controller {
         new Thread(new AddFriendTask(friend,views)).start();
     }
 
+    /**
+     * Erstellt einen Socket mit einem timeout von 20 Sekunden
+     * @return socket
+     * @throws IOException
+     */
     public static Socket createSocket() throws IOException {
         String serverIP = Properties.getString("server.ip");
         InetAddress ip = InetAddress.getByName(serverIP);

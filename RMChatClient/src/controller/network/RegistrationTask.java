@@ -20,6 +20,9 @@ public class RegistrationTask implements Runnable {
         this.views = views;
     }
 
+    /**
+     * Sendet eine Registrierungsanfrage an den Server.
+     */
     @Override
     public void run() {
         logger.info("Creating new user: " + newUser.getUsername());

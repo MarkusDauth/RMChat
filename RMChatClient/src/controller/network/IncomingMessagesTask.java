@@ -23,6 +23,9 @@ public class IncomingMessagesTask implements Runnable{
         this.serverSocket = serverSocket;
     }
 
+    /**
+     * Hier wird mithilfe eines Serversockets auf Anfragen des Servers gehoert.
+     */
     @Override
     public void run() {
         while (true) {

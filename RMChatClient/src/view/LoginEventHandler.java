@@ -20,14 +20,6 @@ public class LoginEventHandler {
     @FXML
     private PasswordField passwordField;
 
-    void setController(Controller controller) {
-        this.controller = controller;
-    }
-
-    void setViews(Views views) {
-        this.views = views;
-    }
-
     @FXML
     private void handleRegisterAction() throws IOException {
         views.showRegisterUIifNotShowing();
@@ -45,6 +37,7 @@ public class LoginEventHandler {
             views.showMessage("InvalidUsernameOrPassword");
         }
     }
+
     private boolean isUsernameAndPasswordCorrect(){
         return checkUsername() && checkPassword();
     }
@@ -53,8 +46,17 @@ public class LoginEventHandler {
         return usernameField.getText().length() >= Properties.getInt("username.minLength") &&
                 usernameField.getText().length() < Properties.getInt("username.maxLength");
     }
+
     private boolean checkUsername(){
         return passwordField.getText().length() >= Properties.getInt("password.minLength") &&
                 passwordField.getText().length() < Properties.getInt("password.maxLength");
+    }
+
+    void setController(Controller controller) {
+        this.controller = controller;
+    }
+
+    void setViews(Views views) {
+        this.views = views;
     }
 }
